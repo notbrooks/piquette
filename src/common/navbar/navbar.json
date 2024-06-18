@@ -1,0 +1,17 @@
+[
+    {
+        "id": "features",
+        "label": "Features",
+        "href": "/features"
+    },
+    {
+        "id": "pricing",
+        "label": "Pricing",
+        "href": "/pricing"
+    },
+    {
+        "id": "contact",
+        "label": "Contact",
+        "href": "/contact"
+    }
+]

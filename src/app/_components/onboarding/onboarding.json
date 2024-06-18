@@ -1,0 +1,56 @@
+[
+    {
+        "id": "onboarding-1",
+        "label": "Onboarding 1",
+        "form": {
+            "rows": [
+              [
+                {
+                  "type": "input",
+                  "id": "firstName",
+                  "label": "First Name",
+                  "required": true,
+                  "placeholder": "First Name",
+                  "help": "Please enter your first name"
+                },
+                {
+                  "type": "input",
+                  "id": "lastName",
+                  "label": "Last Name",
+                  "required": true,
+                  "placeholder": "Last Name"
+                }
+              ],
+              [
+                {
+                  "type": "textarea",
+                  "id": "description",
+                  "label": "Description",                    
+                  "required": false,
+                  "placeholder": "Tell Us About Yourself",
+                  "help": "Please enter a description of yourself"
+                }
+              ],
+              [
+                {
+                  "type": "select",
+                  "id": "type",
+                  "label": "Type",
+                  "required": true,
+                  "options": [
+                    {
+                      "label": "User",
+                      "value": "user"
+                    },
+                    {
+                      "label": "Admin",
+                      "value": "admin"
+                    }
+                  ]
+                }
+              ]
+            ]
+            
+          }
+    }
+]
