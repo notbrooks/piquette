@@ -7,4 +7,9 @@ Piquette is a low-code application meaning that there's a lot that still needs t
 
 ## Getting Started
 
-Check out the [Wiki](https://github.com/notbrooks/piquette/wiki) to learn more
+- Clone or Fork the `piquette` repository
+- `cd piquette`
+- Install the packages `pnpm install`
+- Update Your Environment Variables
+- Run the app locally `pnpm run dev`
+- Check out the [Wiki](https://github.com/notbrooks/piquette/wiki) to learn more
