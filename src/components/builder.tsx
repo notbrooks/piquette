@@ -3,13 +3,15 @@
 import { BuilderComponent, useIsPreviewing } from "@builder.io/react"; 
 import { type BuilderContent, builder } from '@builder.io/sdk';
 import DefaultErrorPage from "next/error";
+import { env } from "~/env";
 
 interface BuilderPageProps { 
   content?: BuilderContent;
 }
 
 // Replace with your Public API Key
-builder.init("ee7ff2f61b224f469735e60565d33120");
+builder.init(env.NEXT_PUBLIC_BUILDER_API_KEY ?? "");
+
 
 export function RenderBuilderContent({ content }: BuilderPageProps) { 
   // Call the useIsPreviewing hook to determine if 

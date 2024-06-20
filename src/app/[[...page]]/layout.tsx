@@ -17,7 +17,7 @@ export default function PageLayout({
   return (
     <>
       <Navbar />
-      <main className="">{children}</main>
+        <main>{children}</main>
       <Footer />
     </>
   );

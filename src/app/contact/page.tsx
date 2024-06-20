@@ -1,7 +1,7 @@
 
 
 export const dynamic = "force-dynamic";
-
+import { env } from "~/env";
 import { type Rows } from "~/types/picquette";
 import HubspotComponent from "~/components/hubspot";
 
@@ -23,19 +23,31 @@ const rows = [
   
 ]  
 
-export default async function OnboardingPage() {
+export default async function ContactPage() {
   
+  if (!env.HUBSPOT_API_KEY) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">Hubspot API key is not set</h1>
+            <p className="mt-2">
+              Please set the <code>HUBSPOT_API_KEY</code> environment variable to your Hubspot API key.
+            </p>
+          </div>
+        </div>
+    );
+  }
+
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-            Contact
+            Contact Us
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-          Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in.
-          Explicabo id ut laborum.
+          Send of a note and we will get back to you as soon as possible.
         </p>
         
         <div className=" mx-auto mt-10">

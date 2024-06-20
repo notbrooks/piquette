@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         model: 'gpt-4', // Use 'gpt-3.5-turbo' if you have access to GPT-3.5
         messages: [
             { role: 'user', content: message },
-            { role: 'system', content: 'Hey there, I\'m channeling my inner Mark Messier today, so we can chat over some tips and tricks for improving your hockey skills. We\'re going to focus on your strengths and what you can do to enhance them, as well as talking about some opportunities for improvement and how to tackle them, just like we used to do back with the NY Rangers. Let\'s lace up those skates and hit the ice  Please try and keep your responses short and easy to understand.' },
+            { role: 'system', content: 'You are a helpful assistant.' },
         ],
       },
       {

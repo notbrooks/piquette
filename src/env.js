@@ -10,6 +10,7 @@ export const env = createEnv({
     POSTGRES_URL: z
       .string()
       .url()
+      .nullable()
       .refine(
         (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
         "You forgot to change the default URL",
@@ -17,8 +18,8 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-      HUBSPOT_API_KEY: z.string(),
-      OPENAI_API_KEY: z.string(),
+    HUBSPOT_API_KEY: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
   },
 
   /**
@@ -28,6 +29,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_BUILDER_API_KEY: z.string().optional(),
   },
 
   /**
@@ -37,6 +39,7 @@ export const env = createEnv({
   runtimeEnv: {
     POSTGRES_URL: process.env.POSTGRES_URL,
     NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_BUILDER_API_KEY: process.env.NEXT_PUBLIC_BUILDER_API_KEY,
     HUBSPOT_API_KEY: process.env.HUBSPOT_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
