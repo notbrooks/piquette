@@ -7,4 +7,4 @@ Piquette is a low-code application meaning that there's a lot that still needs t
 
 ## Getting Started
 
-Check out the [Wiki]([https://github.com/notbrooks/piquette/wiki/Authentication](https://github.com/notbrooks/piquette/wiki)) to learn more
+Check out the [Wiki](https://github.com/notbrooks/piquette/wiki) to learn more
