@@ -12,8 +12,8 @@ Piquette is a low-code application meaning that there's a lot that still needs t
 - Install the packages `pnpm install`
 - Rename `.env.example` to `.env.local` and update the variables with your API keys
   -  [ ] [Postgres](https://github.com/notbrooks/piquette/wiki/Database-&-ORM) (required)
-  -  [ ] Builder.io (required)
-  -  [ ] Clerk (required)
+  -  [ ] [Builder.io](https://github.com/notbrooks/piquette/wiki/Content) (required)
+  -  [ ] [Clerk](https://github.com/notbrooks/piquette/wiki/Authentication) (required)
   -  [ ] Hubspot (optional)
   -  [ ] OpenAI (optional)
   -  [ ] PostHog (optional)
