@@ -18,7 +18,10 @@ import { api } from "~/trpc/react";
 //   );
 // }
 
-export function AllFavorites() {
+interface AllFavoritesProps {
+  userId: string
+}
+export function AllFavorites({ userId }: AllFavoritesProps) {
   const [AllFavorites] = api.favorite.getAll.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -44,9 +47,8 @@ export function AllFavorites() {
           e.preventDefault();
           createFavorite.mutate({
             object, type,
-            createdBy: "brooke",
-            updatedBy: "brooke"
-          });
+            createdBy: userId,
+            updatedBy: userId          });
         }}
         className="flex flex-col gap-2"
       >
