@@ -36,9 +36,9 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
   });
 
   return (
-    <div className="w-full max-w-xs">
+    <div className="w-full">
       {AllFavorites ? (
-        <p className="">Your most recent Favorites: {JSON.stringify(AllFavorites)}</p>
+        <p className="">Your most recent Favorites: {JSON.stringify(AllFavorites, null, 2)}</p>
       ) : (
         <p>You have no posts yet.</p>
       )}
