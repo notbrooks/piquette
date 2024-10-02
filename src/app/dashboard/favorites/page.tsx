@@ -13,15 +13,8 @@ export default async function Home() {
   if (!user) return <div>This is an authenticated route</div>
 
   return (
-    <HydrateClient>
-      <div className="">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Favorites
-          </h1>
-          
-          <hr className="my-4"/>
-          <AllFavorites userId={user.id} />
-      </div>
+    <HydrateClient>    
+      <AllFavorites userId={user.id} />
     </HydrateClient>
   );
 }
