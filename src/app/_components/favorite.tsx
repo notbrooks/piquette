@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
+
 import Column from "~/components/templates/column";
-import { FormComponent, AlertComponent, HeaderComponent,ListComponent } from "~/components/common";
+import { FormComponent, AlertComponent, HeaderComponent, ListComponent } from "~/components/common";
 
 import { api } from "~/trpc/react";
 
@@ -40,9 +41,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
 
   return (
     <Column>
-      <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-        Favorites
-      </h1>
+      <HeaderComponent title="Favorites" />
 
       {AllFavorites && AllFavorites.length > 0 ? (
         <ListComponent data={AllFavorites} />

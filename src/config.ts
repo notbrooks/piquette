@@ -1,3 +1,5 @@
+import { TrashIcon, StarIcon, ShareIcon, HomeIcon } from '@heroicons/react/24/outline'
+
 export const piquetteConfig = {
     meta: {
         id: 'piquette',
@@ -64,5 +66,15 @@ export const piquetteConfig = {
             },
         ]
 
+    },
+    app: {
+        features: [
+            {id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: HomeIcon},
+        ],
+        services: [
+            {id: 'favorites', label: 'Favorites', href: '/dashboard/favorites', icon: StarIcon},
+            {id: 'archive', label: 'Archive', href: '/dashboard/archive', icon: TrashIcon},
+            {id: 'shared', label: 'Shared', href: '/dashboard/shared', icon: ShareIcon},
+        ],
     }
 }

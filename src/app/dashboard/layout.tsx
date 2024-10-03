@@ -1,14 +1,13 @@
 'use client'
-import { useUser} from "@clerk/nextjs";
 import React from "react";
-import { AccountDropdownComponent } from "~/components/common";
-
-// import { piquetteConfig } from "~/config";
+import { useState } from 'react'
+import { piquetteConfig } from "~/config";
+import { useUser} from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-import { useState } from 'react'
+import { AccountDropdownComponent } from "~/components/common";
 import {
   Dialog,
   DialogBackdrop,
@@ -18,32 +17,10 @@ import {
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-
-
-const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
-]
-const teams = [
-  { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
-]
-
 
 
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -90,6 +67,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                       className="h-8 w-auto"
                       width={200}
                       height={50}
+                      priority={true}
                     />
                   </Link>
                 </div>
@@ -97,9 +75,9 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
-                          <li key={item.name}>
-                            <a
+                        {piquetteConfig.app.features.map((item, idx) => (
+                          <li key={idx}>
+                            <Link
                               href={item.href}
                               className={cn(
                                 item.current
@@ -109,31 +87,29 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                               )}
                             >
                               <item.icon aria-hidden="true" className="h-6 w-6 shrink-0" />
-                              {item.name}
-                            </a>
+                              {item.label}
+                            </Link>
                           </li>
                         ))}
                       </ul>
                     </li>
                     <li>
-                      <div className="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
+                      <div className="text-xs font-semibold leading-6 text-gray-400">Services</div>
                       <ul role="list" className="-mx-2 mt-2 space-y-1">
-                        {teams.map((team) => (
-                          <li key={team.name}>
-                            <a
-                              href={team.href}
+                        {piquetteConfig.app.services.map((item, idx) => (
+                          <li key={idx}>
+                            <Link
+                              href={item.href}
                               className={cn(
-                                team.current
+                                item.current
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                               )}
                             >
-                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
-                                {team.initial}
-                              </span>
-                              <span className="truncate">{team.name}</span>
-                            </a>
+                              <item.icon aria-hidden="true" className="h-6 w-6 shrink-0" />
+                              {item.label}
+                            </Link> 
                           </li>
                         ))}
                       </ul>
@@ -166,6 +142,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                   className="h-8 w-auto"
                   width={200}
                   height={50}
+                  priority={true}
                 />
               </Link>
             </div>
@@ -173,8 +150,8 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
-                      <li key={item.name}>
+                    {piquetteConfig.app.features.map((item, idx) => (
+                      <li key={idx}>
                         <a
                           href={item.href}
                           className={cn(
@@ -185,31 +162,29 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                           )}
                         >
                           <item.icon aria-hidden="true" className="h-6 w-6 shrink-0" />
-                          {item.name}
+                          {item.label}
                         </a>
                       </li>
                     ))}
                   </ul>
                 </li>
                 <li>
-                  <div className="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
+                  <div className="text-xs font-semibold leading-6 text-gray-400">Services</div>
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
-                      <li key={team.name}>
-                        <a
-                          href={team.href}
+                    {piquetteConfig.app.services.map((item, idx) => (
+                      <li key={idx}>
+                        <Link
+                          href={item.href}
                           className={cn(
-                            team.current
+                            item.current
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                           )}
                         >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
-                            {team.initial}
-                          </span>
-                          <span className="truncate">{team.name}</span>
-                        </a>
+                          <item.icon aria-hidden="true" className="h-6 w-6 shrink-0" />
+                          {item.label}
+                        </Link> 
                       </li>
                     ))}
                   </ul>
