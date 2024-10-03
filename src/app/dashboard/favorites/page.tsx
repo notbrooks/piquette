@@ -1,4 +1,17 @@
 import { currentUser } from '@clerk/nextjs/server'
+import Link from 'next/link'
+
+import { PlusIcon } from '@heroicons/react/24/outline'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import { Button } from "~/components/ui/button"
+
 import { AllFavorites, FavoriteForm } from "~/app/_components/Favorites";
 
 import { type Metadata } from "next";
@@ -19,9 +32,29 @@ export default async function Home() {
 
   return (
     <Column>
-      <HeaderComponent title="Favorites" />
+      <HeaderComponent
+        title="Favorites"
+        actions={[
+          <Dialog >
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <PlusIcon className="h-5 w-5" />
+                <span>New Favorite</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Manually Create A Favorite</DialogTitle>
+                <DialogDescription>
+                  <FavoriteForm userId={user.id} />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        ]}
+      />
       <AllFavorites userId={user.id} />
-      <FavoriteForm userId={user.id} />
+      
     </Column>
   );
 }

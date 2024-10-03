@@ -1,8 +1,9 @@
 interface HeaderComponentProps {
     title: string
     description?: string
+    actions?: React.ReactNode[]
 }
-export default function HeaderComponent({ title, description }: HeaderComponentProps) {
+export default function HeaderComponent({ title, description, actions }: HeaderComponentProps) {
     return (
       <div className="md:flex md:items-center md:justify-between">
         <div className="min-w-0 flex-1">
@@ -15,6 +16,14 @@ export default function HeaderComponent({ title, description }: HeaderComponentP
             </p>
           )}    
         </div>
+        { actions && actions.length > 0 && <div className="mt-4 flex md:ml-4 md:mt-0 justify-end sm:justify-end">
+          {actions.map((item, idx) => (
+            <div key={idx}>
+              {item}
+            </div>
+          ))}
+        </div> }
+        
         {/* <div className="mt-4 flex md:ml-4 md:mt-0 justify-end sm:justify-end">
           <button
             type="button"
