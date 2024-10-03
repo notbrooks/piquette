@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
-import { FormComponent } from "~/components/common";
+import Column from "~/components/templates/column";
+import { FormComponent, AlertComponent } from "~/components/common";
 
 import { api } from "~/trpc/react";
 
@@ -38,7 +39,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
   };
 
   return (
-    <div className="w-full">
+    <Column>
       <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
         Favorites
       </h1>
@@ -46,12 +47,12 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
       {AllFavorites && AllFavorites.length > 0 ? (
         <p className="">Your most recent Favorites: {JSON.stringify(AllFavorites, null, 2)}</p>
       ) : (
-        <p>You have no posts yet.</p>
+        <AlertComponent type={"info"} icon={false} title={"No Saved Favorites"}/>
       )}
 
 
       <FormComponent object={object} type={type} onSubmit={handleFormSubmit} />
 
-    </div>
+    </Column>
   );
 }
