@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
 import Column from "~/components/templates/column";
-import { FormComponent, AlertComponent } from "~/components/common";
+import { FormComponent, AlertComponent, HeaderComponent,ListComponent } from "~/components/common";
 
 import { api } from "~/trpc/react";
 
@@ -45,7 +45,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
       </h1>
 
       {AllFavorites && AllFavorites.length > 0 ? (
-        <p className="">Your most recent Favorites: {JSON.stringify(AllFavorites, null, 2)}</p>
+        <ListComponent data={AllFavorites} />
       ) : (
         <AlertComponent type={"info"} icon={false} title={"No Saved Favorites"}/>
       )}
