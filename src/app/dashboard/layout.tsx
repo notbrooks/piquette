@@ -6,6 +6,7 @@ import { useUser} from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
 import { AccountDropdownComponent } from "~/components/common";
 import {
@@ -26,7 +27,8 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { user, isLoaded } = useUser()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const pathname = usePathname(); // Get the current path
+console.log(pathname)
   return (
     <>
       {/*
@@ -80,7 +82,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                             <Link
                               href={item.href}
                               className={cn(
-                                item.current
+                                item.href === pathname
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -101,7 +103,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                             <Link
                               href={item.href}
                               className={cn(
-                                item.current
+                                item.href === pathname
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -155,7 +157,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                         <a
                           href={item.href}
                           className={cn(
-                            item.current
+                            item.href === pathname
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -176,7 +178,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                         <Link
                           href={item.href}
                           className={cn(
-                            item.current
+                            item.href === pathname
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
