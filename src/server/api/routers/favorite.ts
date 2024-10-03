@@ -12,6 +12,20 @@ export const favoriteRouter = createTRPCRouter({
       };
     }),
 
+  remove: publicProcedure
+    .query(() => {
+      return {
+        greeting: 'Favorite removed',
+      };
+    }),
+
+  add: publicProcedure
+    .query(() => {
+      return {
+        greeting: 'Favorite added',
+      };
+    }),
+
   create: publicProcedure
     .input(z.object({ 
       type: z.string().min(1),
@@ -34,5 +48,6 @@ export const favoriteRouter = createTRPCRouter({
     });
 
     return favorite ?? null;
-  }),
+    }),
+
 });

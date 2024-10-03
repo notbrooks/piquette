@@ -1,21 +1,32 @@
+"use client"
+import * as React from "react"
+ 
+import { cn } from "~/lib/utils"
+import { useMediaQuery } from 'usehooks-ts'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
-interface Share {
-    label: "Share"
-}
 
-interface Hide {
-    label: "Hide"
-}
 
-interface Edit {
-    label: "Edit"
-}
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "~/components/ui/dialog"
 
-interface Remove {
-    label: "Remove"
-}
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+  } from "~/components/ui/drawer"
+
 
 interface ActionsComponentProps {
     actions: Array<"share" | "hide" | "edit" | "remove">
@@ -23,9 +34,15 @@ interface ActionsComponentProps {
 
 
 export default function ActionsComponent({ actions }: ActionsComponentProps) {
+    const [open, setOpen] = React.useState(false)
+    const [ openDialog, setOpenDialog ] = React.useState(false)
+
+    const isDesktop = useMediaQuery("(min-width: 768px)")
+
     if (!actions || actions.length === 0) return null;
 
     return (
+        <>
         <Menu as="div" className="relative flex-none">
             <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
                 <span className="sr-only">Open options</span>
@@ -37,12 +54,76 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
             >
                 {actions.map((item, idx) => (
                     <MenuItem key={idx}>
-                        <a href="#" className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50 capitalize">
+                        <a
+                            onClick={() => {
+                                if (item === 'remove') <DialogComponent open={openDialog} onOpenChange={setOpenDialog} />
+                                if (item === 'share' || item === 'hide' || item === 'edit') setOpen(true);
+                            }}
+                            className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50 capitalize"
+                        >
                             {item as unknown as string}
                         </a>
                     </MenuItem>
                 ))}
             </MenuItems>
         </Menu>
+
+        {!isDesktop && (
+            <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerContent>
+                    <DrawerHeader>
+                        <DrawerTitle>TITLE</DrawerTitle>
+                        <DrawerDescription>
+                            DESCRIPTION
+                        </DrawerDescription>
+                    </DrawerHeader>
+                </DrawerContent>
+            </Drawer>
+        )}
+
+        { isDesktop && (
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>TITLE</DialogTitle>
+                        <DialogDescription>
+                            DESCRIPTION
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+        )}
+
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>TITLE</DialogTitle>
+                    <DialogDescription>
+                        DESCRIPTION
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
+
+        </>
+    )
+}
+
+interface DialogComponentProps {
+    open: boolean
+    onOpenChange: (open: boolean) => void
+}
+function DialogComponent({ open, onOpenChange }: DialogComponentProps) {
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Dialog Comoponent</DialogTitle>
+                    <DialogDescription>
+                        DESCRIPTION
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
     )
 }

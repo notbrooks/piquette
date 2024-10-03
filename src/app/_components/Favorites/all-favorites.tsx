@@ -29,6 +29,7 @@ interface Favorite {
 
 export function AllFavorites({ userId }: AllFavoritesProps) {
   const [AllFavorites] = api.favorite.getAll.useSuspenseQuery();
+  
 
   if (!AllFavorites || AllFavorites.length === 0) {
     return (
@@ -36,26 +37,23 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
     );
   }
 
-    // Group the data by 'type'
-    const groupByType = (AllFavorites: Favorite[]) => {
-      return AllFavorites.reduce((acc: { [key: string]: Favorite[] }, item) => {
-        if (!acc[item.type]) {
-          acc[item.type] = [];
-        }
-        acc[item.type]!.push(item);
-        return acc;
-      }, {} as { [key: string]: Favorite[] });
-    };
-
-
-    const groupedData = groupByType(AllFavorites);
+  // Group the data by 'type'
+  const groupByType = (AllFavorites: Favorite[]) => {
+    return AllFavorites.reduce((acc: { [key: string]: Favorite[] }, item) => {
+      if (!acc[item.type]) {
+        acc[item.type] = [];
+      }
+      acc[item.type]!.push(item);
+      return acc;
+    }, {} as { [key: string]: Favorite[] });
+  };
+  const groupedData = groupByType(AllFavorites);
 
   if (AllFavorites && Object.keys(groupedData).length === 1) {
     return (
       <ListContainer>
         {AllFavorites.map((item: Favorite) => (
           <ListItem key={item.id}>
-
 
             <div className="min-w-0">
               <div className="flex items-start gap-x-3">
@@ -78,8 +76,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
             </div>
             <div className="flex flex-none items-center gap-x-4">
               <ActionsComponent actions={['remove']}/>
-            </div>
-            
+            </div>            
 
           </ListItem>
         ))}
