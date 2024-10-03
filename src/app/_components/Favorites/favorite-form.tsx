@@ -3,17 +3,14 @@
 import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
 
-import Column from "~/components/templates/column";
-import { FormComponent, AlertComponent, HeaderComponent, ListComponent } from "~/components/common";
+import { FormComponent } from "~/components/common";
 
 import { api } from "~/trpc/react";
 
-interface AllFavoritesProps {
+interface FavoriteFormProps {
   userId: string
 }
-export function AllFavorites({ userId }: AllFavoritesProps) {
-  const [AllFavorites] = api.favorite.getAll.useSuspenseQuery();
-
+export function FavoriteForm({ userId }: FavoriteFormProps) {
   const utils = api.useUtils();
   const [object, setObject] = useState("");
   const [type, setType] = useState("");
@@ -40,18 +37,6 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
   };
 
   return (
-    <Column>
-      <HeaderComponent title="Favorites" />
-
-      {AllFavorites && AllFavorites.length > 0 ? (
-        <ListComponent data={AllFavorites} />
-      ) : (
-        <AlertComponent type={"info"} icon={false} title={"No Saved Favorites"}/>
-      )}
-
-
-      <FormComponent object={object} type={type} onSubmit={handleFormSubmit} />
-
-    </Column>
+    <FormComponent object={object} type={type} onSubmit={handleFormSubmit} />
   );
 }
