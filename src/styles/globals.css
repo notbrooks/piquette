@@ -64,3 +64,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Global link styles */
+a {
+  @apply text-blue-800 hover:text-blue-900 transition-colors duration-200;
+}

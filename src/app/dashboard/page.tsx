@@ -62,7 +62,7 @@ export default async function DashboardPage() {
                     </CardTitle>
                   </div>
                   <div className="flex-none">
-                    <ActionsComponent/>
+                    <ActionsComponent actions={['share', 'hide']}/>
                   </div>
                 </div>
               </CardHeader>
