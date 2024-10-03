@@ -1,4 +1,5 @@
 import AccountDropdownComponent from './account'
+import ActionsComponent from './actions'
 import AlertComponent from './alert'
 import BreadcrumbsComponent from './breadcrumbs'
 import FooterComponent from './footer'
@@ -8,6 +9,7 @@ import NavbarComponent from './navbar'
 
 export {
     AccountDropdownComponent,
+    ActionsComponent,
     AlertComponent,
     BreadcrumbsComponent,
     FooterComponent,

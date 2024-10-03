@@ -4,8 +4,7 @@ import React from "react";
 import moment from 'moment'
 
 
-
-import { AlertComponent } from "~/components/common";
+import { AlertComponent, ActionsComponent } from "~/components/common";
 import { ListContainer, ListItem } from "~/components/templates/list";
 
 
@@ -43,14 +42,11 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
           <div className="min-w-0">
             <div className="flex items-start gap-x-3">
               <p className="text-sm font-semibold leading-6 text-gray-900">{item.type}</p>
-              {/* <p
-                className={cn(
-                  statuses[item.status as keyof typeof statuses],
-                  'mt-0.5 whitespace-nowrap rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset',
-                )}
+              <p
+                className="mt-0.5 whitespace-nowrap rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset"
               >
-                {item.status}
-              </p> */}
+                {item.object}
+              </p>
             </div>
             <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
               <p className="whitespace-nowrap">
@@ -62,7 +58,9 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
               <p className="truncate">Created by {item.createdBy}</p> */}
             </div>
           </div>
-
+          <div className="flex flex-none items-center gap-x-4">
+            <ActionsComponent />
+          </div>
           
 
         </ListItem>

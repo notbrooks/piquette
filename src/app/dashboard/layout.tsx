@@ -28,7 +28,6 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
   const { user, isLoaded } = useUser()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname(); // Get the current path
-console.log(pathname)
   return (
     <>
       {/*
