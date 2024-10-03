@@ -73,7 +73,7 @@ export const piquetteConfig = {
         ],
         services: [
             {id: 'favorites', label: 'Favorites', href: '/dashboard/favorites', icon: StarIcon},
-            {id: 'archive', label: 'Archive', href: '/dashboard/archive', icon: TrashIcon},
+            {id: 'archive', label: 'Archive', href: '/dashboard/archives', icon: TrashIcon},
             {id: 'shared', label: 'Shared', href: '/dashboard/shared', icon: ShareIcon},
         ],
     }
