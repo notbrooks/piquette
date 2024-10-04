@@ -17,7 +17,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
       object: object,
     },
     onSubmit: async ({ value }) => {
-      await onSubmit(value);
+      onSubmit(value);
     },
   })
 
@@ -26,8 +26,8 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        form.handleSubmit();
-        form.reset
+        void form.handleSubmit();
+        form.reset(); // Fixed by adding parentheses for the function call
       }}
       className="p-5 space-y-6 border border-gray-900/10 rounded-lg shadow-sm"
     >
@@ -40,6 +40,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
             <form.Field
               name="type"
               validators={{}}
+              // eslint-disable-next-line react/no-children-prop
               children={(field) => (
                 <Input
                   name={field.name}
@@ -60,6 +61,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
             <form.Field
               name="object"
               validators={{}}
+              // eslint-disable-next-line react/no-children-prop
               children={(field) => (
                 <Input
                   name={field.name}

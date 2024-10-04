@@ -27,7 +27,7 @@ export function FavoriteForm({ userId }: FavoriteFormProps) {
   });
 
   const handleFormSubmit = async (data: { object: string; type: string }) => {
-    createFavorite.mutateAsync({
+    void createFavorite.mutateAsync({
       ...data,
       createdBy: userId,
       updatedBy: userId,

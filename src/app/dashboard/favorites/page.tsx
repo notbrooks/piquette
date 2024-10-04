@@ -1,5 +1,4 @@
 import { currentUser } from '@clerk/nextjs/server'
-import Link from 'next/link'
 
 import { PlusIcon } from '@heroicons/react/24/outline'
 import {
@@ -35,7 +34,7 @@ export default async function Home() {
       <HeaderComponent
         title="Favorites"
         actions={[
-          <Dialog >
+          <Dialog key="new-favorite">
             <DialogTrigger asChild>
               <Button variant="default">
                 <PlusIcon className="h-5 w-5" />

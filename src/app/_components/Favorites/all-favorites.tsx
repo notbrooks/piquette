@@ -2,7 +2,6 @@
 import { api } from "~/trpc/react";
 import React from "react";
 import moment from 'moment'
-import { cn } from "~/lib/utils";
 
 
 import { AlertComponent, ActionsComponent } from "~/components/common";
@@ -27,7 +26,7 @@ interface Favorite {
   archivedBy: string | null;
 }
 
-export function AllFavorites({ userId }: AllFavoritesProps) {
+export function AllFavorites({  }: AllFavoritesProps) {
   const [AllFavorites] = api.favorite.getAll.useSuspenseQuery();
   
 
@@ -88,7 +87,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
     <Tabs defaultValue={Object.keys(groupedData)[0]} className="shadcn-tabs">
       <TabsList className="grid w-full grid-cols-2">
         {Object.keys(groupedData).map((type, idx) => (
-          <TabsTrigger key={type} value={type}>
+          <TabsTrigger key={idx} value={type}>
             {type}
           </TabsTrigger>
         ))}
