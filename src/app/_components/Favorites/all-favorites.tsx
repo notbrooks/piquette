@@ -39,13 +39,13 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
 
   // Group the data by 'type'
   const groupByType = (AllFavorites: Favorite[]) => {
-    return AllFavorites.reduce((acc: { [key: string]: Favorite[] }, item) => {
+    return AllFavorites.reduce((acc: Record<string, Favorite[]>, item) => {
       if (!acc[item.type]) {
         acc[item.type] = [];
       }
       acc[item.type]!.push(item);
       return acc;
-    }, {} as { [key: string]: Favorite[] });
+    }, {} as Record<string, Favorite[]>);
   };
   const groupedData = groupByType(AllFavorites);
 
@@ -112,7 +112,7 @@ export function AllFavorites({ userId }: AllFavoritesProps) {
                     <ActionsComponent actions={['remove']}/>
                 </div>
               </ListItem>
-            )) || null}
+            )) ?? null}
           </ListContainer>
         </TabsContent>
       ))}
