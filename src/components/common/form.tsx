@@ -17,7 +17,6 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
       object: '',
     },
     onSubmit: async ({ value }) => {
-      console.log(JSON.stringify(value, null, 2));
       onSubmit(value);
     },
   })
@@ -28,7 +27,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
         e.preventDefault();
         e.stopPropagation();
         await form.handleSubmit();
-        // form.reset(); // Fixed by adding parentheses for the function call
+        form.reset(); // Fixed by adding parentheses for the function call
       }}
       className="p-5 space-y-6 border border-gray-900/10 rounded-lg shadow-sm"
     >
@@ -41,7 +40,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
             <form.Field
               name="type"
               // validators={{}}
-              
+              // eslint-disable-next-line react/no-children-prop
               children={(field) => (
                 <Input
                   name={field.name}
@@ -62,7 +61,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
             <form.Field
               name="object"
               // validators={{}}
-              
+              // eslint-disable-next-line react/no-children-prop
               children={(field) => (
                 <Input
                   name={field.name}
