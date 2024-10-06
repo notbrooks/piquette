@@ -85,7 +85,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
       
   return (
     <Tabs defaultValue={Object.keys(groupedData)[0]} className="shadcn-tabs">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="">
         {Object.keys(groupedData).map((type, idx) => (
           <TabsTrigger key={idx} value={type}>
             {type}
