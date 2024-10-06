@@ -24,10 +24,10 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        form.handleSubmit();
+        await form.handleSubmit();
         // form.reset(); // Fixed by adding parentheses for the function call
       }}
       className="p-5 space-y-6 border border-gray-900/10 rounded-lg shadow-sm"
