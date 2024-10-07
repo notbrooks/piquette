@@ -36,8 +36,7 @@ export default async function Home() {
         actions={[
           <Dialog key="new-favorite">
             <DialogTrigger asChild>
-              <Button variant="default">
-                <PlusIcon className="h-5 w-5" />
+              <Button variant="outline" size="sm">
                 <span>New Favorite</span>
               </Button>
             </DialogTrigger>

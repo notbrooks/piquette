@@ -7,7 +7,7 @@ interface ListTemplateProps {
 
 export function ListContainer({ children }: ListTemplateProps) {
     return (
-        <ul role="list" className="divide-y divide-gray-100">
+        <ul role="list" className="divide-y divide-gray-100  bg-white border border-gray-200 rounded-lg">
             {children}
         </ul>
     )

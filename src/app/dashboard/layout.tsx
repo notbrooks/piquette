@@ -279,7 +279,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
               </div>
             </div>
           </div>
-          <main className="py-10">
+          <main className="py-10 bg-gray-50 min-h-screen">
             <div className="px-4 sm:px-6 lg:px-8 container">{children}</div>
           </main>
         </div>

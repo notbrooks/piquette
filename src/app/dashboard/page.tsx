@@ -55,13 +55,13 @@ export default async function DashboardPage() {
               <CardHeader>
                 <div className="flex justify-between items-center w-full">
                   <div className="flex-1">
-                    <CardTitle className='truncate'>
+                    <CardTitle className='truncate font-medium text-lg'>
                       <Link href={`/dashboard/favorites/${item.uuid}`} passHref>
                         {item.name}
                       </Link>
                     </CardTitle>
                   </div>
-                  <div className="flex-none">
+                  <div className="flex-none justify-end">
                     <ActionsComponent actions={['share', 'hide']}/>
                   </div>
                 </div>
