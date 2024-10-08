@@ -66,10 +66,7 @@
 }
 
 /* Global link styles */
-a {
+/* a {
   @apply text-blue-800 hover:text-blue-900 transition-colors duration-200;
-}
+} */
 
-a:hover {
-  @apply text-blue-500 underline
-}
