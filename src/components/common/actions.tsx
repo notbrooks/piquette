@@ -9,6 +9,15 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
 import { Button, ButtonProps } from "~/components/ui/button"
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "~/components/ui/dropdown-menu"
+
+import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -43,19 +52,17 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
 
     return (
         <>
-        <Menu as="div" className="relative flex-none">
-            <MenuButton className="text-gray-500 hover:text-gray-900">
-                <span className="sr-only">Open options</span>
-                <Button variant="ghost" size="sm">
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+            <Button variant="ghost" size="sm">
                     <EllipsisVerticalIcon aria-hidden="true" className="h-5 w-5" />
                 </Button>
-            </MenuButton>
-            <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-            >
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 {actions.map((item, idx) => (
-                    <MenuItem key={idx}>
+                    <DropdownMenuItem key={idx}>
                         <a
                             onClick={() => {
                                 if (item === 'remove') <DialogComponent open={openDialog} onOpenChange={setOpenDialog} />
@@ -65,10 +72,10 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
                         >
                             {item as unknown as string}
                         </a>
-                    </MenuItem>
+                    </DropdownMenuItem>
                 ))}
-            </MenuItems>
-        </Menu>
+            </DropdownMenuContent>
+        </DropdownMenu>
 
         {!isDesktop && (
             <Drawer open={open} onOpenChange={setOpen}>
