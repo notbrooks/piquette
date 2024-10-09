@@ -79,7 +79,7 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
-    if (!actions || actions.length === 0) return null;
+    if (actions.length === 0) return null;
 
     const handleActionClick = (action: string, data: {
         id: number,
@@ -95,8 +95,12 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
         setCurrentType(data.type);
         setCurrentLabel(data.label);
         
-        if (action === 'remove' || action === 'share' || action === 'hide') {
-            // handleRemove( data.type, data.id)
+        if (action === 'remove') {
+            setOpenDialog(true);
+        } else if (action === 'share') {
+            setOpenDialog(true);
+        } else if (action === 'hide') {
+            // handleRemove(data.type, data.id);
             setOpenDialog(true);
         } else {
             setOpenDialog(false);
@@ -104,6 +108,8 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 handleFavorite(data.id, data.key, data.type, data.object, data.label);
             } else if (action === 'share') {
                 handleShare(data.id, data.key, data.type, data.object, data.label);
+            } else if (action === 'edit') {
+                handleEdit(data.id, data.key, data.type, data.object, data.label);
             } else if (action === 'edit') {
                 handleEdit(data.id, data.key, data.type, data.object, data.label);
             }
@@ -143,9 +149,9 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{currentAction}</DialogTitle>
-                        <DialogDescription>{getDialogDescription(currentAction || "", { id: data.id, key: data.key, type: data.type, object: data.object, label: data.label })}</DialogDescription>
+                        <DialogDescription>{getDialogDescription(currentAction ?? "", { id: data.id, key: data.key, type: data.type, object: data.object, label: data.label })}</DialogDescription>
                     </DialogHeader>
-                    {getDialogButtons(currentAction || "", setOpenDialog, { id: data.id, key: data.key, object: data.object, type: data.type, label: data.label })}
+                    {getDialogButtons(currentAction ?? "", setOpenDialog, { id: data.id, key: data.key, object: data.object, type: data.type, label: data.label })}
                 </DialogContent>
             </Dialog>
         </>
