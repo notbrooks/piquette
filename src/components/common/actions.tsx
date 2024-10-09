@@ -30,24 +30,30 @@ import { useState } from "react";
 const handleRemove = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
     toast({
         variant: "default",
-        title: `${currentType} has been removed`,
+        title: `${currentObject} has been removed`,
     });
 };
 
-const handleShare = () => {
+const handleShare = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
     alert('share');
 };
 
-const handleHide = () => {
-    alert('hide');
+const handleHide = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
+    toast({
+        variant: "default",
+        title: `${currentObject} has been added to your archive`,
+    });
 };
 
-const handleEdit = () => {
+const handleEdit = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
     alert('edit');
 };
 
-const handleFavorite = () => {
-    alert('favorite');
+const handleFavorite = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
+    toast({
+        variant: "default",
+        title: `${currentObject} has been added to your favorites`,
+    });
 };
 
 interface ActionsComponentProps {
@@ -89,11 +95,18 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
         setCurrentType(data.type);
         setCurrentLabel(data.label);
         
-        if (action === 'remove') {
+        if (action === 'remove' || action === 'share' || action === 'hide') {
             // handleRemove( data.type, data.id)
             setOpenDialog(true);
         } else {
-            setOpenDialog(true);
+            setOpenDialog(false);
+            if (action === 'favorite') {
+                handleFavorite(data.id, data.key, data.type, data.object, data.label);
+            } else if (action === 'share') {
+                handleShare(data.id, data.key, data.type, data.object, data.label);
+            } else if (action === 'edit') {
+                handleEdit(data.id, data.key, data.type, data.object, data.label);
+            }
         }
     };
       
@@ -141,9 +154,9 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
 function getDialogDescription(action: string, data: { id: number; key: string; type: string; object: string, label: string  }): string {
     switch (action) {
-        case 'remove': return 'Are you sure you want to remove this favorite?';
-        case 'share': return 'Share this favorite with others';
-        case 'hide': return 'Hide this favorite from others';
+        case 'remove': return `Are you sure you want to remove ${data.object}?`;
+        case 'share': return `TODO: Share Panel`;
+        case 'hide': return `Hide this ${data.object}?`;
         case 'edit': return 'Edit this favorite';
         default: return '';
     }
@@ -158,8 +171,18 @@ function getDialogButtons(action: string, setOpenDialog: React.Dispatch<React.Se
             </DialogFooter>
         );
     // Add cases for 'share', 'hide', and 'edit' as needed
-        case 'share': return <Button variant="default">Share</Button>;
-        case 'hide': return <Button variant="default">Hide</Button>;
+        case 'share': return (
+            <DialogFooter>
+                <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                <Button variant="default" onClick={() => { handleShare(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Share</Button>
+            </DialogFooter>
+        );
+        case 'hide': return (
+            <DialogFooter>
+                <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                <Button variant="destructive" onClick={() => { handleHide(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Hide</Button>
+            </DialogFooter>
+        );
         case 'edit': return <Button variant="default">Edit</Button>;
         default: return <></>;
     }

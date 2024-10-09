@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 interface Item {
+  id: number;
   name: string;
   description: string;
   uuid: string;
@@ -62,7 +63,7 @@ export default async function DashboardPage() {
                     </CardTitle>
                   </div>
                   <div className="flex-none justify-end">
-                    <ActionsComponent actions={['share', 'hide']}/>
+                    <ActionsComponent actions={['favorite', 'share', 'hide']} data={{id: item.id, key: item.uuid, object: 'mockup', type: 'list', label: item.name}} />
                   </div>
                 </div>
               </CardHeader>
