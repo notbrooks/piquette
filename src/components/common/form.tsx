@@ -76,7 +76,7 @@ export default function FormComponent( { object, type, onSubmit }: FormComponent
         </div>
 
       <div className="mt-6 pt-5 flex items-center justify-end gap-x-6 border-t border-gray-900/10">
-        <Button type="reset" variant="link">Reset</Button>
+        <Button type="reset" variant="link" onClick={form.reset}>Reset</Button>
         <Button type="submit" variant="default">Submit</Button>
       </div>
     </form>

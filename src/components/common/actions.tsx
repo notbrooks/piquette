@@ -54,7 +54,7 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
         <>
         <DropdownMenu>
             <DropdownMenuTrigger>
-            <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                     <EllipsisVerticalIcon aria-hidden="true" className="h-5 w-5" />
                 </Button>
             </DropdownMenuTrigger>

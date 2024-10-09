@@ -1,9 +1,33 @@
+"use client" 
+import React from "react"
+import { useState } from "react"
+
+import Link from "next/link"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import { Button } from "~/components/ui/button"
+
+
+interface Action {
+    label: string
+    type: "dialog" | "link"
+    Form: React.ReactNode
+}
+
 interface HeaderComponentProps {
     title: string
     description?: string
-    actions?: React.ReactNode[]
+    actions?: Action[]
 }
 export default function HeaderComponent({ title, description, actions }: HeaderComponentProps) {
+    const [openDialog, setDialogOpen] = useState(false)
     return (
       <div className="md:flex md:items-center md:justify-between">
         <div className="min-w-0 flex-1">
@@ -19,26 +43,35 @@ export default function HeaderComponent({ title, description, actions }: HeaderC
         { actions && actions.length > 0 && <div className="mt-4 flex md:ml-4 md:mt-0 justify-end sm:justify-end">
           {actions.map((item, idx) => (
             <div key={idx}>
-              {item}
+              {item.type === "dialog" && 
+                <Dialog open={openDialog} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={() => setDialogOpen(true)}>
+                      {item.label}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Dialog Component</DialogTitle>    
+                    </DialogHeader>
+                    <DialogDescription>
+                      {item.Form && React.isValidElement(item.Form) ? React.cloneElement(item.Form, { setDialogOpen } as any) : null}
+                    </DialogDescription>
+                  </DialogContent>
+                </Dialog>
+              }
+              {item.type === "link" &&
+                <Link href={""} passHref>
+                  <Button variant="outline" size="sm">
+                    {item.label}
+                  </Button>
+                </Link>
+              }
             </div>
           ))}
         </div> }
         
-        {/* <div className="mt-4 flex md:ml-4 md:mt-0 justify-end sm:justify-end">
-          <button
-            type="button"
-            className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            className="ml-3 inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          >
-            Publish
-          </button>
-        </div> */}
+        
       </div>
     )
-  }
-  
+}

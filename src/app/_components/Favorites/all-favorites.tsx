@@ -54,7 +54,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
         {AllFavorites.map((item: Favorite) => (
           <ListItem key={item.id}>
 
-            <div className="min-w-0">
+            <div className="min-w-0 px-5">
               <div className="flex items-start gap-x-3">
                 <p className="text-sm font-semibold leading-6 text-gray-900">{item.type}</p>
                 <p
@@ -74,7 +74,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
               </div>
             </div>
             <div className="flex flex-none items-center gap-x-4">
-              <ActionsComponent actions={['remove']}/>
+              {/* <ActionsComponent actions={['remove']}/> */}
             </div>            
 
           </ListItem>
@@ -108,7 +108,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
                   </div>
                 </div>
                 <div className="flex flex-none items-center gap-x-4">
-                    <ActionsComponent actions={['remove']}/>
+                    {/* <ActionsComponent actions={['remove']}/> */}
                 </div>
               </ListItem>
             )) ?? null}
