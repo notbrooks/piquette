@@ -27,15 +27,11 @@ import {
 } from "~/components/ui/dialog";
 import { useState } from "react";
 
-interface ActionsComponentProps {
-    actions: Array<"share" | "hide" | "edit" | "remove" | "favorite">;
-}
-
-const handleRemove = () => {
+const handleRemove = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
     toast({
         variant: "default",
-        title: "Your favorite has been removed",
-      });
+        title: `${currentType} has been removed`,
+    });
 };
 
 const handleShare = () => {
@@ -54,21 +50,48 @@ const handleFavorite = () => {
     alert('favorite');
 };
 
-export default function ActionsComponent({ actions }: ActionsComponentProps) {
+interface ActionsComponentProps {
+    actions: Array<"share" | "hide" | "edit" | "remove" | "favorite">;
+    data: {
+        id: number
+        key: string;
+        object: string;
+        type: string;
+        label: string;
+    }
+}
+
+export default function ActionsComponent({ actions, data }: ActionsComponentProps) {
     const [openDialog, setOpenDialog] = useState(false);
     const [currentAction, setCurrentAction] = useState<string | null>(null);
+    const [currentId, setCurrentId] = useState<number | null>(null);
+    const [currentKey, setCurrentKey] = useState<string | null>(null);
+    const [currentType, setCurrentType] = useState<string | null>(null);
+    const [currentObject, setCurrentObject] = useState<string | null>(null);
+    const [currentLabel, setCurrentLabel] = useState<string | null>(null);
+    
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
     if (!actions || actions.length === 0) return null;
 
-
-
-    const handleActionClick = (action: string) => {
+    const handleActionClick = (action: string, data: {
+        id: number,
+        key: string,
+        object: string,
+        type: string,
+        label: string
+    }) => {
         setCurrentAction(action);
-        if (action === 'favorite') {
-            handleRemove()
-            setOpenDialog(false);
+        setCurrentId(data.id);
+        setCurrentKey(data.key);
+        setCurrentObject(data.object);
+        setCurrentType(data.type);
+        setCurrentLabel(data.label);
+        
+        if (action === 'remove') {
+            // handleRemove( data.type, data.id)
+            setOpenDialog(true);
         } else {
             setOpenDialog(true);
         }
@@ -87,7 +110,13 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
                     {actions.map((action, idx) => (
                         <DropdownMenuItem key={idx}>
                             <a
-                                onClick={() => handleActionClick(action)}
+                                onClick={() => handleActionClick(action, { 
+                                    id: data.id, 
+                                    key: data.key, 
+                                    object: data.object, 
+                                    type: data.type, 
+                                    label: data.label
+                                 })}
                                 className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50 capitalize"
                             >
                                 {action as unknown as string}
@@ -101,16 +130,16 @@ export default function ActionsComponent({ actions }: ActionsComponentProps) {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{currentAction}</DialogTitle>
-                        <DialogDescription>{getDialogDescription(currentAction || "")}</DialogDescription>
+                        <DialogDescription>{getDialogDescription(currentAction || "", { id: data.id, key: data.key, type: data.type, object: data.object, label: data.label })}</DialogDescription>
                     </DialogHeader>
-                    {getDialogButtons(currentAction || "", setOpenDialog)}
+                    {getDialogButtons(currentAction || "", setOpenDialog, { id: data.id, key: data.key, object: data.object, type: data.type, label: data.label })}
                 </DialogContent>
             </Dialog>
         </>
     );
 }
 
-function getDialogDescription(action: string): string {
+function getDialogDescription(action: string, data: { id: number; key: string; type: string; object: string, label: string  }): string {
     switch (action) {
         case 'remove': return 'Are you sure you want to remove this favorite?';
         case 'share': return 'Share this favorite with others';
@@ -120,12 +149,12 @@ function getDialogDescription(action: string): string {
     }
 }
 
-function getDialogButtons(action: string, setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>) {
+function getDialogButtons(action: string, setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>, data: { id: number; key: string; type: string; object: string, label: string  }) {
     switch (action) {
         case 'remove': return (
             <DialogFooter>
                 <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                <Button variant="destructive" onClick={() => { handleRemove(); setOpenDialog(false); }}>Remove</Button>
+                <Button variant="destructive" onClick={() => { handleRemove(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Remove</Button>
             </DialogFooter>
         );
     // Add cases for 'share', 'hide', and 'edit' as needed
