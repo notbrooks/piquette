@@ -56,7 +56,7 @@ export default function HeaderComponent({ title, description, actions }: HeaderC
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Dialog Component</DialogTitle>    
+                      <DialogTitle>{item.label}</DialogTitle>    
                     </DialogHeader>
                     <DialogDescription>
                       {item.Form && React.isValidElement(item.Form) ? React.cloneElement(item.Form, { setDialogOpen } as CustomFormProps) : null}
