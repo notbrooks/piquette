@@ -74,7 +74,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
               </div>
             </div>
             <div className="flex flex-none items-center gap-x-4">
-              {/* <ActionsComponent actions={['remove']}/> */}
+              <ActionsComponent actions={['remove']}/>
             </div>            
 
           </ListItem>
@@ -108,7 +108,7 @@ export function AllFavorites({  }: AllFavoritesProps) {
                   </div>
                 </div>
                 <div className="flex flex-none items-center gap-x-4">
-                    {/* <ActionsComponent actions={['remove']}/> */}
+                    <ActionsComponent actions={['remove']}/>
                 </div>
               </ListItem>
             )) ?? null}
