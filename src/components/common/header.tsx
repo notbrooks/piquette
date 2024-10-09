@@ -15,6 +15,10 @@ import {
 import { Button } from "~/components/ui/button"
 
 
+interface CustomFormProps {
+  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 interface Action {
     label: string
     type: "dialog" | "link"
@@ -55,7 +59,7 @@ export default function HeaderComponent({ title, description, actions }: HeaderC
                       <DialogTitle>Dialog Component</DialogTitle>    
                     </DialogHeader>
                     <DialogDescription>
-                      {item.Form && React.isValidElement(item.Form) ? React.cloneElement(item.Form, { setDialogOpen } as any) : null}
+                      {item.Form && React.isValidElement(item.Form) ? React.cloneElement(item.Form, { setDialogOpen } as CustomFormProps) : null}
                     </DialogDescription>
                   </DialogContent>
                 </Dialog>
