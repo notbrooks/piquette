@@ -14,10 +14,19 @@ export const favoriteRouter = createTRPCRouter({
     }),
 
   add: publicProcedure
-    .query(() => {
-      return {
-        message: 'Favorite removed',
-      };
+    .input(z.object({ 
+      type: z.string().min(1),
+      object: z.string(),
+      createdBy: z.string(),
+      updatedBy: z.string().min(1)
+    }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(favorites).values({
+        type: input.type,
+        object: input.object,
+        createdBy: input.createdBy,
+        updatedBy: input.updatedBy,
+      });
     }),
 
   remove: publicProcedure
