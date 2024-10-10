@@ -6,12 +6,11 @@ import { api } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 
 import { useMediaQuery } from 'usehooks-ts';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 
-import {toast} from "~/hooks/use-toast";
+import { toast } from "~/hooks/use-toast";
 
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,42 +27,39 @@ import {
     DialogFooter
 } from "~/components/ui/dialog";
 
-
-
-
+// Helper functions
 const handleShare = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
-    alert('share');
+    alert('Share');
 };
 
-const handleHide = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
+const handleHide = (currentObject: string) => {
     toast({
         variant: "default",
         title: `${currentObject} has been added to your archive`,
     });
 };
 
-const handleEdit = (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
-    console.log('edit'); // Replace alert with console.log for debugging
-
+const handleEdit = (currentObject: string) => {
+    console.log(`Edit ${currentObject}`); // Placeholder for edit logic
 }
 
-const handleFavorite = async (currentId: number, currentKey: string, currentType: string, currentObject: string, currentLabel: string) => {
-    
+const handleFavorite = async (currentObject: string) => {
     toast({
         variant: "default",
         title: `${currentObject} has been added to your favorites`,
     });
 };
 
+// Component props interface
 interface ActionsComponentProps {
     actions: Array<"share" | "hide" | "edit" | "remove" | "favorite">;
     data: {
-        id: number
+        id: number;
         key: string;
         object: string;
         type: string;
         label: string;
-    }
+    };
 }
 
 export default function ActionsComponent({ actions, data }: ActionsComponentProps) {
@@ -73,100 +69,75 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     const [currentKey, setCurrentKey] = useState<string | null>(null);
     const [currentType, setCurrentType] = useState<string | null>(null);
     const [currentObject, setCurrentObject] = useState<string | null>(null);
-    const [currentLabel, setCurrentLabel] = useState<string | null>(null);
 
     const removeFavoriteMutation = api.favorite.remove.useMutation();
 
-    const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
-        return removeFavoriteMutation.mutateAsync(params)
-            .then(() => {
-                // Optionally handle success here if needed
-                console.log("Favorite removed successfully");
-            })
-            .catch((error: unknown) => {
-                if (error instanceof Error) {
-                    console.error("Error removing favorite:", error.message);
-                } else {
-                    console.error("Unexpected error removing favorite:", error);
-                }
-            });
-    };
-    
-    const handleRemove = () => {
-        removeFavorite({
-            id: currentId!,
-            key: currentKey!,
-            type: currentType!,
-            object: currentObject!,
-        })
-        .then(() => {
-            // Use `toast` to notify user of success
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-    
-            setOpenDialog(false);
-        })
-        .catch((error: unknown) => {
+    const removeFavorite = async (params: { id: number; key: string; type: string; object: string }) => {
+        try {
+            await removeFavoriteMutation.mutateAsync(params);
+            console.log("Favorite removed successfully");
+        } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
+                console.error("Error removing favorite:", error.message);
             } else {
-                console.error("Unexpected error during removal:", error);
+                console.error("Unexpected error:", error);
             }
-        });
+        }
+    };
+
+    const handleRemove = async () => {
+        if (currentId && currentKey && currentType && currentObject) {
+            try {
+                await removeFavorite({ id: currentId, key: currentKey, type: currentType, object: currentObject });
+                toast({
+                    variant: "default",
+                    title: `Successfully removed ${currentObject}`,
+                });
+                setOpenDialog(false);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    console.error("Error during removal:", error.message);
+                } else {
+                    console.error("Unexpected error during removal:", error);
+                }
+            }
+        }
     };
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
-
-
-    const handleActionClick = (action: string, data: {
-        id: number,
-        key: string,
-        object: string,
-        type: string,
-        label: string
-    }) => {
+    const handleActionClick = (action: string, data: { id: number, key: string, object: string, type: string, label: string }) => {
         setCurrentAction(action);
         setCurrentId(data.id);
         setCurrentKey(data.key);
         setCurrentObject(data.object);
         setCurrentType(data.type);
-        setCurrentLabel(data.label);
-        
-        if (action === 'remove') {
-            setOpenDialog(true);
-        } else if (action === 'share') {
-            setOpenDialog(true);
-        } else if (action === 'hide') {
-            // handleRemove(data.type, data.id);
+
+        if (action === 'remove' || action === 'share' || action === 'hide') {
             setOpenDialog(true);
         } else {
             setOpenDialog(false);
             if (action === 'favorite') {
-                handleFavorite(data.id, data.key, data.type, data.object, data.label);
+                void handleFavorite(data.object); // Explicitly ignore promise
             } else if (action === 'share') {
                 handleShare(data.id, data.key, data.type, data.object, data.label);
             } else if (action === 'edit') {
-                handleEdit(data.id, data.key, data.type, data.object, data.label);
-            } else if (action === 'edit') {
-                handleEdit(data.id, data.key, data.type, data.object, data.label);
+                handleEdit(data.object);
             }
         }
     };
-      
-    const getDialogDescription = (action: string, data: { id: number; key: string; type: string; object: string, label: string  }): string => {
+
+    const getDialogDescription = (action: string): string => {
         switch (action) {
-            case 'remove': return `Are you sure you want to remove ${data.object}?`;
+            case 'remove': return `Are you sure you want to remove ${currentObject}?`;
             case 'share': return `TODO: Share Panel`;
-            case 'hide': return `Hide this ${data.object}?`;
+            case 'hide': return `Hide this ${currentObject}?`;
             case 'edit': return 'Edit this favorite';
             default: return '';
         }
-    }
-    
-    const getDialogButtons = (action: string, setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>, data: { id: number; key: string; type: string; object: string, label: string  }) => {
+    };
+
+    const getDialogButtons = (action: string) => {
         switch (action) {
             case 'remove':
                 return (
@@ -181,23 +152,24 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                         >Remove</Button>
                     </DialogFooter>
                 );
-        // Add cases for 'share', 'hide', and 'edit' as needed
-            case 'share': return (
-                <DialogFooter>
-                    <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button variant="default" onClick={() => { handleShare(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Share</Button>
-                </DialogFooter>
-            );
-            case 'hide': return (
-                <DialogFooter>
-                    <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button variant="destructive" onClick={() => { handleHide(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Hide</Button>
-                </DialogFooter>
-            );
-            case 'edit': return <Button variant="default">Edit</Button>;
-            default: return <></>;
+            case 'share':
+                return (
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                        <Button variant="default" onClick={() => setOpenDialog(false)}>Share</Button>
+                    </DialogFooter>
+                );
+            case 'hide':
+                return (
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                        <Button variant="destructive" onClick={() => setOpenDialog(false)}>Hide</Button>
+                    </DialogFooter>
+                );
+            default:
+                return null;
         }
-    }
+    };
 
     return (
         <>
@@ -211,16 +183,16 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                     {actions.map((action, idx) => (
                         <DropdownMenuItem key={idx}>
                             <a
-                                onClick={() => handleActionClick(action, { 
-                                    id: data.id, 
-                                    key: data.key, 
-                                    object: data.object, 
-                                    type: data.type, 
+                                onClick={() => handleActionClick(action, {
+                                    id: data.id,
+                                    key: data.key,
+                                    object: data.object,
+                                    type: data.type,
                                     label: data.label
-                                 })}
-                                className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50 capitalize"
+                                })}
+                                className="block px-3 py-1 text-sm leading-6 text-gray-900 capitalize"
                             >
-                                {action as unknown as string}
+                                {action}
                             </a>
                         </DropdownMenuItem>
                     ))}
@@ -231,58 +203,11 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{currentAction}</DialogTitle>
-                        <DialogDescription>{getDialogDescription(currentAction ?? "", { id: data.id, key: data.key, type: data.type, object: data.object, label: data.label })}</DialogDescription>
+                        <DialogDescription>{getDialogDescription(currentAction ?? "")}</DialogDescription>
                     </DialogHeader>
-                    {getDialogButtons(currentAction ?? "", setOpenDialog, { id: data.id, key: data.key, object: data.object, type: data.type, label: data.label })}
+                    {getDialogButtons(currentAction ?? "")}
                 </DialogContent>
             </Dialog>
         </>
     );
 }
-
-function removeFavorite(data: { id: string; key: string; type: string; object: string }): Promise<any> {
-    // Your logic here (like making an API call) that returns a Promise
-    return new Promise((resolve, reject) => {
-      // Simulate an asynchronous operation
-      setTimeout(() => {
-        resolve("Removed successfully");
-      }, 1000);
-    });
-  }
-  
-// function getDialogDescription(action: string, data: { id: number; key: string; type: string; object: string, label: string  }): string {
-//     switch (action) {
-//         case 'remove': return `Are you sure you want to remove ${data.object}?`;
-//         case 'share': return `TODO: Share Panel`;
-//         case 'hide': return `Hide this ${data.object}?`;
-//         case 'edit': return 'Edit this favorite';
-//         default: return '';
-//     }
-// }
-
-// function getDialogButtons(action: string, setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>, data: { id: number; key: string; type: string; object: string, label: string  }) {
-//     switch (action) {
-//         case 'remove': return (
-//             <DialogFooter>
-//                 <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-//                 <Button variant="destructive" onClick={async () => { await handleRemove(); setOpenDialog(false); }}>Remove</Button>
-//             </DialogFooter>
-//         );
-//     // Add cases for 'share', 'hide', and 'edit' as needed
-//         case 'share': return (
-//             <DialogFooter>
-//                 <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-//                 <Button variant="default" onClick={() => { handleShare(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Share</Button>
-//             </DialogFooter>
-//         );
-//         case 'hide': return (
-//             <DialogFooter>
-//                 <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-//                 <Button variant="destructive" onClick={() => { handleHide(data.id, data.key, data.type, data.object, data.label); setOpenDialog(false); }}>Hide</Button>
-//             </DialogFooter>
-//         );
-//         case 'edit': return <Button variant="default">Edit</Button>;
-//         default: return <></>;
-//     }
-// }
-
