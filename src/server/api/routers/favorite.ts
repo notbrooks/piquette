@@ -1,3 +1,4 @@
+import { eq, and} from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -8,22 +9,34 @@ export const favoriteRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
       return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
-  remove: publicProcedure
-    .query(() => {
-      return {
-        greeting: 'Favorite removed',
+        message: `Hello ${input.text}`,
       };
     }),
 
   add: publicProcedure
     .query(() => {
       return {
-        greeting: 'Favorite added',
+        message: 'Favorite removed',
       };
+    }),
+
+  remove: publicProcedure
+    .input(z.object({ 
+      id: z.number(),
+      key: z.string(),
+      type: z.string().min(1),
+      object: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      console.log('REMOVE')
+      await ctx.db.delete(favorites).where(
+        and(
+          eq(favorites.id, input.id),
+          eq(favorites.cuid, input.key),
+          eq(favorites.type, input.type),
+          eq(favorites.object, input.object),
+        )
+      );
     }),
 
   create: publicProcedure
