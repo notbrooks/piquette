@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 "use client"
 import * as React from "react";
 import { useState } from "react";
@@ -170,10 +171,6 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 return (
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                        {/* <Button variant="destructive" onClick={ () => { 
-                            handleRemove(); 
-                            setOpenDialog(false); 
-                        }}>Remove</Button> */}
                         <Button
                             variant="destructive"
                             onClick={async () => {
