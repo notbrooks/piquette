@@ -83,7 +83,7 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
     const handleRemove = async () => {
         try {
-            const data = removeFavorite({
+            const result = await removeFavorite({
                 id: currentId!,
                 key: currentKey!,
                 type: currentType!,
