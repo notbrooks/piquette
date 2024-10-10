@@ -77,51 +77,45 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
     const removeFavoriteMutation = api.favorite.remove.useMutation();
 
+    const handleRemove = async () => {
+        try {
+            await removeFavorite({
+                id: currentId!,
+                key: currentKey!,
+                type: currentType!,
+                object: currentObject!,
+            });
+    
+            toast({
+                variant: "default",
+                title: `Successfully removed ${currentObject}`,
+            });
+    
+            
+        } catch (error: unknown) { // specify error type here
+            if (error instanceof Error) {
+                console.error("Error during removal:", error.message);
+            } else {
+                console.error("Unexpected error during removal:", error);
+            }
+        }
+    };
+    
     const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
         try {
             await removeFavoriteMutation.mutateAsync(params);
-        } catch (error) {
-            console.error("Error removing favorite:", error);
+        } catch (error: unknown) { // specify error type here
+            if (error instanceof Error) {
+                console.error("Error removing favorite:", error.message);
+            } else {
+                console.error("Unexpected error removing favorite:", error);
+            }
         }
     };
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
-    if (actions.length === 0) return null;
 
-    const handleRemove = async () => {
-        try {
-          const result = await removeFavorite({
-            id: currentId!,
-            key: currentKey!,
-            type: currentType!,
-            object: currentObject!,
-          });
-      
-          // Use `toast` to notify user of success
-          toast({
-            variant: "default",
-            title: `Successfully removed ${currentObject}`,
-          });
-      
-          // Close the dialog or update state as needed
-          setOpenDialog(false);
-      
-        } catch (error: unknown) {
-          // Handle the error if it occurs
-          if (error instanceof Error) {
-            console.error("Error during removal:", error.message);
-        } else {
-            console.error("Unexpected error during removal:", error);
-        }
-          
-          // Display an error toast or UI feedback
-          toast({
-            variant: "destructive",
-            title: `Failed to remove ${currentObject}`,
-          });
-        }
-      };
 
     const handleActionClick = (action: string, data: {
         id: number,
