@@ -77,30 +77,6 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
     const removeFavoriteMutation = api.favorite.remove.useMutation();
 
-    const handleRemove = async () => {
-        try {
-            await removeFavorite({
-                id: currentId!,
-                key: currentKey!,
-                type: currentType!,
-                object: currentObject!,
-            });
-    
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-    
-            
-        } catch (error: unknown) { // specify error type here
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-    
     const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
         try {
             await removeFavoriteMutation.mutateAsync(params);
@@ -111,6 +87,31 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 console.error("Unexpected error removing favorite:", error);
             }
         }
+    };
+    
+    const handleRemove = () => {
+        removeFavorite({
+            id: currentId!,
+            key: currentKey!,
+            type: currentType!,
+            object: currentObject!,
+        })
+        .then(() => {
+            // Use `toast` to notify user of success
+            toast({
+                variant: "default",
+                title: `Successfully removed ${currentObject}`,
+            });
+    
+            setOpenDialog(false);
+        })
+        .catch((error: unknown) => {
+            if (error instanceof Error) {
+                console.error("Error during removal:", error.message);
+            } else {
+                console.error("Unexpected error during removal:", error);
+            }
+        });
     };
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
