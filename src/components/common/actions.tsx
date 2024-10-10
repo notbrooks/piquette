@@ -81,15 +81,15 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
 
     if (actions.length === 0) return null;
 
-    const handleRemove = async () => {
+    const handleRemove = () => {
         try {
-            const result = await removeFavorite({
+            const result =  removeFavorite({
                 id: currentId!,
                 key: currentKey!,
                 type: currentType!,
                 object: currentObject!,
             });
-
+    
             toast({
                 variant: "default",
                 title: `${currentObject} has been removed`,
@@ -149,12 +149,16 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     
     const getDialogButtons = (action: string, setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>, data: { id: number; key: string; type: string; object: string, label: string  }) => {
         switch (action) {
-            case 'remove': return (
-                <DialogFooter>
-                    <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button variant="destructive" onClick={async () => { await handleRemove(); setOpenDialog(false); }}>Remove</Button>
-                </DialogFooter>
-            );
+            case 'remove':
+                return (
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                        <Button variant="destructive" onClick={ () => { 
+                            handleRemove(); 
+                            setOpenDialog(false); 
+                        }}>Remove</Button>
+                    </DialogFooter>
+                );
         // Add cases for 'share', 'hide', and 'edit' as needed
             case 'share': return (
                 <DialogFooter>
