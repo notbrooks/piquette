@@ -107,9 +107,13 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
           // Close the dialog or update state as needed
           setOpenDialog(false);
       
-        } catch (error) {
+        } catch (error: unknown) {
           // Handle the error if it occurs
-          console.error("Error occurred while removing the item:", error);
+          if (error instanceof Error) {
+            console.error("Error during removal:", error.message);
+        } else {
+            console.error("Unexpected error during removal:", error);
+        }
           
           // Display an error toast or UI feedback
           toast({
