@@ -75,32 +75,45 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     const [currentObject, setCurrentObject] = useState<string | null>(null);
     const [currentLabel, setCurrentLabel] = useState<string | null>(null);
 
-    const { mutate: removeFavorite } = api.favorite.remove.useMutation();
+    const removeFavoriteMutation = api.favorite.remove.useMutation();
+
+    const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
+        return await removeFavoriteMutation.mutateAsync(params);
+    };
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
     if (actions.length === 0) return null;
 
-    const handleRemove = () => {
+    const handleRemove = async () => {
         try {
-            const result =  removeFavorite({
-                id: currentId!,
-                key: currentKey!,
-                type: currentType!,
-                object: currentObject!,
-            });
-    
-            toast({
-                variant: "default",
-                title: `${currentObject} has been removed`,
-            });
+          const result = await removeFavorite({
+            id: currentId!,
+            key: currentKey!,
+            type: currentType!,
+            object: currentObject!,
+          });
+      
+          // Use `toast` to notify user of success
+          toast({
+            variant: "default",
+            title: `Successfully removed ${currentObject}`,
+          });
+      
+          // Close the dialog or update state as needed
+          setOpenDialog(false);
+      
         } catch (error) {
-            toast({
-                variant: "destructive",
-                title: `Failed to remove ${currentObject}`,
-            });
+          // Handle the error if it occurs
+          console.error("Error occurred while removing the item:", error);
+          
+          // Display an error toast or UI feedback
+          toast({
+            variant: "destructive",
+            title: `Failed to remove ${currentObject}`,
+          });
         }
-    };
+      };
 
     const handleActionClick = (action: string, data: {
         id: number,
@@ -153,10 +166,17 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
                 return (
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={ () => { 
+                        {/* <Button variant="destructive" onClick={ () => { 
                             handleRemove(); 
                             setOpenDialog(false); 
-                        }}>Remove</Button>
+                        }}>Remove</Button> */}
+                        <Button
+                            variant="destructive"
+                            onClick={async () => {
+                                await handleRemove();
+                                setOpenDialog(false);
+                            }}
+                        >Remove</Button>
                     </DialogFooter>
                 );
         // Add cases for 'share', 'hide', and 'edit' as needed
@@ -218,6 +238,16 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     );
 }
 
+function removeFavorite(data: { id: string; key: string; type: string; object: string }): Promise<any> {
+    // Your logic here (like making an API call) that returns a Promise
+    return new Promise((resolve, reject) => {
+      // Simulate an asynchronous operation
+      setTimeout(() => {
+        resolve("Removed successfully");
+      }, 1000);
+    });
+  }
+  
 // function getDialogDescription(action: string, data: { id: number; key: string; type: string; object: string, label: string  }): string {
 //     switch (action) {
 //         case 'remove': return `Are you sure you want to remove ${data.object}?`;
