@@ -78,7 +78,11 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     const removeFavoriteMutation = api.favorite.remove.useMutation();
 
     const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
-        return await removeFavoriteMutation.mutateAsync(params);
+        try {
+            await removeFavoriteMutation.mutateAsync(params);
+        } catch (error) {
+            console.error("Error removing favorite:", error);
+        }
     };
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
