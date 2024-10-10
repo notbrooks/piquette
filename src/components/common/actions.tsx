@@ -78,15 +78,18 @@ export default function ActionsComponent({ actions, data }: ActionsComponentProp
     const removeFavoriteMutation = api.favorite.remove.useMutation();
 
     const removeFavorite = async (params: { id: number; key: string; type: string; object: string; }) => {
-        try {
-            await removeFavoriteMutation.mutateAsync(params);
-        } catch (error: unknown) { // specify error type here
-            if (error instanceof Error) {
-                console.error("Error removing favorite:", error.message);
-            } else {
-                console.error("Unexpected error removing favorite:", error);
-            }
-        }
+        return removeFavoriteMutation.mutateAsync(params)
+            .then(() => {
+                // Optionally handle success here if needed
+                console.log("Favorite removed successfully");
+            })
+            .catch((error: unknown) => {
+                if (error instanceof Error) {
+                    console.error("Error removing favorite:", error.message);
+                } else {
+                    console.error("Unexpected error removing favorite:", error);
+                }
+            });
     };
     
     const handleRemove = () => {
