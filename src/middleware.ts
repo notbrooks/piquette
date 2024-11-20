@@ -10,6 +10,7 @@ export default clerkMiddleware(async (auth, req) => {
   const clerkUserId = (await authObj).userId;
 
   if (clerkUserId) {
+    req.headers.set("x-user-id", clerkUserId);
     const jwtProfile = req.cookies.get('__pp')?.value;
 
     if (jwtProfile) {
@@ -17,7 +18,6 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.next();
     }
 
-    console.log('No cookie found, fetching profile');
     try {
       // Fetch the profile using GET
       const profileResponse = await fetch(`${req.nextUrl.origin}/api/auth`, {
@@ -27,7 +27,7 @@ export default clerkMiddleware(async (auth, req) => {
           'x-user-id': clerkUserId,
         },
       });
-      console.log(`XX ProfileResponse fetched:`, profileResponse);
+      
       if (profileResponse.ok) {
         const profile = await profileResponse.json();
         
@@ -49,6 +49,7 @@ export default clerkMiddleware(async (auth, req) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-user-id': clerkUserId,
           },
           body: JSON.stringify({ userId: clerkUserId }),
         });

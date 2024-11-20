@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    console.log('POST request received', JSON.stringify(req));
   const { userId } = await req.json();
 
   if (!userId) {

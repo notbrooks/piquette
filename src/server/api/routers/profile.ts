@@ -4,9 +4,12 @@ import { createId } from "@paralleldrive/cuid2";
 import { nanoid } from "nanoid";
 import { eq } from "drizzle-orm";
 import { profiles } from "~/server/db/schema";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const profileRouter = createTRPCRouter({
-  
+  /** 
+   * Get the profile of a user
+   */
   getProfile: publicProcedure
     .input(
       z.object({
@@ -14,40 +17,43 @@ export const profileRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const profile = await ctx.db.query.profiles.findFirst({ 
-        where: eq(profiles.cuid, input.user),
+      const profile = await ctx.db.query.profiles.findFirst({
+        where: eq(profiles.user, input.user),
       });
 
-      if (!profile) {
-        return null;
+      return profile || null;
+    }),
+  /** 
+   * Create a new profile for a user
+   */
+  createProfile: publicProcedure
+    .input(
+      z.object({
+        user: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.headers.get("x-user-id");
+
+      if (!userId) {
+        throw new Error("Unauthorized: Missing userId");
       }
 
-      return profile;
+      const provider = "clerk";
+      const cuid = createId();
+      const token = nanoid(6);
+
+      await ctx.db.insert(profiles).values({
+        cuid,
+        token,
+        user: input.user,
+        provider,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+
+      return { cuid };
     }),
-
-    createProfile: publicProcedure
-      .input(
-        z.object({
-          user: z.string(),
-        })
-      )
-      .mutation(async ({ ctx, input }) => {
-        // Generate cuid and token
-        const provider = "clerk";
-        const cuid = createId();
-        const token = nanoid(6);
-
-        await ctx.db.insert(profiles).values({
-          cuid,
-          token,
-          user: input.user,
-          provider,
-          createdBy: 'brooke',
-          updatedBy: 'brooke',
-        });
-
-        return { cuid };
-      }),
 });
 
 
