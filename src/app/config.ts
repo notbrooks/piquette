@@ -25,8 +25,8 @@ export const piquetteConfig = {
     navbar: {
         display: true,
         links: [
-            { id: 'about', label: 'About', href: '/about' },
-            { id: 'contact', label: 'Contact', href: '/contact' },
+            { id: 'about', label: 'About', href: '/dashboard' },
+            { id: 'contact', label: 'Contact', href: '/dashboard/test' },
             { id: 'blog', label: 'Blog', href: '/blog' },
             { id: 'faq', label: 'FAQ', href: '/faq' },
         ]
@@ -85,11 +85,10 @@ export const piquetteConfig = {
     },
     app: {
         features: [
-            {id: 'mockup', label: 'Mockup', href: '/dashboard', icon: HomeIcon},
+            {id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: HomeIcon},
             {id: 'businesses', label: 'Businesses', href: '/dashboard/businesses', icon: BusinessIcon},
             {id: 'organizations', label: 'Organizations', href: '/dashboard/organizations', icon: OrganizationIcon},
             {id: 'documents', label: 'Documents', href: '/dashboard/documents', icon: DocumentsIcon},
-            {id: 'assistant', label: 'Assistant', href: '/dashboard/assistant', icon: ChatIcon},
         ],
         services: [
             {id: 'pinned', label: 'Pinned', href: '/dashboard/services/pinned', icon: Pin},

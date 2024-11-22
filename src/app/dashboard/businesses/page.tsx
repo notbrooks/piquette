@@ -1,6 +1,6 @@
 "use client" 
 
-import { useProfile } from "~/app/dashboard/context";
+import { useProfile } from "~/context/profile";
 export default function DashboardPage() {
     const { profile } = useProfile();
     return (

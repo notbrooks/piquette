@@ -13,8 +13,14 @@
   ```
 */
 'use client'
+import { useUser, SignInButton, SignedIn, SignOutButton, SignedOut, UserButton } from '@clerk/nextjs'
 
 import { useState } from 'react'
+import { piquetteConfig } from '~/app/config'
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname } from 'next/navigation'
+
 import {
   Dialog,
   DialogBackdrop,
@@ -28,25 +34,11 @@ import {
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
-const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
-]
 const teams = [
   { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
   { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
@@ -66,6 +58,9 @@ type LayoutProps = {
 }
 export default function AppLayout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = usePathname();
+  const user  = useUser();
+  console.log("Router:", pathname)
 
   return (
     <>
@@ -100,35 +95,40 @@ export default function AppLayout({ children }: LayoutProps) {
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                    className="h-8 w-auto"
-                  />
+                  <Link href="/">
+                    <Image
+                      alt="Your Company"
+                      src="/logo.png"
+                      className="h-8 w-auto"
+                      width={100}
+                      height={100}
+                    />
+                  </Link>
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
-                          <li key={item.name}>
-                            <a
+                        {piquetteConfig.app.features.map((item) => (
+                          <li key={item.id}>
+                            <Link
                               href={item.href}
+                              onClick={() => setSidebarOpen(false)}
                               className={classNames(
-                                item.current
+                                item.href === pathname
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                               )}
                             >
                               <item.icon aria-hidden="true" className="size-6 shrink-0" />
-                              {item.name}
-                            </a>
+                              {item.label}
+                            </Link>
                           </li>
                         ))}
                       </ul>
                     </li>
-                    <li>
+                    {/* <li>
                       <div className="text-xs/6 font-semibold text-gray-400">Your teams</div>
                       <ul role="list" className="-mx-2 mt-2 space-y-1">
                         {teams.map((team) => (
@@ -150,15 +150,16 @@ export default function AppLayout({ children }: LayoutProps) {
                           </li>
                         ))}
                       </ul>
-                    </li>
+                    </li> */}
                     <li className="mt-auto">
-                      <a
-                        href="#"
+                      <Link
+                        href="/dashboard/settings"
+                        onClick={() => setSidebarOpen(false)}
                         className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"
                       >
                         <Cog6ToothIcon aria-hidden="true" className="size-6 shrink-0" />
                         Settings
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </nav>
@@ -172,35 +173,39 @@ export default function AppLayout({ children }: LayoutProps) {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto"
-              />
+              <Link href="/">
+                <Image
+                  alt="Your Company"
+                  src="/logo.png"
+                  className="h-8 w-auto"
+                  width={100}
+                  height={100}
+                />
+              </Link>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
-                      <li key={item.name}>
-                        <a
+                    {piquetteConfig.app.features.map((item) => (
+                      <li key={item.id}>
+                        <Link
                           href={item.href}
                           className={classNames(
-                            item.current
+                            item.href === pathname
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                           )}
                         >
                           <item.icon aria-hidden="true" className="size-6 shrink-0" />
-                          {item.name}
-                        </a>
+                          {item.label}
+                        </Link>
                       </li>
                     ))}
                   </ul>
                 </li>
-                <li>
+                {/* <li>
                   <div className="text-xs/6 font-semibold text-gray-400">Your teams</div>
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
                     {teams.map((team) => (
@@ -222,15 +227,15 @@ export default function AppLayout({ children }: LayoutProps) {
                       </li>
                     ))}
                   </ul>
-                </li>
+                </li> */}
                 <li className="mt-auto">
-                  <a
-                    href="#"
+                  <Link
+                    href="/dashboard/settings"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                     <Cog6ToothIcon aria-hidden="true" className="size-6 shrink-0" />
                     Settings
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
@@ -248,7 +253,7 @@ export default function AppLayout({ children }: LayoutProps) {
             <div aria-hidden="true" className="h-6 w-px bg-gray-900/10 lg:hidden" />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <form action="#" method="GET" className="relative flex flex-1">
+              {/* <form action="#" method="GET" className="relative flex flex-1">
                 <label htmlFor="search-field" className="sr-only">
                   Search
                 </label>
@@ -263,8 +268,9 @@ export default function AppLayout({ children }: LayoutProps) {
                   placeholder="Search..."
                   className="block size-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                 />
-              </form>
-              <div className="flex items-center gap-x-4 lg:gap-x-6">
+              </form> */}
+              <div className="relative flex flex-1"/>
+              <div className="flex items-center gap-x-4 lg:gap-x-6 ">
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>
                   <BellIcon aria-hidden="true" className="size-6" />
@@ -279,12 +285,12 @@ export default function AppLayout({ children }: LayoutProps) {
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src={user.user?.imageUrl}
                       className="size-8 rounded-full bg-gray-50"
                     />
                     <span className="hidden lg:flex lg:items-center">
                       <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
-                        Tom Cook
+                        {user.user?.fullName}
                       </span>
                       <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
                     </span>
@@ -293,16 +299,25 @@ export default function AppLayout({ children }: LayoutProps) {
                     transition
                     className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                    {userNavigation.map((item) => (
-                      <MenuItem key={item.name}>
-                        <a
-                          href={item.href}
-                          className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
-                        >
-                          {item.name}
-                        </a>
-                      </MenuItem>
-                    ))}
+                    
+                    <MenuItem>
+                      <Link
+                        href="/dashboard"
+                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                      >
+                        Dashboard
+                      </Link>
+                    </MenuItem>
+                    {/** Add more menu items here */}
+                    <MenuItem>
+                      <Link
+                        href="/dashboard/settings"
+                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                      >
+                        <SignOutButton>Sign Out</SignOutButton>
+                      </Link>
+                      
+                    </MenuItem>
                   </MenuItems>
                 </Menu>
               </div>
