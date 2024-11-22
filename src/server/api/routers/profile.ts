@@ -18,6 +18,11 @@ export const profileRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const profile = await ctx.db.query.profiles.findFirst({
         where: eq(profiles.cuid, input.cuid),
+        columns: {
+          id: true,
+          cuid: true,
+          type: true,
+        },
       });
 
       return profile || null;
