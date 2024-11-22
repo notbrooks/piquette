@@ -1,20 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { createToken } from './lib/crypto';
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
-
   const authObj = auth();
   const clerkUserId = (await authObj).userId;
 
   if (clerkUserId) {
     req.headers.set("x-user-id", clerkUserId);
-    const jwtProfile = req.cookies.get('__pp')?.value;
+    const jwtProfile = req.cookies.get('__piquette')?.value;
 
     if (jwtProfile) {
-      console.log('Cookie Found');
       return NextResponse.next();
     }
 
@@ -30,13 +29,10 @@ export default clerkMiddleware(async (auth, req) => {
       
       if (profileResponse.ok) {
         const profile = await profileResponse.json();
-        
-        console.log('Profile fetched:', profile);
-
         const res = NextResponse.next();
-        res.cookies.set('__pp', profile.cuid, {
+        res.cookies.set('__piquette', profile.cuid, {
           path: '/',
-          httpOnly: true,
+          httpOnly: false,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
           maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -44,7 +40,6 @@ export default clerkMiddleware(async (auth, req) => {
         return res;
       } else if (profileResponse.status === 404) {
         // Profile not found, create a new one
-        console.log('Profile not found, creating a new profile');
         const createResponse = await fetch(`${req.nextUrl.origin}/api/auth`, {
           method: 'POST',
           headers: {
@@ -56,12 +51,11 @@ export default clerkMiddleware(async (auth, req) => {
 
         if (createResponse.ok) {
           const newProfile = await createResponse.json();
-          console.log('Profile created:', newProfile);
-
           const res = NextResponse.next();
-          res.cookies.set('__pp', newProfile.cuid, {
+          
+          res.cookies.set('__piquette', newProfile.cuid, {
             path: '/',
-            httpOnly: true,
+            httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 60 * 60 * 24 * 365, // 1 year

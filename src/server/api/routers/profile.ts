@@ -4,9 +4,25 @@ import { createId } from "@paralleldrive/cuid2";
 import { nanoid } from "nanoid";
 import { eq } from "drizzle-orm";
 import { profiles } from "~/server/db/schema";
-import { currentUser } from "@clerk/nextjs/server";
 
 export const profileRouter = createTRPCRouter({
+  /** 
+   * Get the profile by cuid
+   */
+  getMyProfile: publicProcedure
+    .input(
+      z.object({
+        cuid: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const profile = await ctx.db.query.profiles.findFirst({
+        where: eq(profiles.cuid, input.cuid),
+      });
+
+      return profile || null;
+    }),
+
   /** 
    * Get the profile of a user
    */
@@ -23,6 +39,7 @@ export const profileRouter = createTRPCRouter({
 
       return profile || null;
     }),
+
   /** 
    * Create a new profile for a user
    */
@@ -43,7 +60,7 @@ export const profileRouter = createTRPCRouter({
       const cuid = createId();
       const token = nanoid(6);
 
-      await ctx.db.insert(profiles).values({
+      const profile = await ctx.db.insert(profiles).values({
         cuid,
         token,
         user: input.user,
@@ -52,7 +69,7 @@ export const profileRouter = createTRPCRouter({
         updatedBy: userId,
       });
 
-      return { cuid };
+      return { profile };
     }),
 });
 
