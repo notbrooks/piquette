@@ -3,18 +3,37 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from "~/trpc/react";
 
-// Create context
-const ProfileContext = createContext<any>(null);
+// Define types for the profile data
+interface Profile {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// Define types for the context
+interface ProfileContextType {
+  profile: Profile | null;
+  setCuid: React.Dispatch<React.SetStateAction<string | null>>;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// Create context with defined types
+const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 // Custom hook to use the Profile context
-export const useProfile = () => {
-  return useContext(ProfileContext);
+export const useProfile = (): ProfileContextType => {
+  const context = useContext(ProfileContext);
+  if (context === undefined) {
+    throw new Error("useProfile must be used within a ProfileProvider");
+  }
+  return context;
 };
 
 // ProfileProvider component
 export const ProfileProvider = ({ children }: { children: React.ReactNode }) => {
   const [cuid, setCuid] = useState<string | null>(null);
-  const [profile, setProfile] = useState<any>(null);  // State to hold the profile data
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -22,10 +41,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
   const getCookieValue = (name: string): string | null => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(";").shift() || null;
-    }
-    return null;
+    return parts.length === 2 ? parts.pop()?.split(";").shift() ?? null : null;
   };
 
   // Fetch cuid from cookie on mount
@@ -44,14 +60,17 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
 
   // Effect to handle state changes from the query
   useEffect(() => {
-    if (!queryLoading) {
-      setIsLoading(queryLoading);
-      if (queryError) {
-        setError(queryError.message); // Handle the error
+    setIsLoading(queryLoading);
+    if (queryError) {
+      setError(queryError.message);
+    } else {
+      if (fetchedProfile) {
+        // Ensure fetchedProfile is valid before setting
+        setProfile(fetchedProfile as unknown as Profile); // Type assertion can also be avoided if TRPC types are configured
       } else {
-        setProfile(fetchedProfile); // Set the fetched profile data
-        setError(null); // Clear any previous errors
+        setProfile(null); // Handle null explicitly
       }
+      setError(null); // Clear previous errors
     }
   }, [fetchedProfile, queryLoading, queryError]);
 

@@ -1,8 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { createToken } from './lib/crypto';
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+
+type Profile = { cuid: string };
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
@@ -26,9 +27,14 @@ export default clerkMiddleware(async (auth, req) => {
           'x-user-id': clerkUserId,
         },
       });
-      
+
       if (profileResponse.ok) {
-        const profile = await profileResponse.json();
+        // Explicitly define the type of the parsed JSON response
+        const profileData: unknown = await profileResponse.json();
+
+        // Validate and cast to the Profile type
+        const profile = profileData as Profile;
+
         const res = NextResponse.next();
         res.cookies.set('__piquette', profile.cuid, {
           path: '/',
@@ -50,9 +56,13 @@ export default clerkMiddleware(async (auth, req) => {
         });
 
         if (createResponse.ok) {
-          const newProfile = await createResponse.json();
+          // Explicitly define the type of the parsed JSON response
+          const newProfileData: unknown = await createResponse.json();
+
+          // Validate and cast to the Profile type
+          const newProfile = newProfileData as Profile;
+
           const res = NextResponse.next();
-          
           res.cookies.set('__piquette', newProfile.cuid, {
             path: '/',
             httpOnly: false,

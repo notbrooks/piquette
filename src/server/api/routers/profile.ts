@@ -25,7 +25,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
-      return profile || null;
+      return profile ?? null;
     }),
 
   /** 
@@ -42,7 +42,7 @@ export const profileRouter = createTRPCRouter({
         where: eq(profiles.user, input.user),
       });
 
-      return profile || null;
+      return profile ?? null;
     }),
 
   /** 

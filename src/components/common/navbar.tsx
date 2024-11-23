@@ -67,7 +67,7 @@ export default function NavbarComponent() {
                       <span className="sr-only">Open user menu</span>
                       <Image
                         alt=""
-                        src={user.user?.imageUrl || '/default-image.png'} // Provide a fallback image
+                        src={user.user?.imageUrl ?? '/default-image.png'} // Provide a fallback image
                         className="size-8 rounded-full"
                         width={50}
                         height={50}
