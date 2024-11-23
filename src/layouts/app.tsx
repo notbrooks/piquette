@@ -271,55 +271,57 @@ export default function AppLayout({ children }: LayoutProps) {
               </form> */}
               <div className="relative flex flex-1"/>
               <div className="flex items-center gap-x-4 lg:gap-x-6 ">
-                <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon aria-hidden="true" className="size-6" />
-                </button>
+                <SignedIn>
+                  <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                    <span className="sr-only">View notifications</span>
+                    <BellIcon aria-hidden="true" className="size-6" />
+                  </button>
 
-                {/* Separator */}
-                <div aria-hidden="true" className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" />
+                  {/* Separator */}
+                  <div aria-hidden="true" className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" />
 
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative">
-                  <MenuButton className="-m-1.5 flex items-center p-1.5">
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src={user.user?.imageUrl}
-                      className="size-8 rounded-full bg-gray-50"
-                    />
-                    <span className="hidden lg:flex lg:items-center">
-                      <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
-                        {user.user?.fullName}
+                  {/* Profile dropdown */}
+                  <Menu as="div" className="relative">
+                    <MenuButton className="-m-1.5 flex items-center p-1.5">
+                      <span className="sr-only">Open user menu</span>
+                      <img
+                        alt=""
+                        src={user.user?.imageUrl}
+                        className="size-8 rounded-full bg-gray-50"
+                      />
+                      <span className="hidden lg:flex lg:items-center">
+                        <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
+                          {user.user?.fullName}
+                        </span>
+                        <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
                       </span>
-                      <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
-                    </span>
-                  </MenuButton>
-                  <MenuItems
-                    transition
-                    className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                  >
-                    
-                    <MenuItem>
-                      <Link
-                        href="/dashboard"
-                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
-                      >
-                        Dashboard
-                      </Link>
-                    </MenuItem>
-                    {/** Add more menu items here */}
-                    <MenuItem>
-                      <Link
-                        href="/dashboard/settings"
-                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
-                      >
-                        <SignOutButton>Sign Out</SignOutButton>
-                      </Link>
+                    </MenuButton>
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
                       
-                    </MenuItem>
-                  </MenuItems>
-                </Menu>
+                      <MenuItem>
+                        <Link
+                          href="/dashboard"
+                          className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                        >
+                          Dashboard
+                        </Link>
+                      </MenuItem>
+                      {/** Add more menu items here */}
+                      <MenuItem>
+                        <Link
+                          href="/dashboard/settings"
+                          className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                        >
+                          <SignOutButton>Sign Out</SignOutButton>
+                        </Link>
+                        
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
+                </SignedIn>
               </div>
             </div>
           </div>

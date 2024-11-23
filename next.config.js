@@ -5,6 +5,11 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    images: {
+        unoptimized: true,
+        domains: ['img.clerk.com']
+    }
+};
 
 export default config;
