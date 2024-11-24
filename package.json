@@ -10,7 +10,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev": "NODE_OPTIONS='--inspect' next dev --turbo",
+    "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "lint": "next lint",
@@ -20,6 +20,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@builder.io/dev-tools": "^1.1.38",
+    "@builder.io/react": "^7.0.1",
+    "@builder.io/sdk": "^5.0.0",
     "@clerk/nextjs": "^6.4.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
