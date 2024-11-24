@@ -11,7 +11,7 @@ import { piquetteConfig } from '~/app/config'
 export default function NavbarComponent() {
   const user  = useUser(); 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 sticky top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
