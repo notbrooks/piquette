@@ -2,6 +2,7 @@
 
 import { useProfile } from "~/context/profile"; // Correct import for the context
 import { StackedLayout, AppLayout } from "~/layouts";
+import { Toaster } from "~/components/ui/toaster"
 
 // Define the type for the profile object
 interface Profile {
@@ -15,10 +16,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   if (!profile) return null; // Change false to null for valid JSX return
 
   if (profile.type !== "admin") {
-    return <AppLayout>{children}</AppLayout>;
+    return (
+      <AppLayout>
+        {children}
+        <Toaster />
+      </AppLayout>
+    );
   }
 
-  return <StackedLayout>{children}</StackedLayout>;
+  return (
+    <StackedLayout>
+      {children}
+      <Toaster />
+    </StackedLayout>
+  );
 };
 
 export default DashboardLayout;

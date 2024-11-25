@@ -12,6 +12,7 @@ interface Profile {
 
 // Define types for the context
 interface ProfileContextType {
+  id: any;
   profile: Profile | null;
   setCuid: React.Dispatch<React.SetStateAction<string | null>>;
   isLoading: boolean;

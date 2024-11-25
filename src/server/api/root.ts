@@ -1,5 +1,15 @@
-import { postRouter } from "~/server/api/routers/post";
+// Core
+import { likeRouter } from "./routers/core/like";
+import { dislikeRouter } from "./routers/core/dislike";
+import { favoriteRouter } from "./routers/core/favorite";
+import { saveRouter } from "./routers/core/save";
+import { archiveRouter } from "./routers/core/archive";
+import { pinRouter } from "./routers/core/pin";
 import { profileRouter } from "~/server/api/routers/profile";
+// Services
+// TODO: Add services here
+// Custom
+// TODO: Add custom routes here
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,8 +18,18 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  // Core
+  like: likeRouter,
+  dislike: dislikeRouter,
+  favorite: favoriteRouter,
+  save: saveRouter,
+  archive: archiveRouter,
+  pin: pinRouter,
   profile: profileRouter,
+  // Services
+  // TODO: Add services here
+  // Custom
+  // TODO: Add custom routes here
 });
 
 // export type definition of API

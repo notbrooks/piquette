@@ -10,6 +10,7 @@ import {
   serial,
   text,
   varchar,
+  unique,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -20,22 +21,211 @@ import {
  */
 export const createTable = pgTableCreator((name) => `${piquetteConfig.meta.id}_${name}`);
 
-export const posts = createTable(
-  "post",
+/** Services
+ * 
+ * Favorites
+ * Save
+ * Like
+ * Dislike
+ * Archive
+ * Shared
+ * Pinned
+ * 
+ * Services are intented to work across multiple models though the actions component.
+ * It's probably best to not modify these in any manner.
+*/
+export const favorites = createTable(
+  "favorite",
   {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
     ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
   })
 );
+
+export const saves = createTable(
+  "save",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+export const likes = createTable(
+  "like",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+export const dislikes = createTable(
+  "dislike",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+export const shares = createTable(
+  "share",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+export const archives = createTable(
+  "archive",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+export const pins = createTable(
+  "pin",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    profile: serial("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    objectId: serial("object_id").notNull(), // ID of the referenced object
+    objectType: varchar("object_type", { length: 256 }).notNull(), // Type of the object (e.g., document, business)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+  (table) => ({
+    // Composite unique constraint to ensure each object/type combo is unique
+    uniqueObjectType: unique().on(table.profile,table.objectId, table.objectType),
+  })
+);
+
+/** Models
+ *  Prifiles: Required object for the application to function.
+ */
 
 export const profiles = createTable(
   "profile",
