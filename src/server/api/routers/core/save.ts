@@ -1,23 +1,18 @@
 import { eq, and, desc} from "drizzle-orm";
 import  jwt from "jsonwebtoken";
 import { z } from "zod";
+import { createId } from "@paralleldrive/cuid2";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { saves } from "~/server/db/schema";
 
 export const saveRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        message: `Hello ${input.text}`,
-      };
-    }),
 
   add: publicProcedure
     .input(z.object({ 
-      type: z.string().min(1),
-      object: z.string(),
+      objectType: z.string().min(1),
+      objectId: z.number().nonnegative(),
+      profile: z.number().nonnegative(),
     }))
     .mutation(async ({ ctx, input }) => {
 
@@ -43,11 +38,14 @@ export const saveRouter = createTRPCRouter({
         throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
       }
 
+      const cuid = createId();
       await ctx.db.insert(saves).values({
-        type: input.type,
-        object: input.object,
+        cuid: cuid, 
         createdBy: userId,
         updatedBy: userId,
+        objectId: input.objectId, // assuming this should be a number
+        objectType: input.objectType,
+        profile: input.profile
       });
     }),
 
@@ -62,26 +60,10 @@ export const saveRouter = createTRPCRouter({
         and(
           eq(saves.id, input.id),
           eq(saves.cuid, input.key),
-          eq(saves.type, input.type),
+          eq(saves.objectType, input.type),
         )
       );
       console.log( input.id, input.key, input.type)
-    }),
-
-  create: publicProcedure
-    .input(z.object({ 
-      type: z.string().min(1),
-      object: z.string(),
-      createdBy: z.string(),
-      updatedBy: z.string().min(1)
-    }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(saves).values({
-        type: input.type,
-        object: input.object,
-        createdBy: input.createdBy,
-        updatedBy: input.updatedBy,
-      });
     }),
 
   getByUser: publicProcedure
