@@ -6,6 +6,7 @@ import {
   index,
   integer,
   pgTableCreator,
+  pgEnum,
   timestamp,
   serial,
   text,
@@ -226,7 +227,6 @@ export const pins = createTable(
 /** Models
  *  Prifiles: Required object for the application to function.
  */
-
 export const profiles = createTable(
   "profile",
   {
@@ -240,6 +240,34 @@ export const profiles = createTable(
     description: text("description"),
     type: varchar("type", { length: 16 }),
     avatar: varchar("avatar", { length: 256 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdBy: varchar("created_by", { length: 256 }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
+    archivedBy: varchar("archived_by", { length: 256 }),
+  },
+);
+
+export const businessStatusEnum = pgEnum('status', ['active', 'inactive', 'pending', 'archived']);
+export const businesses = createTable(
+  "business",
+  {
+    id: serial("id").primaryKey(),
+    cuid: varchar("cuid", { length: 256 }).notNull(),
+    token: varchar("token", { length: 32 }),
+    profile: serial("profile_id")
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    status: businessStatusEnum("status").default("pending"),
+    name: varchar("name", { length: 256 }).notNull(),
+    location: varchar("location", { length: 256 }).notNull(),
+    url: varchar("url", { length: 256 }),
+    industry: varchar("industry", { length: 256 }),
+    description: text("description"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

@@ -7,10 +7,6 @@ import { BusinessForm, BusinessTable } from "./_components";
 
 import { Button } from "~/components/ui/button";
 
-import type { BusinessFormData } from "./business.d";
-
-
-
 export default function BusinessIndexPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
     const [rows, setRows] = useState<unknown[]>([]); // State to hold the table data

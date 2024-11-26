@@ -5,6 +5,7 @@ import { favoriteRouter } from "./routers/core/favorite";
 import { saveRouter } from "./routers/core/save";
 import { archiveRouter } from "./routers/core/archive";
 import { pinRouter } from "./routers/core/pin";
+import { businessRouter } from "./routers/business";
 import { profileRouter } from "~/server/api/routers/profile";
 // Services
 // TODO: Add services here
@@ -25,6 +26,7 @@ export const appRouter = createTRPCRouter({
   save: saveRouter,
   archive: archiveRouter,
   pin: pinRouter,
+  business: businessRouter,
   profile: profileRouter,
   // Services
   // TODO: Add services here
