@@ -1,3 +1,10 @@
-import type { Profile } from "./profile";
+import type { Profile } from "./profile.d";
 
-export type { Profile };
+import type FormDefinition from "./common/form";
+import type TableDefinition from "./common/table";
+
+export type {
+    Profile,
+    FormDefinition,
+    TableDefinition
+};

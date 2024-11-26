@@ -37,6 +37,6 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts"
-  ],
+, "src/app/dashboard/businesses/business.config.jts"  ],
   "exclude": ["node_modules"]
 }

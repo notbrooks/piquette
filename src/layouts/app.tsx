@@ -326,7 +326,7 @@ export default function AppLayout({ children }: LayoutProps) {
             </div>
           </div>
 
-          <main className="py-10 bg-slate-50">
+          <main className="py-10 bg-slate-50 min-h-[calc(100svh-theme(spacing.4))]">
             <div className="px-4 sm:px-6 lg:px-8">{children}</div>
           </main>
         </div>
