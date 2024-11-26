@@ -1,13 +1,14 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
+import type { Profile } from "~/types";
 import { Slash } from "lucide-react";
 import { useParams } from 'next/navigation';
 
 interface BusinessDetailProps {
-    profileId: number;
+    profile: {};
 }
 
-export default function BusinessDetail({ profileId }: BusinessDetailProps) {
+export default function BusinessDetail({ profile }: BusinessDetailProps) {
     const params = useParams();
     const cuid = params?.cuid; // Access cuid from the parameters
 
