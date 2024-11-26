@@ -59,7 +59,7 @@ export const industryOptions = [
     ],
   },
   {
-    key: "helthcare",
+    key: "healthcare",
     socGroupId: 31,
     businesses: ["Hospitals", "Nursing homes", "In-home care services"],
     jobs: [

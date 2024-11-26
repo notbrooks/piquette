@@ -86,12 +86,6 @@ export default function BusinessForm({ profile, setVisiblePanel, setRows }: Busi
         
     
 
-    return (
-        <div>
-            <h3>Business Form</h3>
-            <div>{JSON.stringify(profile, null, 2)}</div>
-            <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
-        </div>
-    )
+    return <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
 }
 

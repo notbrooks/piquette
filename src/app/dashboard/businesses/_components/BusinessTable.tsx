@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "~/trpc/react"; // Assuming you're using React hooks for trpc
+import { api } from "~/trpc/react";
 import { TableComponent } from "~/components/common/Table";
 
 interface BusinessTableProps {
@@ -42,7 +42,25 @@ export default function BusinessTable({ profile, rows, setRows }: BusinessTableP
     return (
         <div>
             <div>
-                <TableComponent data={rows} />
+            <TableComponent
+                data={rows}
+                config={{
+                    bulkActions: true,
+                    columns: [
+                    {
+                        label: "Name",
+                        accessorKey: "name",
+                        sort: true,
+                        helper: {
+                        type: "link",
+                        path: "/dashboard/businesses/:cuid", // Path with placeholder
+                        },
+                    },
+                    { label: "Status", accessorKey: "status", sort: true },
+                    { label: "Created At", accessorKey: "createdAt", sort: true },
+                    ],
+                }}
+            />
             </div>
         </div>
     );

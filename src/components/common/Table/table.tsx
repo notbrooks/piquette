@@ -1,4 +1,6 @@
 import * as React from "react";
+import Link from "next/link";
+
 import {
   ColumnDef,
   Row,
@@ -33,25 +35,28 @@ import {
 // Define the props interface
 interface TableComponentProps {
   data: Record<string, unknown>[];
+  config: {
+    bulkActions: boolean;
+    columns: {
+      label: string;
+      accessorKey: string;
+      sort: boolean;
+      helper?: {
+        type: "link";
+        path: string; // e.g., "/dashboard/businesses/:cuid"
+      };
+    }[];
+  };
 }
 
-const columnConfig = {
-  bulkActions: false,
-  columns: [
-    { label: "Name", accessorKey: "name", sort: true },
-    { label: "Type", accessorKey: "type", sort: true },
-    { label: "Created At", accessorKey: "createdAt", sort: false },
-  ],
-};
-
-export default function TableComponent({ data }: TableComponentProps) {
+export default function TableComponent({ data, config }: TableComponentProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   // Define columns based on columnConfig, with conditional "Select" column
   const columns: ColumnDef<Record<string, unknown>>[] = React.useMemo(() => {
-    const baseColumns: ColumnDef<Record<string, unknown>>[] = columnConfig.columns.map((col) => ({
+    const baseColumns: ColumnDef<Record<string, unknown>>[] = config.columns.map((col) => ({
       accessorKey: col.accessorKey,
       header: ({ column }) => (
         <Button
@@ -64,16 +69,29 @@ export default function TableComponent({ data }: TableComponentProps) {
       ),
       cell: ({ row }) => {
         const value = row.getValue(col.accessorKey);
+        const helper = col.helper;
+
+        if (helper?.type === "link" && helper.path) {
+          // Replace ":cuid" in the path with the actual value
+          const path = helper.path.replace(":cuid", row.original.cuid as string);
+          return (
+            <Link href={path} className="text-blue-500 underline">
+              {value?.toString()}
+            </Link>
+          );
+        }
+
         if (col.accessorKey === "createdAt" && value instanceof Date) {
           return <div>{value.toLocaleDateString()}</div>;
         }
+
         return <div>{value?.toString()}</div>;
       },
       enableSorting: col.sort,
     }));
 
     // Add a "Select" column at the beginning if bulkActions is enabled
-    if (columnConfig.bulkActions) {
+    if (config.bulkActions) {
       baseColumns.unshift({
         id: "select",
         header: ({ table }) => (
@@ -132,7 +150,7 @@ export default function TableComponent({ data }: TableComponentProps) {
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="ml-auto" size="sm">
                 Columns <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
@@ -194,7 +212,7 @@ export default function TableComponent({ data }: TableComponentProps) {
             </TableBody>
           </Table>
         </div>
-        
+
         {/* Pagination */}
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
