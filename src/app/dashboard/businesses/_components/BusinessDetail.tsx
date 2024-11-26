@@ -1,16 +1,26 @@
+import { useParams } from 'next/navigation';
+import { api } from "~/trpc/react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import type { Profile } from "~/types";
 import { Slash } from "lucide-react";
-import { useParams } from 'next/navigation';
 
 interface BusinessDetailProps {
-    profile: {};
+    profile: Profile; // Update profile to the correct type if needed
 }
 
 export default function BusinessDetail({ profile }: BusinessDetailProps) {
     const params = useParams();
-    const cuid = params?.cuid; // Access cuid from the parameters
+    const cuid = params?.cuid;
+
+    if (!cuid || Array.isArray(cuid)) {
+        return <p>No valid CUID provided.</p>;
+    }
+
+    const { data, isLoading, isError } = api.business.getByCUID.useQuery({ cuid });
+
+    if (isLoading) return <p>Loading...</p>;
+    if (isError) return <p>Error loading business details.</p>;
 
     return (
         <div>
@@ -31,7 +41,7 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                                 <Slash />
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbPage>{cuid}</BreadcrumbPage>
+                                <BreadcrumbPage>{data?.name}</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -42,8 +52,7 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                 </div>
             </div>
             <div>
-                <p>Business Description for CUID: {cuid}</p>
-                <p>Business Meta</p>
+                <p>{data?.description}</p>
             </div>
         </div>
     );
