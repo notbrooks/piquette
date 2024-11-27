@@ -3,7 +3,19 @@ import { api } from "~/trpc/react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import type { Profile } from "~/types";
+
 import { Slash } from "lucide-react";
+
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetFooter,
+    SheetClose
+  } from "~/components/ui/sheet"
 
 interface BusinessDetailProps {
     profile: Profile; // Update profile to the correct type if needed
@@ -48,7 +60,24 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                 </div>
                             
                 <div className="mt-3 sm:ml-4 sm:mt-0">
-                    <Button variant="outline" size="sm">Edit</Button>
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="outline">Edit</Button>
+                    </SheetTrigger>
+                    <SheetContent>
+                        <SheetHeader>
+                        <SheetTitle>Edit '{data?.name}'</SheetTitle>
+                        <SheetDescription>
+                            Make changes to your profile here. Click save when you're done.
+                        </SheetDescription>
+                        </SheetHeader>
+                        <div className="grid gap-4 py-4">
+                        
+                        
+                        </div>
+                        
+                    </SheetContent>
+                </Sheet>
                 </div>
             </div>
             <div>
