@@ -1,5 +1,8 @@
 import { useParams } from 'next/navigation';
 import { api } from "~/trpc/react";
+import { businessConfig } from '../business.config'
+
+import FormComponent from "~/components/common/Form/form";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import type { Profile } from "~/types";
@@ -34,6 +37,10 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Error loading business details.</p>;
 
+    const handleFormSubmit = (data: Record<string, unknown>) => {
+        console.log("Form submitted:", data);
+    };
+
     return (
         <div>
             <div className="pb-5 sm:flex sm:items-center sm:justify-between">
@@ -67,8 +74,8 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                     <SheetContent>
                         <SheetHeader>
                         <SheetTitle>Edit '{data?.name}'</SheetTitle>
-                        <SheetDescription>
-                            Make changes to your profile here. Click save when you're done.
+                        <SheetDescription asChild>
+                            <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
                         </SheetDescription>
                         </SheetHeader>
                         <div className="grid gap-4 py-4">
