@@ -22,13 +22,23 @@ export default function BusinessDetailPage() {
             <Tabs defaultValue="settings" className="max-w-full">
                     <TabsList className="flex justify-start">
                         <TabsTrigger value="settings">Settings</TabsTrigger>
+                        <TabsTrigger value="documents">Documents</TabsTrigger>
                         <TabsTrigger value="jobs">Jobs</TabsTrigger>
-                        <TabsTrigger value="talent">Talent</TabsTrigger>
+                        <TabsTrigger value="members">Members</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="settings">
                         <div>
                             <h3 className="text-lg font-semibold">Settings</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Here you can see an overview of the business details.
+                            </p>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="documents">
+                        <div>
+                            <h3 className="text-lg font-semibold">Documents</h3>
                             <p className="text-sm text-muted-foreground">
                                 Here you can see an overview of the business details.
                             </p>
@@ -44,9 +54,9 @@ export default function BusinessDetailPage() {
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="talent">
+                    <TabsContent value="members">
                         <div>
-                            <h3 className="text-lg font-semibold">Talent</h3>
+                            <h3 className="text-lg font-semibold">Members</h3>
                             <p className="text-sm text-muted-foreground">
                                 Modify settings and configurations for the business here.
                             </p>
