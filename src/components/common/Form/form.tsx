@@ -20,6 +20,7 @@
 
 import { useState } from "react";
 import { type Updater, useForm } from "@tanstack/react-form";
+import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -33,7 +34,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { SparklesIcon as ChatIcon } from "@heroicons/react/24/outline";
-import type { FormDefinition } from "~/components/common";
+import type { FormDefinition } from "~/types";
 
 interface FormComponentProps {
   object?: string;
@@ -46,7 +47,10 @@ interface FormComponentProps {
 export default function FormComponent({ onSubmit, isFormLoading,formConfig }: FormComponentProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [stateValue, setStateValue] = useState<Record<string, unknown>>({});
+  const [stateValue, setStateValue] = useState<Record<string, string>>({});
+  const formValues: Record<string, string> = Object.fromEntries(
+    Object.entries(stateValue).filter(([key, value]) => typeof value === "string")
+  );
 
   const form = useForm({
     defaultValues: {
@@ -93,29 +97,36 @@ interface AutocompleteResponse {
 // Change the type assertion in the handleAutocomplete function
 const handleAutocomplete = async (fieldName: string, prompt: string) => {
   setIsLoading(true);
-  const formValues: Record<string, unknown> = stateValue;
+  const formValues: Record<string, string> = Object.fromEntries(
+    Object.entries(stateValue).filter(([key, value]) => typeof value === "string")
+  );
 
   try {
     const response = await fetch("/api/openai/autocomplete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        prompt, 
-        fields: JSON.stringify(formValues) // Send prompt and stringified JSON object
+      body: JSON.stringify({
+        fields: formValues,
+        prompt,
       }),
     });
 
-    const data = await response.json() as AutocompleteResponse;
-    setIsLoading(false);
-    if (data.autocompleteContent) {
+    if (!response.ok) {
+      throw new Error("Failed to fetch autocomplete data");
+    }
+
+    const data = await response.json();
+    if (data?.autocompleteContent) {
       setStateValue((prev) => ({
         ...prev,
-        [fieldName]: data.autocompleteContent
+        [fieldName]: data.autocompleteContent,
       }));
       form.setFieldValue(fieldName, data.autocompleteContent);
     }
   } catch (error) {
     console.error("Failed to autocomplete:", error);
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -126,16 +137,18 @@ const handleFieldChange = (
 ) => {
   if (value === undefined) return; // Guard clause for undefined value
 
+  const updatedValue =
+    typeof value === "string" ? value : value instanceof File ? value.name : JSON.stringify(value);
+
   // Update state with the new value
   setStateValue((prev) => ({
     ...prev,
-    [name]: value,
+    [name]: updatedValue,
   }));
 
   // Ensure the following function handles a specific value type 
   const isStringOrArray = (val: unknown): val is string | unknown[] => 
     typeof val === "string" || Array.isArray(val);
-  
   if (isStringOrArray(value)) {
     form.setFieldValue(name, value); // For regular text fields and array inputs
   } else if (value instanceof File) {
