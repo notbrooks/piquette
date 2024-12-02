@@ -35,6 +35,7 @@ import {
 // Define the props interface
 interface TableComponentProps {
   data: Record<string, unknown>[];
+  button?: React.ReactNode;
   config: {
     bulkActions: boolean;
     columns: {
@@ -49,7 +50,7 @@ interface TableComponentProps {
   };
 }
 
-export default function TableComponent({ data, config }: TableComponentProps) {
+export default function TableComponent({ data, config, button }: TableComponentProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -170,6 +171,12 @@ export default function TableComponent({ data, config }: TableComponentProps) {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {button && (
+            <div className="ml-2">
+                {button}
+            </div>
+        )}
         </div>
 
         {/* Table */}

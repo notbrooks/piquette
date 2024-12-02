@@ -97,11 +97,12 @@ export default function AppLayout({ children }: LayoutProps) {
                 <div className="flex h-16 shrink-0 items-center">
                   <Link href="/">
                     <Image
-                      alt="Your Company"
+                      alt="Logo"
                       src="/logo.png"
                       className="h-8 w-auto"
                       width={100}
                       height={100}
+                      priority
                     />
                   </Link>
                 </div>
@@ -175,11 +176,12 @@ export default function AppLayout({ children }: LayoutProps) {
             <div className="flex h-16 shrink-0 items-center">
               <Link href="/">
                 <Image
-                  alt="Your Company"
+                  alt="Logo"
                   src="/logo.png"
                   className="h-8 w-auto"
                   width={100}
                   height={100}
+                  priority
                 />
               </Link>
             </div>

@@ -1,68 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useParams } from "next/navigation";
 import { useProfile } from "~/context/profile";
-import type { Profile } from "~/types";
+import type { Profile, Business } from "~/types";
+import { api } from "~/trpc/react";
 import { BusinessDetail } from "../_components";
+import { Settings, Documents, Jobs, Members } from "./_components";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function BusinessDetailPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
-    const [rows, setRows] = useState<unknown[]>([]); // State to hold the table data
-    const [visiblePanel, setVisiblePanel] = useState("default"); // State to toggle between table and form
+    const params = useParams();
+    const cuid = params?.cuid;
 
+    if (!cuid || Array.isArray(cuid)) {
+        return <p>No valid CUID provided.</p>;
+    }
+
+    const { data, isLoading, isError } = api.business.getByCUID.useQuery({ cuid });
+
+    if (isLoading) return <p>Loading...</p>;
+    if (isError) return <p>Error loading business details.</p>;
     if (!profile) return "Loading...";
+
     return (
         <div className="space-y-5 container pb-5">
             <div>
-                <BusinessDetail profile={profile} />
+                <BusinessDetail profile={profile} business={data as Business} />
             </div>
 
             {/* Tabs Component */}
             <Tabs defaultValue="settings" className="max-w-full">
-                    <TabsList className="flex justify-start">
-                        <TabsTrigger value="settings">Settings</TabsTrigger>
-                        <TabsTrigger value="documents">Documents</TabsTrigger>
-                        <TabsTrigger value="jobs">Jobs</TabsTrigger>
-                        <TabsTrigger value="members">Members</TabsTrigger>
-                    </TabsList>
+                <TabsList className="flex justify-start">
+                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                    <TabsTrigger value="documents">Documents</TabsTrigger>
+                    <TabsTrigger value="jobs">Jobs</TabsTrigger>
+                    <TabsTrigger value="members">Members</TabsTrigger>
+                </TabsList>
 
-                    <TabsContent value="settings">
-                        <div>
-                            <h3 className="text-lg font-semibold">Settings</h3>
-                            <p className="text-sm text-muted-foreground">
-                                Here you can see an overview of the business details.
-                            </p>
-                        </div>
-                    </TabsContent>
+                <TabsContent value="settings">
+                    <div className="px-2">
+                        <Settings />
+                    </div>
+                </TabsContent>
 
-                    <TabsContent value="documents">
-                        <div>
-                            <h3 className="text-lg font-semibold">Documents</h3>
-                            <p className="text-sm text-muted-foreground">
-                                Here you can see an overview of the business details.
-                            </p>
-                        </div>
-                    </TabsContent>
+                <TabsContent value="documents">
+                    <Documents profile={profile} business={data as Business} />
+                </TabsContent>
 
-                    <TabsContent value="jobs">
-                        <div>
-                            <h3 className="text-lg font-semibold">Jobs</h3>
-                            <p className="text-sm text-muted-foreground">
-                                This tab contains related objects linked to the business.
-                            </p>
-                        </div>
-                    </TabsContent>
+                <TabsContent value="jobs">
+                    <div className="px-2">
+                        <Jobs />
+                    </div>
+                </TabsContent>
 
-                    <TabsContent value="members">
-                        <div>
-                            <h3 className="text-lg font-semibold">Members</h3>
-                            <p className="text-sm text-muted-foreground">
-                                Modify settings and configurations for the business here.
-                            </p>
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                <TabsContent value="members">
+                    <Members profile={profile} business={data as Business} />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

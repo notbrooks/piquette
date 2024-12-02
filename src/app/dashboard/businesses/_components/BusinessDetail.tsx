@@ -5,7 +5,7 @@ import { businessConfig } from '../business.config'
 import FormComponent from "~/components/common/Form/form";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
-import type { Profile } from "~/types";
+import type { Profile, Business } from "~/types";
 
 import { Slash } from "lucide-react";
 
@@ -22,20 +22,11 @@ import {
 
 interface BusinessDetailProps {
     profile: Profile; // Update profile to the correct type if needed
+    business: Business;
 }
 
-export default function BusinessDetail({ profile }: BusinessDetailProps) {
-    const params = useParams();
-    const cuid = params?.cuid;
-
-    if (!cuid || Array.isArray(cuid)) {
-        return <p>No valid CUID provided.</p>;
-    }
-
-    const { data, isLoading, isError } = api.business.getByCUID.useQuery({ cuid });
-
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Error loading business details.</p>;
+export default function BusinessDetail({ profile, business }: BusinessDetailProps) {
+    
 
     const handleFormSubmit = (data: Record<string, unknown>) => {
         console.log("Form submitted:", data);
@@ -60,7 +51,7 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                                 <Slash />
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbPage>{data?.name}</BreadcrumbPage>
+                                <BreadcrumbPage>{business.name}</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -73,22 +64,17 @@ export default function BusinessDetail({ profile }: BusinessDetailProps) {
                     </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
-                        <SheetTitle>Edit '{data?.name}'</SheetTitle>
-                        <SheetDescription asChild>
-                            <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
+                        <SheetTitle>Edit '{business.name}'</SheetTitle>
+                        <SheetDescription>
+                            <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={false} />
                         </SheetDescription>
                         </SheetHeader>
-                        <div className="grid gap-4 py-4">
-                        
-                        
-                        </div>
-                        
                     </SheetContent>
                 </Sheet>
                 </div>
             </div>
             <div>
-                <p>{data?.description}</p>
+                <p>{business.description}</p>
             </div>
         </div>
     );
