@@ -13,6 +13,7 @@ import {
 } from "~/components/ui/dialog"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
+import { title } from "process";
 
 interface MembersProps {
     profile: Profile;
@@ -22,7 +23,11 @@ interface MembersProps {
 export default function Documents({ profile, business }: MembersProps) {
     return (
         <TableComponent
-            data={[]}
+            data={[
+                {title: "Document 1", type: "Invoice", created_at: "2023-01-01"},
+                {title: "Document 2", type: "Invoice", created_at: "2023-01-01"},
+                {title: "Document 3", type: "Invoice", created_at: "2023-01-01"},
+            ]}
             button={
                 <Dialog>
                 <DialogTrigger asChild>
@@ -64,11 +69,11 @@ export default function Documents({ profile, business }: MembersProps) {
               </Dialog>
             }
             config={{
-                bulkActions: false,
+                bulkActions: true,
                 columns: [
                     {
                         label: "Title",
-                        accessorKey: "name",
+                        accessorKey: "title",
                         sort: true,
                         helper: {
                             type: "link",

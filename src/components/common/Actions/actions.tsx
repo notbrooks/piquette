@@ -68,13 +68,17 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 
 // Import UI components
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { toast } from "~/hooks/use-toast";
 import { Button } from "~/components/ui/button";
 import {
     DropdownMenu,
+    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import {
@@ -110,630 +114,653 @@ interface ActionsComponentProps {
 }
 
 export default function ActionsComponent({ actions, data }: ActionsComponentProps) {
-    const [openDialog, setOpenDialog] = useState(false);
-    const [currentAction, setCurrentAction] = useState<string | null>(null);
-    const [currentModel, setCurrentModel] = useState<string | null>(null);
-    const [currentId, setCurrentId] = useState<number | null>(null);
-    const [currentKey, setCurrentKey] = useState<string | null>(null);
-    const [currentType, setCurrentType] = useState<string | null>(null);
-    const [currentObject, setCurrentObject] = useState<string | null>(null);
-
-    /** Favorites
-     * 
-     * removeFavoriteMutation: A mutation to remove a favorite from the database.
-     * removeFavorite: A function to remove a favorite from the database.
-     * handleRemoveFavorite: A function to handle the removal of a favorite from the database.
-     * handleAddFavorite: A function to handle the addition of a favorite to the database.
-     * addFavorite: A function to add an object to your favorites collection
-     *
-     */
-
-    const removeFavoriteMutation = api.favorite.delete.useMutation();
-    const addFavoriteMutation = api.favorite.add.useMutation();
-
-    const handleAddFavorite = async (currentType: string, currentObject: string) => {
-        try {
-            await addFavorite({
-                type: currentType,
-                object: currentObject
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your favorites`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removeFavorite = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removeFavoriteMutation.mutateAsync(params);
-            console.log("Favorite removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing favorite:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addFavorite = async (params: { type: string; object: string; }) => {
-        try {
-            await addFavoriteMutation.mutateAsync(params);
-            console.log("Favorite added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding favorite:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemoveFavorite = async () => {
-        try {
-            await removeFavorite({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Saved 
-     * 
-     * removeSaveMutation: A mutation to remove a favorite from the database.
-     * removeSave: A function to remove a favorite from the database.
-     * handleRemoveSave: A function to handle the removal of a favorite from the database.
-     * handleAddSave: A function to handle the addition of a favorite to the database.
-     * addSave: A function to add an object to your favorites collection
-     * 
-     */
-
-    const removeSaveMutation = api.save.delete.useMutation();
-    const addSaveMutation = api.save.add.useMutation();
-
-    const handleAddSave = async (currentType: string, currentObject: string) => {
-        try {
-            await addSave({
-                type: currentType,
-                object: currentObject,
-                createdBy: "Brooke",
-                updatedBy: "Brooke"
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your saved objects`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removeSave = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removeSaveMutation.mutateAsync(params);
-            console.log("Save removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addSave = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
-        try {
-            await addSaveMutation.mutateAsync(params);
-            console.log("Save added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemoveSave = async () => {
-        try {
-            await removeSave({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Liked 
-     * 
-     * removeLikeMutation: A mutation to remove a like from the database.
-     * removeLike: A function to remove a like from the database.
-     * handleRemoveLike: A function to handle the removal of a like from the database.
-     * handleAddLike: A function to handle the addition of a like to the database.
-     * addLike: A function to add an object to your likes collection
-     * 
-     */
-    const removeLikeMutation = api.like.delete.useMutation();
-    const addLikeMutation = api.like.add.useMutation();
-
-    const handleAddLike = async (currentType: string, currentObject: string) => {
-        try {
-            await addLike({
-                type: currentType,
-                object: currentObject,
-                createdBy: "Brooke",
-                updatedBy: "Brooke"
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your liked objects`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removeLike = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removeLikeMutation.mutateAsync(params);
-            console.log("Like removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addLike = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
-        try {
-            await addLikeMutation.mutateAsync(params);
-            console.log("Like added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding like:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemoveLike = async () => {
-        try {
-            await removeLike({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Disliked
-     * 
-     */
-
-    const removeDisikeMutation = api.dislike.delete.useMutation();
-    const addDislikeMutation = api.dislike.add.useMutation();
-
-    const handleAddDislike = async (currentType: string, currentObject: string) => {
-        try {
-            await addDislike({
-                type: currentType,
-                object: currentObject,
-                createdBy: "Brooke",
-                updatedBy: "Brooke"
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your disliked objects`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removeDislike = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removeDisikeMutation.mutateAsync(params);
-            console.log("Dislike removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addDislike = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
-        try {
-            await addDislikeMutation.mutateAsync(params);
-            console.log("Dislike added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding like:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemoveDislike = async () => {
-        try {
-            await removeDislike({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Archived
-     * 
-     */
-
-    const removeArchiveMutation = api.archive.delete.useMutation();
-    const addArchiveMutation = api.archive.add.useMutation();
-
-    const handleAddArchive = async (currentType: string, currentObject: string) => {
-        try {
-            await addArchive({
-                type: currentType,
-                object: currentObject,
-                createdBy: "Brooke",
-                updatedBy: "Brooke"
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your archived objects`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removeArchive = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removeArchiveMutation.mutateAsync(params);
-            console.log("Archived object removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addArchive = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
-        try {
-            await addArchiveMutation.mutateAsync(params);
-            console.log("Archive added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding like:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemoveArchive = async () => {
-        try {
-            await removeArchive({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully removed ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Pinned
-     * 
-     */
-
-    const removePinMutation = api.pin.delete.useMutation();
-    const addPinMutation = api.pin.add.useMutation();
-
-    const handleAddPin = async (currentType: string, currentObject: string) => {
-        try {
-            await addPin({
-                type: currentType,
-                object: currentObject,
-                createdBy: "Brooke",
-                updatedBy: "Brooke"
-            });
-            toast({
-                variant: "default",
-                title: `Successfully added ${currentObject} to your archived objects`,
-            });
-            setOpenDialog(false);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    const removePin = async (params: { id: number; key: string; type: string; object: string }) => {
-        try {
-            await removePinMutation.mutateAsync(params);
-            console.log("Pin removed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error removing save:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const addPin = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
-        try {
-            await addPinMutation.mutateAsync(params);
-            console.log("Pin added successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error adding like:", error.message);
-            } else {
-                console.error("Unexpected error:", error);
-            }
-        }
-    };
-
-    const handleRemovePin = async () => {
-        try {
-            await removePin({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
-            setOpenDialog(false);
-
-            toast({
-                variant: "default",
-                title: `Successfully unpinned ${currentObject}`,
-            });
-            
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error during removal:", error.message);
-            } else {
-                console.error("Unexpected error during removal:", error);
-            }
-        }
-    };
-
-    /** Shared
-     * 
-     */
-
-
-
-    const handleActionClick = (action: string, data: { model: string, id: number, key: string, type: string, object: string, label: string }) => {
-        setCurrentAction(action);
-        setCurrentModel(data.model);
-        setCurrentId(data.id);
-        setCurrentKey(data.key);
-        setCurrentType(data.type);
-        setCurrentObject(data.object);
-
-
-        if (action === 'remove' || action === 'share') {
-            setOpenDialog(true);
-        } else {
-            setOpenDialog(false);
-            if (action === 'favorite') {
-                void handleAddFavorite(data.type, data.object);
-            } else if (action === 'save') {
-                void handleAddSave(data.type, data.object);
-            } else if (action === 'like') {
-                void handleAddLike(data.type, data.object);
-            } else if (action === 'archive') {
-                void handleAddArchive(data.type, data.object);
-            } else if (action === 'dislike') {
-                void handleAddDislike(data.type, data.object);
-            } else if (action === 'pin') {
-                void handleAddPin(data.type, data.object);
-            } else if (action === 'share') {
-                console.log('Share');
-            }
-        }
-    };
-
-    const getDialogDescription = (action: string): string => {
-        switch (action) {
-            case 'remove': return `Are you sure you want to remove ${currentObject}?`;
-            case 'share': return `TODO: Share Panel`;
-            case 'hide': return `Hide this ${currentObject}?`;
-            case 'edit': return 'Edit this favorite';
-            default: return '';
-        }
-    };
-
-    const getDialogButtons = (action: string, model: string) => {
-        switch (action) {
-            case 'remove':
-                return (
-                    <DialogFooter>
-                        
-                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                        { currentModel === "favorite" ? 
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemoveFavorite();
-                                }}
-                            >Remove</Button>
-                        : currentModel === "like" ?
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemoveLike();
-                                }}
-                            >Remove</Button>
-                        : currentModel === "dislike" ?
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemoveDislike();
-                                }}
-                            >Remove</Button>
-                        : currentModel === "archive" ?
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemoveArchive();
-                                }}
-                            >Remove</Button>
-                        : currentModel === "pin" ?
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemovePin();
-                                }}
-                            >Remove</Button>
-                        :
-                            <Button
-                                variant="destructive"
-                                onClick={async () => {
-                                    await handleRemoveSave();
-                                }}
-                            >Remove</Button>
-                        }
-                        
-                    </DialogFooter>
-                );
-            case 'share':
-                return (
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                        <Button variant="default" onClick={() => setOpenDialog(false)}>Share</Button>
-                    </DialogFooter>
-                );
-            case 'hide':
-                return (
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => setOpenDialog(false)}>Hide</Button>
-                    </DialogFooter>
-                );
-            default:
-                return null;
-        }
-    };
-
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                        <EllipsisVerticalIcon aria-hidden="true" className="h-5 w-5" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    {actions.map((action, idx) => (
-                        <DropdownMenuItem key={idx}>
-                            <a
-                                onClick={() => handleActionClick(action, {
-                                    id: data.id,
-                                    model: data.model,
-                                    key: data.key,
-                                    object: data.object,
-                                    type: data.type,
-                                    label: data.label
-                                })}
-                                className="block px-3 py-1 text-sm leading-6 text-gray-900 capitalize"
-                            >
-                                {action}
-                            </a>
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{currentAction}</DialogTitle>
-                        <DialogDescription>{getDialogDescription(currentAction ?? "")}</DialogDescription>
-                    </DialogHeader>
-                    {getDialogButtons(currentAction ?? "", currentType ?? "")}
-                </DialogContent>
-            </Dialog>
-        </>
-    );
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+            </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText('TEST')}
+            >
+                Copy payment ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
 }
+// export default function ActionsComponent({ actions, data }: ActionsComponentProps) {
+//     const [openDialog, setOpenDialog] = useState(false);
+//     const [currentAction, setCurrentAction] = useState<string | null>(null);
+//     const [currentModel, setCurrentModel] = useState<string | null>(null);
+//     const [currentId, setCurrentId] = useState<number | null>(null);
+//     const [currentKey, setCurrentKey] = useState<string | null>(null);
+//     const [currentType, setCurrentType] = useState<string | null>(null);
+//     const [currentObject, setCurrentObject] = useState<string | null>(null);
+
+//     /** Favorites
+//      * 
+//      * removeFavoriteMutation: A mutation to remove a favorite from the database.
+//      * removeFavorite: A function to remove a favorite from the database.
+//      * handleRemoveFavorite: A function to handle the removal of a favorite from the database.
+//      * handleAddFavorite: A function to handle the addition of a favorite to the database.
+//      * addFavorite: A function to add an object to your favorites collection
+//      *
+//      */
+
+//     const removeFavoriteMutation = api.favorite.delete.useMutation();
+//     const addFavoriteMutation = api.favorite.add.useMutation();
+
+//     const handleAddFavorite = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addFavorite({
+//                 type: currentType,
+//                 object: currentObject
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your favorites`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removeFavorite = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removeFavoriteMutation.mutateAsync(params);
+//             console.log("Favorite removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing favorite:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addFavorite = async (params: { type: string; object: string; }) => {
+//         try {
+//             await addFavoriteMutation.mutateAsync(params);
+//             console.log("Favorite added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding favorite:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemoveFavorite = async () => {
+//         try {
+//             await removeFavorite({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully removed ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Saved 
+//      * 
+//      * removeSaveMutation: A mutation to remove a favorite from the database.
+//      * removeSave: A function to remove a favorite from the database.
+//      * handleRemoveSave: A function to handle the removal of a favorite from the database.
+//      * handleAddSave: A function to handle the addition of a favorite to the database.
+//      * addSave: A function to add an object to your favorites collection
+//      * 
+//      */
+
+//     const removeSaveMutation = api.save.delete.useMutation();
+//     const addSaveMutation = api.save.add.useMutation();
+
+//     const handleAddSave = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addSave({
+//                 type: currentType,
+//                 object: currentObject,
+//                 createdBy: "Brooke",
+//                 updatedBy: "Brooke"
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your saved objects`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removeSave = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removeSaveMutation.mutateAsync(params);
+//             console.log("Save removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addSave = async (params: { profile: number; objectId: number; objectType: string; }) => {
+//         try {
+//             await addSaveMutation.mutateAsync(params);
+//             console.log("Save added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemoveSave = async () => {
+//         try {
+//             await removeSave({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully removed ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Liked 
+//      * 
+//      * removeLikeMutation: A mutation to remove a like from the database.
+//      * removeLike: A function to remove a like from the database.
+//      * handleRemoveLike: A function to handle the removal of a like from the database.
+//      * handleAddLike: A function to handle the addition of a like to the database.
+//      * addLike: A function to add an object to your likes collection
+//      * 
+//      */
+//     const removeLikeMutation = api.like.delete.useMutation();
+//     const addLikeMutation = api.like.add.useMutation();
+
+//     const handleAddLike = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addLike({
+//                 type: currentType,
+//                 object: currentObject,
+//                 createdBy: "Brooke",
+//                 updatedBy: "Brooke"
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your liked objects`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removeLike = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removeLikeMutation.mutateAsync(params);
+//             console.log("Like removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addLike = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
+//         try {
+//             await addLikeMutation.mutateAsync(params);
+//             console.log("Like added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding like:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemoveLike = async () => {
+//         try {
+//             await removeLike({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully removed ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Disliked
+//      * 
+//      */
+
+//     const removeDisikeMutation = api.dislike.delete.useMutation();
+//     const addDislikeMutation = api.dislike.add.useMutation();
+
+//     const handleAddDislike = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addDislike({
+//                 type: currentType,
+//                 object: currentObject,
+//                 createdBy: "Brooke",
+//                 updatedBy: "Brooke"
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your disliked objects`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removeDislike = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removeDisikeMutation.mutateAsync(params);
+//             console.log("Dislike removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addDislike = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
+//         try {
+//             await addDislikeMutation.mutateAsync(params);
+//             console.log("Dislike added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding like:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemoveDislike = async () => {
+//         try {
+//             await removeDislike({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully removed ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Archived
+//      * 
+//      */
+
+//     const removeArchiveMutation = api.archive.delete.useMutation();
+//     const addArchiveMutation = api.archive.add.useMutation();
+
+//     const handleAddArchive = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addArchive({
+//                 type: currentType,
+//                 object: currentObject,
+//                 createdBy: "Brooke",
+//                 updatedBy: "Brooke"
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your archived objects`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removeArchive = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removeArchiveMutation.mutateAsync(params);
+//             console.log("Archived object removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addArchive = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
+//         try {
+//             await addArchiveMutation.mutateAsync(params);
+//             console.log("Archive added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding like:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemoveArchive = async () => {
+//         try {
+//             await removeArchive({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully removed ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Pinned
+//      * 
+//      */
+
+//     const removePinMutation = api.pin.delete.useMutation();
+//     const addPinMutation = api.pin.add.useMutation();
+
+//     const handleAddPin = async (currentType: string, currentObject: string) => {
+//         try {
+//             await addPin({
+//                 type: currentType,
+//                 object: currentObject,
+//                 createdBy: "Brooke",
+//                 updatedBy: "Brooke"
+//             });
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully added ${currentObject} to your archived objects`,
+//             });
+//             setOpenDialog(false);
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     const removePin = async (params: { id: number; key: string; type: string; object: string }) => {
+//         try {
+//             await removePinMutation.mutateAsync(params);
+//             console.log("Pin removed successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error removing save:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const addPin = async (params: { type: string; object: string; createdBy: string; updatedBy: string; }) => {
+//         try {
+//             await addPinMutation.mutateAsync(params);
+//             console.log("Pin added successfully");
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error adding like:", error.message);
+//             } else {
+//                 console.error("Unexpected error:", error);
+//             }
+//         }
+//     };
+
+//     const handleRemovePin = async () => {
+//         try {
+//             await removePin({ id: currentId!, key: currentKey!, type: currentType!, object: currentObject! });
+//             setOpenDialog(false);
+
+//             toast({
+//                 variant: "default",
+//                 title: `Successfully unpinned ${currentObject}`,
+//             });
+            
+//         } catch (error: unknown) {
+//             if (error instanceof Error) {
+//                 console.error("Error during removal:", error.message);
+//             } else {
+//                 console.error("Unexpected error during removal:", error);
+//             }
+//         }
+//     };
+
+//     /** Shared
+//      * 
+//      */
+
+
+
+//     const handleActionClick = (action: string, data: { model: string, id: number, key: string, type: string, object: string, label: string }) => {
+//         setCurrentAction(action);
+//         setCurrentModel(data.model);
+//         setCurrentId(data.id);
+//         setCurrentKey(data.key);
+//         setCurrentType(data.type);
+//         setCurrentObject(data.object);
+
+
+//         if (action === 'remove' || action === 'share') {
+//             setOpenDialog(true);
+//         } else {
+//             setOpenDialog(false);
+//             if (action === 'favorite') {
+//                 void handleAddFavorite(data.type, data.object);
+//             } else if (action === 'save') {
+//                 void handleAddSave(data.type, data.object);
+//             } else if (action === 'like') {
+//                 void handleAddLike(data.type, data.object);
+//             } else if (action === 'archive') {
+//                 void handleAddArchive(data.type, data.object);
+//             } else if (action === 'dislike') {
+//                 void handleAddDislike(data.type, data.object);
+//             } else if (action === 'pin') {
+//                 void handleAddPin(data.type, data.object);
+//             } else if (action === 'share') {
+//                 console.log('Share');
+//             }
+//         }
+//     };
+
+//     const getDialogDescription = (action: string): string => {
+//         switch (action) {
+//             case 'remove': return `Are you sure you want to remove ${currentObject}?`;
+//             case 'share': return `TODO: Share Panel`;
+//             case 'hide': return `Hide this ${currentObject}?`;
+//             case 'edit': return 'Edit this favorite';
+//             default: return '';
+//         }
+//     };
+
+//     const getDialogButtons = (action: string, model: string) => {
+//         switch (action) {
+//             case 'remove':
+//                 return (
+//                     <DialogFooter>
+                        
+//                         <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+//                         { currentModel === "favorite" ? 
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemoveFavorite();
+//                                 }}
+//                             >Remove</Button>
+//                         : currentModel === "like" ?
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemoveLike();
+//                                 }}
+//                             >Remove</Button>
+//                         : currentModel === "dislike" ?
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemoveDislike();
+//                                 }}
+//                             >Remove</Button>
+//                         : currentModel === "archive" ?
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemoveArchive();
+//                                 }}
+//                             >Remove</Button>
+//                         : currentModel === "pin" ?
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemovePin();
+//                                 }}
+//                             >Remove</Button>
+//                         :
+//                             <Button
+//                                 variant="destructive"
+//                                 onClick={async () => {
+//                                     await handleRemoveSave();
+//                                 }}
+//                             >Remove</Button>
+//                         }
+                        
+//                     </DialogFooter>
+//                 );
+//             case 'share':
+//                 return (
+//                     <DialogFooter>
+//                         <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+//                         <Button variant="default" onClick={() => setOpenDialog(false)}>Share</Button>
+//                     </DialogFooter>
+//                 );
+//             case 'hide':
+//                 return (
+//                     <DialogFooter>
+//                         <Button variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
+//                         <Button variant="destructive" onClick={() => setOpenDialog(false)}>Hide</Button>
+//                     </DialogFooter>
+//                 );
+//             default:
+//                 return null;
+//         }
+//     };
+
+//     return (
+//         <>
+//             <DropdownMenu>
+//                 <DropdownMenuTrigger asChild>
+//                     <Button variant="ghost" size="sm">
+//                         <EllipsisVerticalIcon aria-hidden="true" className="h-5 w-5" />
+//                     </Button>
+//                 </DropdownMenuTrigger>
+//                 <DropdownMenuContent>
+//                     {actions.map((action, idx) => (
+//                         <DropdownMenuItem key={idx}>
+//                             <a
+//                                 onClick={() => handleActionClick(action, {
+//                                     id: data.id,
+//                                     model: data.model,
+//                                     key: data.key,
+//                                     object: data.object,
+//                                     type: data.type,
+//                                     label: data.label
+//                                 })}
+//                                 className="block px-3 py-1 text-sm leading-6 text-gray-900 capitalize"
+//                             >
+//                                 {action}
+//                             </a>
+//                         </DropdownMenuItem>
+//                     ))}
+//                 </DropdownMenuContent>
+//             </DropdownMenu>
+
+//             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+//                 <DialogContent>
+//                     <DialogHeader>
+//                         <DialogTitle>{currentAction}</DialogTitle>
+//                         <DialogDescription>{getDialogDescription(currentAction ?? "")}</DialogDescription>
+//                     </DialogHeader>
+//                     {getDialogButtons(currentAction ?? "", currentType ?? "")}
+//                 </DialogContent>
+//             </Dialog>
+//         </>
+//     );
+// }

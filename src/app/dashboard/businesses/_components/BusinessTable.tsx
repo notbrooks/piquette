@@ -42,25 +42,28 @@ export default function BusinessTable({ profile, rows, setRows }: BusinessTableP
     return (
         <div>
             <div>
-            <TableComponent
-                data={rows}
-                config={{
-                    bulkActions: true,
-                    columns: [
-                    {
-                        label: "Name",
+                <TableComponent
+                    bulkActions={false}
+                    filter={{
                         accessorKey: "name",
-                        sort: true,
-                        helper: {
-                        type: "link",
-                        path: "/dashboard/businesses/:cuid", // Path with placeholder
+                        placeholder: "Filter names..."
+                    }}
+                    columns={[
+                        {
+                            label: "Name",
+                            accessorKey: "name",
+                            sort: true,
+                            helper: {
+                            type: "link",
+                            path: "/dashboard/businesses/:cuid", // Path with placeholder
+                            },
                         },
-                    },
-                    { label: "Status", accessorKey: "status", sort: true },
-                    { label: "Created At", accessorKey: "createdAt", sort: true },
-                    ],
-                }}
-            />
+                        { label: "Status", accessorKey: "status", sort: false },
+                        { label: "Created At", accessorKey: "createdAt", sort: true },
+                    ]}
+                    data={rows}
+                    
+                />
             </div>
         </div>
     );
