@@ -69,9 +69,10 @@ import { api } from "~/trpc/react";
 
 // Import UI components
 
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { Archive, ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { toast } from "~/hooks/use-toast";
 import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -98,12 +99,90 @@ import {
 // const handleEdit = (currentObject: string) => {
 //     console.log(`Edit ${currentObject}`); // Placeholder for edit logic
 // }
+import { ShareIcon, StarIcon, PinIcon, ThumbsUpIcon, ThumbsDownIcon, PrinterIcon, FileDown, DownloadIcon, ArchiveIcon, TrashIcon } from "lucide-react";
+import { Thumb } from "@radix-ui/react-scroll-area";
+function createRow(action: string) {
+    switch (action ) {
+        case "pin": 
+            return (
+                <Label className="flex items-center">
+                    <PinIcon className="h-4 w-4 mr-1" />
+                    Pin
+                </Label>
+            )
+        case "favorite":
+            return (
+                <Label className="flex items-center">
+                    <StarIcon className="h-4 w-4 mr-1" />
+                    Favorite    
+                </Label>
+            );
+        case "share":
+            return (
+                <Label className="flex items-center">
+                    <ShareIcon className="h-4 w-4 mr-1" />
+                    Share
+                </Label>
+            )
+        case "like":
+            return (
+                <Label className="flex items-center">
+                    <ThumbsUpIcon className="h-4 w-4 mr-1" />
+                    Like
+                </Label>
+            )
+        case "dislike":
+            return (
+                <Label className="flex items-center">
+                    <ThumbsDownIcon className="h-4 w-4 mr-1" />
+                    Dislike
+                </Label>
+            )
+        case "print":
+            return (
+                <Label className="flex items-center">
+                    <PrinterIcon className="h-4 w-4 mr-1" />
+                    Print
+                </Label>
+            )
+        case "export":
+            return (
+                <Label className="flex items-center">
+                    <FileDown className="h-4 w-4 mr-1" />
+                    Export
+                </Label>
+            )
+        case "download":
+            return (
+                <Label className="flex items-center">
+                    <DownloadIcon className="h-4 w-4 mr-1" />
+                    Download
+                </Label>
+            )
+        case "delete":
+            return (
+                <Label className="flex items-center">
+                    <TrashIcon className="h-4 w-4 mr-1" />
+                    Delete
+                </Label>
+            )
+        case "archive":
+            return (
+                <Label className="flex items-center">
+                    <ArchiveIcon className="h-4 w-4 mr-1" />
+                    Archive
+                </Label>
+            )
+        default:
+            return <span>Unknown: {action}</span>;
+    }
+}
 
 
 // Component props interface
 interface ActionsComponentProps {
     button: React.ReactNode;
-    actions: Array<"save" | "like" | "dislike" | "share" | "hide" | "edit" | "archive" | "favorite" | "remove" | "pin" | "download" | "delete">;
+    actions: Array<"save" | "like" | "dislike" | "share" | "hide" | "edit" | "archive" | "favorite" | "remove" | "pin" | "download" | "delete" | "print" | "export">;
     data: unknown[];
 }
 
@@ -116,7 +195,7 @@ export default function ActionsComponent({ button, actions, data }: ActionsCompo
             <DropdownMenuContent>
                 {actions && actions.length > 0 ? actions.map((action, idx) => (
                     <DropdownMenuItem key={idx}>
-                            {action}
+                            {createRow(action)}
                     </DropdownMenuItem>
                 )) : null}
             </DropdownMenuContent>

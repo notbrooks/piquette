@@ -153,7 +153,7 @@ export default function Documents({ profile, business }: MembersProps) {
               {title: "Document 2", type: "Invoice", created_at: "2023-01-01"},
               {title: "Document 3", type: "Invoice", created_at: "2023-01-01"},
             ]}
-            actions={["remove", "share", "hide", "edit", "favorite"]}
+            actions={["pin", "favorite", "like", "dislike", "archive", "delete", "share","download", "export", "print"]}
         />
     );
 }

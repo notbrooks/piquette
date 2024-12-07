@@ -47,7 +47,7 @@ export interface TableComponentProps {
     accessorKey: string;
     placeholder?: string;
   };
-  actions?: Array<"save" | "like" | "dislike" | "share" | "hide" | "edit" | "archive" | "favorite" | "remove" | "pin" | "download" | "delete">;
+  actions?: Array<"save" | "like" | "dislike" | "share" | "hide" | "edit" | "delete" | "archive" | "favorite" | "remove" | "pin" | "download" | "delete" | "print" | "export">;
 }
 
 export default function TableComponent({
