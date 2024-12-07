@@ -102,36 +102,23 @@ import {
 
 // Component props interface
 interface ActionsComponentProps {
+    button: React.ReactNode;
     actions: Array<"save" | "like" | "dislike" | "share" | "hide" | "edit" | "archive" | "favorite" | "remove" | "pin" | "download" | "delete">;
-    data: {
-        model: string;
-        id: number;
-        key: string;
-        object: string;
-        type: string;
-        label: string;
-    };
+    data: unknown[];
 }
 
-export default function ActionsComponent({ actions, data }: ActionsComponentProps) {
+export default function ActionsComponent({ button, actions, data }: ActionsComponentProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-            </Button>
+                {button}
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText('TEST')}
-            >
-                Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuContent>
+                {actions && actions.length > 0 ? actions.map((action, idx) => (
+                    <DropdownMenuItem key={idx}>
+                            {action}
+                    </DropdownMenuItem>
+                )) : null}
             </DropdownMenuContent>
         </DropdownMenu>
     )
