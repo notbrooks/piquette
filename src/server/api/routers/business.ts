@@ -89,6 +89,8 @@ export const businessRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ 
       profile: z.number(),
+      parent_type: z.string().optional(),
+      parent_id: z.number().optional(),
       name: z.string(),
       description: z.string(),
       location: z.string(),
@@ -120,6 +122,8 @@ export const businessRouter = createTRPCRouter({
 
       const business = await ctx.db.insert(businesses).values({
         profile: input.profile,
+        parentType: input.parent_type,
+        parentId: input.parent_id,
         cuid: createId(),
         token: nanoid(6),
         name: input.name,

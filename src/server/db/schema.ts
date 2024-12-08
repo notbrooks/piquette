@@ -8,6 +8,7 @@ import {
   pgTableCreator,
   pgEnum,
   timestamp,
+  jsonb,
   serial,
   text,
   varchar,
@@ -227,56 +228,81 @@ export const pins = createTable(
 /** Models
  *  Prifiles: Required object for the application to function.
  */
-export const profiles = createTable(
-  "profile",
-  {
-    id: serial("id").primaryKey(),
-    cuid: varchar("cuid", { length: 256 }).notNull(),
-    uuid: varchar("uuid").default(sql`gen_random_uuid()`),
-    token: varchar("token", { length: 32 }),
-    user: varchar("user", { length: 256 }).notNull(),
-    provider: varchar("provider", { length: 256 }).notNull(),
-    name: varchar("name", { length: 256 }),
-    description: text("description"),
-    type: varchar("type", { length: 16 }),
-    avatar: varchar("avatar", { length: 256 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    createdBy: varchar("created_by", { length: 256 }).notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
-    archivedAt: timestamp("archived_at", { withTimezone: true }),
-    archivedBy: varchar("archived_by", { length: 256 }),
-  },
-);
 
-export const businessStatusEnum = pgEnum('status', ['active', 'inactive', 'pending', 'archived']);
-export const businesses = createTable(
-  "business",
-  {
-    id: serial("id").primaryKey(),
-    cuid: varchar("cuid", { length: 256 }).notNull(),
-    token: varchar("token", { length: 32 }),
-    profile: serial("profile_id")
-      .references(() => profiles.id, { onDelete: "cascade" }),
-    status: businessStatusEnum("status").default("pending"),
-    name: varchar("name", { length: 256 }).notNull(),
-    location: varchar("location", { length: 256 }).notNull(),
-    url: varchar("url", { length: 256 }),
-    industry: varchar("industry", { length: 256 }),
-    description: text("description"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    createdBy: varchar("created_by", { length: 256 }).notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-    updatedBy: varchar("updated_by", { length: 256 }).notNull(),
-    archivedAt: timestamp("archived_at", { withTimezone: true }),
-    archivedBy: varchar("archived_by", { length: 256 }),
-  },
-);
+
+// Enums
+export const businessStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
+export const organizationStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
+
+// Profiles Table
+export const profiles = createTable("profile", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  uuid: varchar("uuid").default(sql`gen_random_uuid()`),
+  token: varchar("token", { length: 32 }),
+  user: varchar("user", { length: 256 }).notNull(),
+  provider: varchar("provider", { length: 256 }).notNull(),
+  name: varchar("name", { length: 256 }),
+  description: text("description"),
+  type: varchar("type", { length: 16 }),
+  avatar: varchar("avatar", { length: 256 }),
+  settings: jsonb("settings"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+});
+
+// Organizations Table
+export const organizations = createTable("organization", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  token: varchar("token", { length: 32 }),
+  profile: integer("profile_id")
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  status: organizationStatusEnum("status").default("pending"),
+  name: varchar("name", { length: 256 }).notNull(),
+  location: varchar("location", { length: 256 }).notNull(),
+  url: varchar("url", { length: 256 }),
+  industry: varchar("industry", { length: 256 }),
+  description: text("description"),
+  settings: jsonb("settings"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+});
+
+// Businesses Table
+export const businesses = createTable("business", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  token: varchar("token", { length: 32 }),
+  profile: integer("profile_id")
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  parentType: varchar("parent_type", { length: 16 }), // "profile" or "organization"
+  parentId: integer("parent_id"), // ID of the profile or organization
+  status: businessStatusEnum("status").default("pending"),
+  name: varchar("name", { length: 256 }).notNull(),
+  location: varchar("location", { length: 256 }).notNull(),
+  url: varchar("url", { length: 256 }),
+  industry: varchar("industry", { length: 256 }),
+  description: text("description"),
+  settings: jsonb("settings"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+});
