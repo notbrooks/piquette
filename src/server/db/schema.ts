@@ -233,6 +233,7 @@ export const pins = createTable(
 // Enums
 export const businessStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
 export const organizationStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
+export const assistaantTypeEnum = pgEnum("type", ["assistant", "marketing manager", "sales manager", "account manager", "finance manager", "hr manager", "it manager", "coach", "tutor"]);
 
 // Profiles Table
 export const profiles = createTable("profile", {
@@ -297,6 +298,29 @@ export const businesses = createTable("business", {
   industry: varchar("industry", { length: 256 }),
   description: text("description"),
   settings: jsonb("settings"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+});
+
+// Assistants Table
+export const assistants = createTable("assistant", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  token: varchar("token", { length: 32 }),
+  profile: integer("profile_id")
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  parentType: varchar("parent_type", { length: 16 }), // "profile" or "organization"
+  parentId: integer("parent_id"), // ID of the profile or organization
+  name: varchar("name", { length: 256 }).notNull(),
+  type: assistaantTypeEnum("status").default("assistant"),
+  description: text("description"),
+  prompt: text("prompt"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

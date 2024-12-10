@@ -7,7 +7,8 @@ import { archiveRouter } from "./routers/core/archive";
 import { pinRouter } from "./routers/core/pin";
 import { organizationRouter } from "./routers/organization";
 import { businessRouter } from "./routers/business";
-import { profileRouter } from "~/server/api/routers/profile";
+import { profileRouter } from "./routers/profile";
+import { assistantRouter } from "./routers/assistant";
 // Services
 import { openAIRouter } from "./routers/services/openai";
 // TODO: Add services here
@@ -31,6 +32,7 @@ export const appRouter = createTRPCRouter({
   organization: organizationRouter,
   business: businessRouter,
   profile: profileRouter,
+  assistant: assistantRouter,
   // Services
   openai: openAIRouter,
   // TODO: Add services here

@@ -1,17 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useProfile } from "~/context/profile";
 import type { Profile, Organization } from "~/types";
 import { api } from "~/trpc/react";
 import { OrganizationDetail } from "../_components";
 import { Settings, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function OrganizationDetailPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
     const params = useParams();
     const cuid = params?.cuid;
+
+    const [activeTab, setActiveTab] = useState("settings"); // State to track active tab
 
     if (!cuid || Array.isArray(cuid)) {
         return <p>No valid CUID provided.</p>;
@@ -30,8 +35,25 @@ export default function OrganizationDetailPage() {
             </div>
 
             {/* Tabs Component */}
-            <Tabs defaultValue="settings" className="max-w-full">
-                <TabsList className="flex justify-start">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-full">
+                {/* ShadCN Select for Small Viewports */}
+                <div className="md:hidden">
+                    <Select value={activeTab} onValueChange={setActiveTab}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a tab" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="settings">Settings</SelectItem>
+                            <SelectItem value="assistants">Assistants</SelectItem>
+                            <SelectItem value="businesses">Businesses</SelectItem>
+                            <SelectItem value="documents">Documents</SelectItem>
+                            <SelectItem value="members">Members</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* TabsList for Medium+ Viewports */}
+                <TabsList className="hidden md:flex justify-start">
                     <TabsTrigger value="settings">Settings</TabsTrigger>
                     <TabsTrigger value="assistants">Assistants</TabsTrigger>
                     <TabsTrigger value="businesses">Businesses</TabsTrigger>
