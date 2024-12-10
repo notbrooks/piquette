@@ -103,7 +103,7 @@ export default function Members({ profile, organization }: MembersProps) {
             button={
               <Dialog>
                   <DialogTrigger asChild>
-                  <Button variant="default" size="sm">
+                  <Button variant="default" size="default">
                       <CirclePlus className="h-4 w-4" />
                       New Member
                   </Button>
