@@ -5,7 +5,7 @@ import { useProfile } from "~/context/profile";
 import type { Profile, Organization } from "~/types";
 import { api } from "~/trpc/react";
 import { OrganizationDetail } from "../_components";
-import { Settings, Documents, Jobs, Members } from "./_components";
+import { Settings, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function OrganizationDetailPage() {
@@ -33,8 +33,9 @@ export default function OrganizationDetailPage() {
             <Tabs defaultValue="settings" className="max-w-full">
                 <TabsList className="flex justify-start">
                     <TabsTrigger value="settings">Settings</TabsTrigger>
+                    <TabsTrigger value="assistants">Assistants</TabsTrigger>
+                    <TabsTrigger value="businesses">Businesses</TabsTrigger>
                     <TabsTrigger value="documents">Documents</TabsTrigger>
-                    <TabsTrigger value="jobs">Jobs</TabsTrigger>
                     <TabsTrigger value="members">Members</TabsTrigger>
                 </TabsList>
 
@@ -44,14 +45,20 @@ export default function OrganizationDetailPage() {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="documents">
-                    <Documents profile={profile} organization={data as Organization} />
+                <TabsContent value="assistants">
+                    <div className="px-2">
+                        <Assistants profile={profile} organization={data as Organization} />
+                    </div>
                 </TabsContent>
 
-                <TabsContent value="jobs">
+                <TabsContent value="businesses">
                     <div className="px-2">
-                        <Jobs />
+                        <Businesses profile={profile} organization={data as Organization} />
                     </div>
+                </TabsContent>
+
+                <TabsContent value="documents">
+                    <Documents profile={profile} organization={data as Organization} />
                 </TabsContent>
 
                 <TabsContent value="members">

@@ -1,5 +1,6 @@
 export default interface FormDefinition {
     headline?: string
+    button?: React.ReactNode
     description?: string
     fields: Field[][]
     buttons: Button[]

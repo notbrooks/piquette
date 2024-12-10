@@ -45,7 +45,7 @@ export default function OrganizationDetail({ profile, organization }: Organizati
                                 <Slash />
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => window.history.back()}>Organiztions</BreadcrumbLink>
+                                <BreadcrumbLink onClick={() => window.history.back()}>Organizations</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator>
                                 <Slash />

@@ -44,7 +44,7 @@ interface FormComponentProps {
   isFormLoading: boolean;
 }
 
-export default function FormComponent({ onSubmit, isFormLoading,formConfig }: FormComponentProps) {
+export default function FormComponent({ onSubmit, isFormLoading, formConfig }: FormComponentProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [stateValue, setStateValue] = useState<Record<string, string>>({});
@@ -174,8 +174,9 @@ const handleFieldChange = (
       className="p-5 space-y-6 border bg-white border-gray-900/10 rounded-lg shadow-sm"
     >
       {formConfig.headline && (
-        <h2 className="text-base font-semibold leading-7 text-gray-900">
-          {formConfig.headline}
+        <h2 className="text-base font-semibold leading-7 text-gray-900 flex items-center justify-between">
+          <span>{formConfig.headline}</span>
+          <span>{formConfig.button}</span>
         </h2>
       )}
       {formConfig.description && (
