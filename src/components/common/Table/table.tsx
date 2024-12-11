@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import moment from 'moment';
+import Link from "next/link";
+
 import { ActionsComponent } from "~/components/common/Actions";
 import {
   ColumnDef,
@@ -36,6 +38,7 @@ export interface ColumnConfig {
     type: "link"
     path: string; // Path with placeholder
   };
+  template?: React.ReactNode;
 }
 
 export interface TableComponentProps {
@@ -63,6 +66,22 @@ export default function TableComponent({
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+    // Helper function to replace placeholders in the template
+    const evaluateTemplate = (template: React.ReactNode, rowData: Record<string, unknown>) => {
+      if (!template) return null;
+  
+      return React.cloneElement(
+        template as React.ReactElement,
+        {},
+        React.Children.map((template as React.ReactElement).props.children, (child) => {
+          if (typeof child === "string") {
+            return child.replace(/\[\[(.*?)\]\]/g, (_, key) => rowData[key.trim()]?.toString() || "");
+          }
+          return child;
+        })
+      );
+    };
+
   // Transform columns config into TanStack `ColumnDef`
   const tableColumns: ColumnDef<Record<string, unknown>>[] = React.useMemo(() => {
     const transformedColumns: ColumnDef<Record<string, unknown>>[] = columns.map((col) => ({
@@ -87,12 +106,16 @@ export default function TableComponent({
       cell: ({ row }) => {
         const value = row.getValue(col.accessorKey);
 
-        if (col.helper?.type === "link" && col.helper.path) {
+        if (col.template) {
+          return evaluateTemplate(col.template, row.original);
+        }
+
+        if (col.helper?.type === "link" && col.helper.path ) {
           const path = col.helper.path.replace(":cuid", row.original.cuid as string);
           return (
-            <a href={path} className="text-blue-500 underline">
+            <Link href={path} className="text-blue-500">
               {value as string}
-            </a>
+            </Link>
           );
         }
 
@@ -101,6 +124,7 @@ export default function TableComponent({
         }
 
         return <div>{value?.toString()}</div>;
+        
       },
       enableSorting: col.sort,
     }));

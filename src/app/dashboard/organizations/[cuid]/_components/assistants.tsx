@@ -141,18 +141,19 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     if (!profile || !organization) return "Loading...";
 
     if (isVisible === 'create') {
-        return (
-            <div>
-                <FormComponent formConfig={assistantFormConfig as FormDefinition} onSubmit={handleFormSubmit} isFormLoading={false} />
-            </div>
-        )
+        return <FormComponent formConfig={assistantFormConfig as FormDefinition} onSubmit={handleFormSubmit} isFormLoading={false} />
     }
 
     if (isVisible === 'detail') {
         return (
-            <div>
-                <Button variant="outline" onClick={() => setVisiblePanel('default')}>Cancel</Button>
-                DETAIL
+            <div className="p-5 space-y-6 border bg-white border-gray-900/10 rounded-lg shadow-sm">
+                <h2 className="text-base font-semibold leading-7 text-gray-900 flex items-center justify-between">
+                    <span>Name</span>
+                    <Button variant="outline" onClick={() => setVisiblePanel('default')}>Cancel</Button>
+                </h2>
+                <div>
+                    DETAIL
+                </div>
             </div>
         )
     }
@@ -169,10 +170,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
                     label: "Name",
                     accessorKey: "name",
                     sort: true,
-                    helper: {
-                    type: "link",
-                    path: "/dashboard/assistants/:cuid", // Path with placeholder
-                    },
+                    template: <span onClick = {() => setVisiblePanel("detail")} className="cursor-pointer text-blue-500">[[name]]</span>
                 },
                 { label: "Token", accessorKey: "token", sort: false},
                 { label: "Type", accessorKey: "type", sort: true },
@@ -185,7 +183,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
                 </Button>
             }
             data={data ?? []}
-            actions={["pin", "delete"]}
+            actions={["delete"]}
         />
     )
 }
