@@ -14,7 +14,7 @@ export default function BusinessIndexPage() {
 
     if (!profile)  return "Loading...";
     return (
-        <div className="space-y-5 container pb-5">
+        <div className="space-y-5 pb-5">
             <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
                 <h3 className="text-2xl font-light leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
                     Organizations

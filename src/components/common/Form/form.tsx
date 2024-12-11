@@ -40,11 +40,12 @@ interface FormComponentProps {
   object?: string;
   type?: string;
   formConfig: FormDefinition;
+  data?: Record<string, unknown>;
   onSubmit: (data: Record<string, unknown>) => void;
   isFormLoading: boolean;
 }
 
-export default function FormComponent({ onSubmit, isFormLoading, formConfig }: FormComponentProps) {
+export default function FormComponent({ onSubmit, isFormLoading, formConfig, data }: FormComponentProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [stateValue, setStateValue] = useState<Record<string, string>>({});
@@ -57,7 +58,7 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig }: F
       ...Object.fromEntries(
         formConfig.fields.flat().map((field) => [
           field.name,
-          field.type === "checkbox" ? [] : "",
+          data?.[field.name] ?? (field.type === "checkbox" ? [] : ""),
         ])
       ),
     },
@@ -77,12 +78,12 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig }: F
           validationErrors[field.name] = `${field.label} is required`;
         }
       });
-
+  
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         return; // Prevent submission
       }
-
+  
       // If no errors, proceed to submit
       setErrors({});
       onSubmit(value);
@@ -215,7 +216,7 @@ const handleFieldChange = (
                           <form.Field name={col.name}>
                             {(field) => (
                               <Input
-                                value={field.state.value}
+                                value={field.state.value as string}
                                 placeholder={col.placeholder ?? ""}
                                 onBlur={(e) =>
                                   handleFieldChange(col.name, e.target.value)
@@ -299,7 +300,7 @@ const handleFieldChange = (
                                   value={
                                     Array.isArray(field.state.value)
                                       ? field.state.value.join("")
-                                      : field.state.value
+                                      : (field.state.value as string)
                                   }
                                   onValueChange={(value) =>
                                     field.handleChange(value)

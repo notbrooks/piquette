@@ -6,7 +6,7 @@ import { useProfile } from "~/context/profile";
 import type { Profile, Organization } from "~/types";
 import { api } from "~/trpc/react";
 import { OrganizationDetail } from "../_components";
-import { Settings, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
+import { Details, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
@@ -29,7 +29,7 @@ export default function OrganizationDetailPage() {
     if (!profile) return "Loading...";
 
     return (
-        <div className="space-y-5 container pb-5">
+        <div className="space-y-5 pb-5">
             <div>
                 <OrganizationDetail profile={profile} organization={data as Organization} />
             </div>
@@ -37,15 +37,15 @@ export default function OrganizationDetailPage() {
             {/* Tabs Component */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-full">
                 {/* ShadCN Select for Small Viewports */}
-                <div className="md:hidden">
-                    <Select value={activeTab} onValueChange={setActiveTab}>
+                <div className="md:hidden mb-5">
+                    <Select value={activeTab ?? "settings"} onValueChange={setActiveTab}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a tab" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="settings">Settings</SelectItem>
-                            <SelectItem value="assistants">Assistants</SelectItem>
                             <SelectItem value="businesses">Businesses</SelectItem>
+                            <SelectItem value="orders">Orders</SelectItem>
                             <SelectItem value="documents">Documents</SelectItem>
                             <SelectItem value="members">Members</SelectItem>
                         </SelectContent>
@@ -53,22 +53,28 @@ export default function OrganizationDetailPage() {
                 </div>
 
                 {/* TabsList for Medium+ Viewports */}
-                <TabsList className="hidden md:flex justify-start">
+                <TabsList className="hidden md:flex justify-start mb-5">
                     <TabsTrigger value="settings">Settings</TabsTrigger>
-                    <TabsTrigger value="assistants">Assistants</TabsTrigger>
                     <TabsTrigger value="businesses">Businesses</TabsTrigger>
+                    <TabsTrigger value="orders">Orders</TabsTrigger>
                     <TabsTrigger value="documents">Documents</TabsTrigger>
                     <TabsTrigger value="members">Members</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="settings">
-                    <div className="px-2">
-                        <Settings />
-                    </div>
-                </TabsContent>
 
-                <TabsContent value="assistants">
-                    <div className="px-2">
+                <TabsContent value="settings">
+                    <div className="space-y-5 px-2">
+                        <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
+                            <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
+                                Organization Details
+                            </h3>            
+                        </div>
+                        <Details profile={profile} organization={data as Organization} />
+                        <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
+                            <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
+                                Assistants
+                            </h3>            
+                        </div>
                         <Assistants profile={profile} organization={data as Organization} />
                     </div>
                 </TabsContent>
@@ -76,6 +82,12 @@ export default function OrganizationDetailPage() {
                 <TabsContent value="businesses">
                     <div className="px-2">
                         <Businesses profile={profile} organization={data as Organization} />
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="orders">
+                    <div className="px-2">
+                        Orders
                     </div>
                 </TabsContent>
 

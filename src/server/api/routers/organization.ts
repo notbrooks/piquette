@@ -246,24 +246,84 @@ export const organizationRouter = createTRPCRouter({
           return organizationsDetail ?? null;  // Changed the return value to null if not found
       }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const organizations = await ctx.db.query.organizations.findMany({
-      orderBy: (organizations, { desc }) => [desc(organizations.createdAt)],
-    });
-
-    return organizations ?? null;
-    }),
-
-    /**
-     * adminGetAll
-     * Admin funcation to get all organizations
-     */
-    adminGetAll: publicProcedure.query(async ({ ctx }) => {
-      const organizations = await ctx.db.query.organizations.findMany({
-        orderBy: (organizations, { desc }) => [desc(organizations.createdAt)],
-      });
-      return organizations ?? null;
-    }),
+    update: publicProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          cuid: z.string(),
+          name: z.string(),
+          description: z.string(),
+          location: z.string(),
+          url: z.string(),
+          industry: z.string(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        // Step 1: Validate the user's authentication token
+        const authToken = ctx.headers.get("x-clerk-auth-token") as string | undefined;
+    
+        if (!authToken) {
+          throw new Error("Unauthorized: Missing auth token");
+        }
+    
+        let userId: string | null = null;
+        try {
+          const decodedToken = jwt.decode(authToken) as { sub: string } | null;
+    
+          if (!decodedToken?.sub) {
+            throw new Error("Unauthorized: Invalid token");
+          }
+    
+          userId = decodedToken.sub;
+        } catch (error) {
+          throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
+        }
+    
+        // Step 2: Find the user's profile
+        const profile = await ctx.db.query.profiles.findFirst({
+          where: eq(profiles.user, userId),
+        });
+    
+        if (!profile) {
+          console.error(`No profile found for user ID: ${userId}`);
+          throw new Error("User profile not found.");
+        }
+    
+        // Step 3: Update the organization
+        const updatedOrganization = await ctx.db
+          .update(organizations) // Correctly use `ctx.db.update` on `organizations`
+          .set({
+            name: input.name,
+            description: input.description,
+            location: input.location,
+            url: input.url,
+            industry: input.industry,
+            updatedBy: userId, // Ensure the `updatedBy` field is updated correctly
+          })
+          .where(
+            and(
+              eq(organizations.cuid, input.cuid), // Match the organization by CUID
+              eq(organizations.id, input.id) // Match the organization by ID
+            )
+          )
+          .returning({
+            id: organizations.id,
+            cuid: organizations.cuid,
+            name: organizations.name,
+            description: organizations.description,
+            location: organizations.location,
+            url: organizations.url,
+            industry: organizations.industry,
+            updatedAt: organizations.updatedAt,
+          });
+    
+        if (!updatedOrganization) {
+          console.error(`Failed to update organization with ID: ${input.id}`);
+          throw new Error("Failed to update organization.");
+        }
+    
+        return updatedOrganization[0]; // Return the first updated record
+      }),
 
 });
 

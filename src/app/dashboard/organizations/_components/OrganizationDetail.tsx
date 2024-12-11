@@ -56,22 +56,6 @@ export default function OrganizationDetail({ profile, organization }: Organizati
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
-                            
-                <div className="mt-3 sm:ml-4 sm:mt-0">
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="outline">Edit</Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                        <SheetTitle>Edit '{organization.name}'</SheetTitle>
-                        <SheetDescription>
-                            <FormComponent formConfig={organizationConfig.form} onSubmit={handleFormSubmit} isFormLoading={false} />
-                        </SheetDescription>
-                        </SheetHeader>
-                    </SheetContent>
-                </Sheet>
-                </div>
             </div>
             <div>
                 <p>{organization.description}</p>

@@ -41,17 +41,12 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     );
 
     const assistantFormConfig = {
-        headline: "Assistant Form",
+        headline: "New Assistant",
         description: "Create a new assistant for your organization",
         button: <Button variant="outline" onClick={() => setVisiblePanel("default")}>Cancel</Button>,
         fields: [
             [
                 { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your assistant" },
-            ],
-            [
-                { label: "Description", type: "text", name: "description", required: false, placeholder: "Describe your assistant.  This will help with creating the prompt." },
-            ],
-            [
                 { label: "Type", type: "select", name: "type", required: true, options: [
                     {label: "Assistant", value: "assistant"},
                     {label: "Marketing Manager", value: "marketing manager"},
@@ -62,7 +57,10 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
                     {label: "IT Manager", value: "it manager"},
                     {label: "Coach", value: "coach"},
                     {label: "Tutor", value: "tutor"}
-                ] },
+                ]},
+            ],
+            [
+                { label: "Description", type: "text", name: "description", required: false, placeholder: "Describe your assistant.  This will help with creating the prompt." },
             ],
             [
                 { label: "Prompt", type: "textarea", name: "prompt", required: true,
@@ -96,7 +94,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
                 await utils.assistant.invalidate(); // Await the invalidate query operation
             } catch (invalidateError) {
                 console.error("Failed to invalidate cache:", invalidateError);
-        }
+            }
         },
         onError: (err) => {
             toast({
@@ -159,7 +157,6 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
         )
     }
 
-    console.log(data);
     return (
         <TableComponent
             bulkActions={false}
