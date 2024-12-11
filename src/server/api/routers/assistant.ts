@@ -42,47 +42,46 @@ export const assistantRouter = createTRPCRouter({
           throw new Error("Unauthorized: Invalid token");
         }
 
-    userId = decodedToken.sub;  
-  } catch (error: unknown) {
-    throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
-  }
+        userId = decodedToken.sub;  
+      } catch (error: unknown) {
+        throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
+      }
 
-  const assistantTypeEnum = input.type as "assistant" | "marketing manager" | "sales manager" | "account manager" | "finance manager" | "hr manager" | "it manager" | "coach" | "tutor";
+      const assistantTypeEnum = input.type as "assistant" | "marketing manager" | "sales manager" | "account manager" | "finance manager" | "hr manager" | "it manager" | "coach" | "tutor";
 
-  // Step 3: Create Assistant in OpenAI
-  let openaiAssistantId: string;
-  try {
-    const openaiResponse = await openai.beta.assistants.create({
-      name: input.name,
-      description: input.description,
-      instructions: input.prompt,
-      tools: [],
-      model: "gpt-4",
-    });
-      
+      // Step 3: Create Assistant in OpenAI
+      let openaiAssistantId: string;
+      try {
+        const openaiResponse = await openai.beta.assistants.create({
+          name: input.name,
+          description: input.description,
+          instructions: input.prompt,
+          model: "gpt-4o",
+          tools: [{ type: "file_search" }],
+        });
+          
 
-    // Extract the assistant ID from the OpenAI response
-    openaiAssistantId = openaiResponse.id;
-  } catch (error) {
-    console.error("Error creating assistant in OpenAI:", error);
-    throw new Error("Failed to create assistant in OpenAI");
-  }
+        // Extract the assistant ID from the OpenAI response
+        openaiAssistantId = openaiResponse.id;
+      } catch (error) {
+        console.error("Error creating assistant in OpenAI:", error);
+        throw new Error("Failed to create assistant in OpenAI");
+      }
 
-  const assistant = await ctx.db.insert(assistants).values({
+      const assistant = await ctx.db.insert(assistants).values({
 
-    profile: input.profile,
-    parentType: input.parent_type,
-    parentId: input.parent_id,
-    cuid: createId(),
-    token: openaiAssistantId,
-    name: input.name,
-    type: assistantTypeEnum,
-    description: input.description,
-    prompt: input.prompt,
-    createdBy: userId,
-    updatedBy: userId,
-  });
-        ;
+        profile: input.profile,
+        parentType: input.parent_type,
+        parentId: input.parent_id,
+        cuid: createId(),
+        token: openaiAssistantId,
+        name: input.name,
+        type: assistantTypeEnum,
+        description: input.description,
+        prompt: input.prompt,
+        createdBy: userId,
+        updatedBy: userId,
+      });
 
       return assistant;
     }),
@@ -228,11 +227,23 @@ export const assistantRouter = createTRPCRouter({
               throw new Error("CUID is required");
           }
           
-          const businessesDetail = await ctx.db.query.businesses.findFirst({  // Changed findOne to findFirst
-              where: eq(businesses.cuid, input.cuid),  // Fixed the syntax for 'where'
+          const assistantDetail = await ctx.db.query.assistants.findFirst({  // Changed findOne to findFirst
+              where: eq(assistants.cuid, input.cuid),  // Fixed the syntax for 'where'
           });
 
-          return businessesDetail ?? null;  // Changed the return value to null if not found
+          // if there is an assistant and assistent token then get the documents from the OpenAI Assistant
+          if (assistantDetail && assistantDetail.token) {
+            
+            const remoteAssistant = await openai.beta.assistants.retrieve(assistantDetail.token as string);
+            
+            //check if remoteAssistant and its nested properties exist
+            if (remoteAssistant?.tool_resources?.file_search?.vector_store_ids) {
+              (assistantDetail as any).remoteAssistant = remoteAssistant;
+              
+            }
+          }
+
+          return assistantDetail ?? null;
       }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {

@@ -325,6 +325,14 @@ export const organizationRouter = createTRPCRouter({
         return updatedOrganization[0]; // Return the first updated record
       }),
 
+      getAll: publicProcedure.query(async ({ ctx }) => {
+        const organizations = await ctx.db.query.organizations.findMany({
+          orderBy: (organizations, { desc }) => [desc(organizations.createdAt)],
+        });
+
+        return organizations ?? null;
+        }),
+
 });
 
 

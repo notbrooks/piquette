@@ -56,7 +56,7 @@ export default function OrganizationDetailPage() {
                 <TabsList className="hidden md:flex justify-start mb-5">
                     <TabsTrigger value="settings">Settings</TabsTrigger>
                     <TabsTrigger value="businesses">Businesses</TabsTrigger>
-                    <TabsTrigger value="orders">Orders</TabsTrigger>
+                    <TabsTrigger value="deals">Deals</TabsTrigger>
                     <TabsTrigger value="documents">Documents</TabsTrigger>
                     <TabsTrigger value="members">Members</TabsTrigger>
                 </TabsList>
@@ -85,9 +85,9 @@ export default function OrganizationDetailPage() {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="orders">
+                <TabsContent value="deals">
                     <div className="px-2">
-                        Orders
+                        Deals
                     </div>
                 </TabsContent>
 

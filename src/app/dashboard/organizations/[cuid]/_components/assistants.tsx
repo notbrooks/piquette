@@ -34,7 +34,9 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     const utils = api.useUtils();
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setError] = useState<Record<string, string>>({});
-    const [isVisible, setVisiblePanel] = useState('default');
+    const [isVisibleAssistantPanel, setVisibleAssistantPanel] = useState('default');
+    const [selectedAssistant, setSelectedAssistant] = useState<Record<string, unknown> | null>(null);
+
 
     const { data, isError, isLoading: queryLoading } = api.assistant.getByOrganization.useQuery(
         { parent_id: organization.id, parent_type: "organization" }
@@ -43,7 +45,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     const assistantFormConfig = {
         headline: "New Assistant",
         description: "Create a new assistant for your organization",
-        button: <Button variant="outline" onClick={() => setVisiblePanel("default")}>Cancel</Button>,
+        button: <Button variant="outline" onClick={() => setVisibleAssistantPanel("default")}>Cancel</Button>,
         fields: [
             [
                 { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your assistant" },
@@ -81,7 +83,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     const createAssistantMutation = api.assistant.create.useMutation({
         onSuccess: async () => {
             // Switch back to the default view
-            setVisiblePanel('default')
+            setVisibleAssistantPanel('default')
 
             toast({
                 variant: "default",
@@ -99,7 +101,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
         onError: (err) => {
             toast({
                 variant: "destructive",
-                title: "Failed to Create Business",
+                title: "Failed to Create Assistant",
                 description: err.message,
             });
             setError({ message: err.message });
@@ -134,22 +136,22 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
             console.error("Error creating business:", err);
             setError({ message: "An error occurred while submitting the form." });
         } finally {
-            setVisiblePanel('create');
+            setVisibleAssistantPanel('create');
         }
     };
 
     if (!profile || !organization) return "Loading...";
 
-    if (isVisible === 'create') {
+    if (isVisibleAssistantPanel === 'create') {
         return <FormComponent formConfig={assistantFormConfig as FormDefinition} onSubmit={handleFormSubmit} isFormLoading={false} />
     }
 
-    if (isVisible === 'detail') {
+    if (isVisibleAssistantPanel === 'detail') {
         return (
             <div className="p-5 space-y-6 border bg-white border-gray-900/10 rounded-lg shadow-sm">
                 <h2 className="text-base font-semibold leading-7 text-gray-900 flex items-center justify-between">
                     <span>Name</span>
-                    <Button variant="outline" onClick={() => setVisiblePanel('default')}>Cancel</Button>
+                    <Button variant="outline" onClick={() => setVisibleAssistantPanel('default')}>Cancel</Button>
                 </h2>
                 <div>
                     DETAIL
@@ -170,14 +172,17 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
                     label: "Name",
                     accessorKey: "name",
                     sort: true,
-                    template: <span onClick = {() => setVisiblePanel("detail")} className="cursor-pointer text-blue-500">[[name]]</span>
+                    helper: {
+                        type: "link",
+                        path: "/dashboard/assistant/:cuid",
+                    }
                 },
                 { label: "Token", accessorKey: "token", sort: false},
                 { label: "Type", accessorKey: "type", sort: true },
                 { label: "Created At", accessorKey: "createdAt", sort: true },
             ]}
             button={
-                <Button variant="default" onClick={() => setVisiblePanel("create")}>
+                <Button variant="default" onClick={() => setVisibleAssistantPanel("create")}>
                     <CirclePlus className="h-4 w-4" />
                     New Assistant
                 </Button>
