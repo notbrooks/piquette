@@ -109,7 +109,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     });
 
     const handleFormSubmit = async (values: Record<string, unknown>) => {
-        if (!profile || !profile.id) {
+        if (!profile?.id) {
             console.error("Profile not found");
             return;
         }
@@ -119,7 +119,7 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
             // Mutate the business and get the returned record
             const newAssistant = await createAssistantMutation.mutateAsync({
                 profile: profile.id as unknown as number,
-                parent_id: organization.id as number,
+                parent_id: organization.id,
                 parent_type: 'organization',
                 name: values.name as string,
                 type: values.type as string,

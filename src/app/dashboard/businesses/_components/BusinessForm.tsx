@@ -54,7 +54,7 @@ export default function BusinessForm({ profile, setVisiblePanel, setRows }: Busi
     });
 
     const handleFormSubmit = async (values: Record<string, unknown>) => {
-        if (!profile || !profile.id) {
+        if (!profile?.id) {
             console.error("Profile not found");
             return;
         }

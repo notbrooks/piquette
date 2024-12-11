@@ -54,7 +54,7 @@ export default function OrganizationForm({ profile, setVisiblePanel, setRows }: 
     });
 
     const handleFormSubmit = async (values: Record<string, unknown>) => {
-        if (!profile || !profile.id) {
+        if (!profile?.id) {
             console.error("Profile not found");
             return;
         }

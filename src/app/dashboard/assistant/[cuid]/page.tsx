@@ -61,7 +61,7 @@ export default function AssistantPage() {
                             </TableRow>
                             <TableRow>
                                 <TableCell className="font-medium whitespace-nowrap">Updated</TableCell>
-                                <TableCell>{formatDate(data?.updatedAt as Date)}</TableCell>
+                                <TableCell>{formatDate(data!.updatedAt as Date)}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -71,7 +71,7 @@ export default function AssistantPage() {
 
             <div>
                 <h3 className="text-lg font-semibold">Documents</h3>
-                <pre>{JSON.stringify(data, null, 2)}</pre>
+                <pre>{JSON.stringify(data!, null, 2)}</pre>
             </div>
         </div>
     )

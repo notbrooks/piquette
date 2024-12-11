@@ -33,7 +33,7 @@ export default function Details({ profile, organization }: DetailsProps) {
     });
     
     const handleFormSubmit = async (data: Record<string, unknown>) => {
-        if (!profile || !profile.id) {
+        if (!profile?.id) {
             console.error("Profile not found");
             return;
         }
@@ -42,8 +42,8 @@ export default function Details({ profile, organization }: DetailsProps) {
         try {
             // Mutate the organization and get the returned record
             const updatedOrganization = await updateOrganizationMutation.mutateAsync({
-                id: organization.id as number,
-                cuid: organization.cuid as string,
+                id: organization.id,
+                cuid: organization.cuid,
                 name: data.name as string,
                 description: data.description as string,
                 location: data.location as string,

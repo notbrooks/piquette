@@ -3,12 +3,11 @@ import { api } from "~/trpc/react";
 import { TableComponent } from "~/components/common/Table";
 
 interface BusinessTableProps {
-    profile: {}; // Replace with the actual type if available
     rows: any[]; // This will be dynamically updated with data from the API
     setRows: React.Dispatch<React.SetStateAction<unknown[]>>; // Ensure the type matches your rows
 }
 
-export default function BusinessTable({ profile, rows, setRows }: BusinessTableProps) {
+export default function BusinessTable({ rows, setRows }: BusinessTableProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 

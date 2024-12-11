@@ -64,7 +64,7 @@ export default function BusinessDetail({ profile, business }: BusinessDetailProp
                     </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
-                        <SheetTitle>Edit '{business.name}'</SheetTitle>
+                        <SheetTitle>Edit &aspo;{business.name}&apos;</SheetTitle>
                         <SheetDescription>
                             <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={false} />
                         </SheetDescription>
