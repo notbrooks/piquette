@@ -1,8 +1,8 @@
-import { Profile, Organization } from "~/types";
+import { Profile, OrganizationBase } from "~/types";
 
 interface BusinessesProps {
     profile: Profile;
-    organization: Organization;
+    organization: OrganizationBase;
 }
 export default function Businesses( { profile, organization }: BusinessesProps) {
     return (

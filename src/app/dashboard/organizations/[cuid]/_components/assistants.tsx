@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { api } from "~/trpc/react"
 import { useRouter } from "next/navigation";
-import { Profile, Organization } from "~/types";
+import { Profile, OrganizationBase } from "~/types";
 import { TableComponent } from "~/components/common/Table"
 import { type FormDefinition, FormComponent } from "~/components/common/Form"
 
@@ -24,7 +24,7 @@ import { Form } from "react-hook-form";
 
 interface AssistantsProps {
     profile: Profile;
-    organization: Organization;
+    organization: OrganizationBase;
 }
 
 

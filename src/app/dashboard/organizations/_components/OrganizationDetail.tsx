@@ -5,7 +5,7 @@ import { organizationConfig } from '../organization.config'
 import FormComponent from "~/components/common/Form/form";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
-import type { Profile, Organization } from "~/types";
+import type { Profile, OrganizationBase } from "~/types";
 
 import { Slash } from "lucide-react";
 
@@ -22,7 +22,7 @@ import {
 
 interface OrganizationDetailProps {
     profile: Profile; // Update profile to the correct type if needed
-    organization: Organization;
+    organization: OrganizationBase;
 }
 
 export default function OrganizationDetail({ profile, organization }: OrganizationDetailProps) {

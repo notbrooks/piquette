@@ -1,5 +1,5 @@
 import { TableComponent } from "~/components/common/Table"
-import type { Profile, Organization } from "~/types";
+import type { Profile, OrganizationBase } from "~/types";
 
 import { Button } from "~/components/ui/button"
 import {
@@ -17,7 +17,7 @@ import { CirclePlus } from "lucide-react";
 
 interface MembersProps {
     profile: Profile;
-    organization: Organization;
+    organization: OrganizationBase;
 }
     
 export default function Members({ profile, organization }: MembersProps) {

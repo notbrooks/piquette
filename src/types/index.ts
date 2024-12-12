@@ -1,4 +1,4 @@
-import type { Organization } from "./organization.d";
+import type { OrganizationBase } from "./organization.d";
 import type { Profile } from "./profile.d";
 import type { Business } from "./business.d";
 
@@ -7,7 +7,7 @@ import type TableDefinition from "./common/table";
 
 export type {
     Business,
-    Organization,
+    OrganizationBase,
     Profile,
     FormDefinition,
     TableDefinition

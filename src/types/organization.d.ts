@@ -1,34 +1,11 @@
-import { profiles } from "~/server/db/schema";
+import { organizations } from "~/server/db/schema";
+import { InferModel } from "drizzle-orm";
 
-export type Organization = {
-    id: number;
-    cuid: string;
-    name: string;
-    location: string;
-    url: string;
-    industry: string;
-    description: string;
-    createdAt: Date;
-    createdBy: string;
-    updatedAt: Date;
-    updatedBy: string;
-    archivedAt: Date;
-    archivedBy: string;
-}
+// Base type from the schema
+export type OrganizationBase = InferModel<typeof organizations, "select">;
 
-export type OrganizationFormData = {
-    name: string;
-    location: string;
-    url: string;
-    industry: string;
-    description: string;
-}
+// Extend for form data
+export type OrganizationFormData = Omit<OrganizationBase, "id" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy" | "archivedAt" | "archivedBy">;
 
-export interface OrganizationTableRow {
-    id: string;
-    name: string;
-    location: string;
-    url: string;
-    industry: string;
-    description?: string;
-}
+// Extend for table rows
+export type OrganizationTableRow = Pick<OrganizationBase, "id" | "name" | "location" | "url" | "industry" | "description">;

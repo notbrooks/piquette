@@ -2,12 +2,12 @@ import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
 import { api } from "~/trpc/react";
 
-import { Profile, Organization } from "~/types";
+import { Profile, OrganizationBase } from "~/types";
 import FormComponent from "~/components/common/Form/form";
 
 interface DetailsProps {
     profile: Profile;
-    organization: Organization;
+    organization: OrganizationBase;
 }
 export default function Details({ profile, organization }: DetailsProps) {
     const [isLoading, setIsLoading] = useState(false);

@@ -43,17 +43,9 @@ export default function BusinessIndexPage() {
                 </div>
             </div>
             
-            {visiblePanel === 'create' && (
-                <div>
-                    <OrganizationForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />
-                </div>
-            )}
+            {visiblePanel === 'create' && <OrganizationForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />}
 
-            {visiblePanel === 'default' && (
-                <div>
-                    <OrganizationTable rows={rows} setRows={setRows} />
-                </div>
-            )}
+            {visiblePanel === 'default' && <OrganizationTable rows={rows} setRows={setRows} />}
             
         </div>
     );

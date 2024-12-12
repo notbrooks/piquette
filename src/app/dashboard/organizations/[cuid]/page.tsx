@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useProfile } from "~/context/profile";
-import type { Profile, Organization } from "~/types";
+import type { Profile, OrganizationBase } from "~/types";
 import { api } from "~/trpc/react";
 import { OrganizationDetail } from "../_components";
 import { Details, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
@@ -31,7 +31,7 @@ export default function OrganizationDetailPage() {
     return (
         <div className="space-y-5 pb-5">
             <div>
-                <OrganizationDetail profile={profile} organization={data as Organization} />
+                <OrganizationDetail profile={profile} organization={data as OrganizationBase} />
             </div>
 
             {/* Tabs Component */}
@@ -69,19 +69,19 @@ export default function OrganizationDetailPage() {
                                 Organization Details
                             </h3>            
                         </div>
-                        <Details profile={profile} organization={data as Organization} />
+                        <Details profile={profile} organization={data as OrganizationBase} />
                         <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
                             <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
                                 Assistants
                             </h3>            
                         </div>
-                        <Assistants profile={profile} organization={data as Organization} />
+                        <Assistants profile={profile} organization={data as OrganizationBase} />
                     </div>
                 </TabsContent>
 
                 <TabsContent value="businesses">
                     <div className="px-2">
-                        <Businesses profile={profile} organization={data as Organization} />
+                        <Businesses profile={profile} organization={data as OrganizationBase} />
                     </div>
                 </TabsContent>
 
@@ -92,11 +92,11 @@ export default function OrganizationDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="documents">
-                    <Documents profile={profile} organization={data as Organization} />
+                    <Documents profile={profile} organization={data as OrganizationBase} />
                 </TabsContent>
 
                 <TabsContent value="members">
-                    <Members profile={profile} organization={data as Organization} />
+                    <Members profile={profile} organization={data as OrganizationBase} />
                 </TabsContent>
             </Tabs>
         </div>

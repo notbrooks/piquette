@@ -13,3 +13,20 @@ export type Business = {
     archivedAt: Date;
     archivedBy: string;
 }
+
+export type BusinessFormData = {
+    name: string;
+    location: string;
+    url: string;
+    industry: string;
+    description: string;
+}
+
+export interface BusinessTableRow {
+    id: string;
+    name: string;
+    location: string;
+    url: string;
+    industry: string;
+    description?: string;
+}
