@@ -44,13 +44,13 @@ export default function BusinessIndexPage() {
             </div>
             
             {visiblePanel === 'create' && (
-                <div className="ease-in ">
+                <div>
                     <OrganizationForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />
                 </div>
             )}
 
             {visiblePanel === 'default' && (
-                <div className="ease-in">
+                <div>
                     <OrganizationTable rows={rows} setRows={setRows} />
                 </div>
             )}
