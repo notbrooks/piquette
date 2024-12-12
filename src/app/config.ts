@@ -15,6 +15,7 @@ import {
     FolderIcon as DocumentsIcon,
     Pin
 } from "lucide-react"
+import { industryOptions } from './dashboard/businesses/business.config'
 
 export const piquetteConfig = {
     meta: {
@@ -99,5 +100,22 @@ export const piquetteConfig = {
             {id: 'archive', label: 'Archived', href: '/dashboard/services/archived', icon: ArchiveBoxXMarkIcon},
             {id: 'shared', label: 'Shared', href: '/dashboard/services/shared', icon: ShareIcon},
         ],
+        industryOptions: [
+            { label: "Food Service", value: "food-service" },
+            { label: "Retail", value: "retail" },
+            { label: "Personal Care & Service", value: "personal-care" },
+            { label: "Building and Maintenance", value: "maintenance" },
+            { label: "Transportation", value: "transportation" },
+            { label: "Healthcare", value: "helthcare" },
+            { label: "Office and Administrative", value: "office" },
+            { label: "Manufacturing", value: "manufacturing" },
+            { label: "Protective Servics", value: "protective-service" },
+            { label: "Event Staff", value: "event-staff" },
+            { label: "Repair", value: "repair" },
+            { label: "Healthcare Practitioner", value: "healthcare-technician" },
+            { label: "Construction", value: "construction" },
+            { label: "Education", value: "education" },
+            { label: "Community and Social Service", value: "community" }
+        ]
     }
 }

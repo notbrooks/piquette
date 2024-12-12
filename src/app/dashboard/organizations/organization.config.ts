@@ -1,4 +1,4 @@
-import { Label } from "@headlessui/react";
+import { piquetteConfig } from "~/app/config";
 import {
     type FormDefinition,
     type TableDefinition
@@ -192,23 +192,7 @@ const organizationForm: FormDefinition = {
     [
       { label: "Website", type: "text", name: "url", required: false },
       {
-        label: "Industry", type: "select", name: "industry", required: true, options: [
-          { label: "Food Service", value: "food-service" },
-          { label: "Retail", value: "retail" },
-          { label: "Personal Care & Service", value: "personal-care" },
-          { label: "Building and Maintenance", value: "maintenance" },
-          { label: "Transportation", value: "transportation" },
-          { label: "Healthcare", value: "helthcare" },
-          { label: "Office and Administrative", value: "office" },
-          { label: "Manufacturing", value: "manufacturing" },
-          { label: "Protective Servics", value: "protective-service" },
-          { label: "Event Staff", value: "event-staff" },
-          { label: "Maintenance & Repair", value: "repair" },
-          { label: "Healthcare Practitioner", value: "healthcare-technician" },
-          { label: "Construction", value: "construction" },
-          { label: "Education", value: "education" },
-          { label: "Community and Social Service", value: "community" }
-        ],
+        label: "Industry", type: "select", name: "industry", required: true, options: piquetteConfig.app.industryOptions,
       },
     ],
     [
