@@ -1,10 +1,10 @@
 // Core
-import { likeRouter } from "./routers/core/like";
-import { dislikeRouter } from "./routers/core/dislike";
-import { favoriteRouter } from "./routers/core/favorite";
-import { saveRouter } from "./routers/core/save";
-import { archiveRouter } from "./routers/core/archive";
-import { pinRouter } from "./routers/core/pin";
+// import { likeRouter } from "./routers/core/like";
+// import { dislikeRouter } from "./routers/core/dislike";
+// import { favoriteRouter } from "./routers/core/favorite";
+// import { saveRouter } from "./routers/core/save";
+// import { archiveRouter } from "./routers/core/archive";
+// import { pinRouter } from "./routers/core/pin";
 import { organizationRouter } from "./routers/organization";
 import { businessRouter } from "./routers/business";
 import { profileRouter } from "./routers/profile";
@@ -23,12 +23,12 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   // Core
-  like: likeRouter,
-  dislike: dislikeRouter,
-  favorite: favoriteRouter,
-  save: saveRouter,
-  archive: archiveRouter,
-  pin: pinRouter,
+  // like: likeRouter,
+  // dislike: dislikeRouter,
+  // favorite: favoriteRouter,
+  // save: saveRouter,
+  // archive: archiveRouter,
+  // pin: pinRouter,
   organization: organizationRouter,
   business: businessRouter,
   profile: profileRouter,

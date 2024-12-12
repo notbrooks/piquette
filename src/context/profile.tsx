@@ -5,14 +5,14 @@ import { api } from "~/trpc/react";
 
 // Define types for the profile data
 interface Profile {
-  id: string;
+  id: string; // Assuming IDs are strings; adjust if needed
   name: string;
   email: string;
 }
 
 // Define types for the context
 interface ProfileContextType {
-  id: any;
+  id: string | null; // Replacing `any` with `string | null`
   profile: Profile | null;
   setCuid: React.Dispatch<React.SetStateAction<string | null>>;
   isLoading: boolean;
@@ -66,8 +66,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
       setError(queryError.message);
     } else {
       if (fetchedProfile) {
-        // Ensure fetchedProfile is valid before setting
-        setProfile(fetchedProfile as unknown as Profile); // Type assertion can also be avoided if TRPC types are configured
+        setProfile(fetchedProfile as unknown as Profile); // Type assertion can be avoided if TRPC types are configured
       } else {
         setProfile(null); // Handle null explicitly
       }
@@ -76,7 +75,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
   }, [fetchedProfile, queryLoading, queryError]);
 
   return (
-    <ProfileContext.Provider value={{ profile, setCuid, isLoading, error }}>
+    <ProfileContext.Provider value={{ id: cuid, profile, setCuid, isLoading, error }}>
       {children}
     </ProfileContext.Provider>
   );

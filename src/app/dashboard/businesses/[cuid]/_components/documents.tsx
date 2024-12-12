@@ -13,15 +13,10 @@ import {
 } from "~/components/ui/dialog"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { CirclePlus } from "lucide-react";
-import { title } from "process";
+import { CirclePlus } from "lucide-react"
 
-interface MembersProps {
-    profile: Profile;
-    business: Business;
-}
     
-export default function Documents({ profile, business }: MembersProps) {
+export default function Documents() {
     return (
         // <TableComponent
         //     data={[

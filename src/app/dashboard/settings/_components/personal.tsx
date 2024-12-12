@@ -1,20 +1,21 @@
 "use client"
 import { useState } from "react"
 import { useProfile } from "~/context/profile"
-import {toast} from "~/hooks/use-toast"
+import { toast } from "~/hooks/use-toast"
 import type { Profile } from "~/types";
 import { FormComponent } from '~/components/common/Form'
-import {settingsConfig} from '../settings.config'
-
+import { settingsConfig } from '../settings.config'
 
 export default function PersonalSettings() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
-    
+    const [isLoading, setIsLoading] = useState(false); // Ensure hooks are called at the top
+
     if (!profile) {
         return null;
     }
+
     const profileID = profile.id;
-    const [isLoading, setIsLoading] = useState(false);
+
     const handleFormSubmit = (data: Record<string, unknown>) => {
         // add profileId to the data
         data.profileId = profileID;
@@ -27,5 +28,11 @@ export default function PersonalSettings() {
         setIsLoading(false);
     }
 
-    return <FormComponent formConfig={settingsConfig.personalSettings} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
+    return (
+        <FormComponent
+            formConfig={settingsConfig.personalSettings}
+            onSubmit={handleFormSubmit}
+            isFormLoading={isLoading}
+        />
+    );
 }

@@ -1,7 +1,6 @@
 // components/builder.tsx
 "use client";
 import "./builder-registry";
-import { env } from "~/env";
 
 import { type ComponentProps } from "react";
 import { BuilderComponent, useIsPreviewing } from "@builder.io/react"; 

@@ -1,10 +1,10 @@
 "use client" 
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react"
 import { useRouter } from "next/navigation";
 import { FormComponent } from "~/components/common/";
-import { Profile } from "~/types";
+import type { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
 
 import { businessConfig } from '../business.config'

@@ -14,19 +14,27 @@ const s3 = new S3Client({
 export async function UploadFile(fileBuffer: Buffer, fileName: string) {
     console.log("Starting file upload to S3");
   
-    const params = {
-      Bucket: env.AWS_S3_BUCKET!,
-      Key: fileName,
-      Body: fileBuffer,
+    const params: {
+        Bucket: string;
+        Key: string;
+        Body: Buffer;
+    } = {
+        Bucket: env.AWS_S3_BUCKET!,
+        Key: fileName,
+        Body: fileBuffer,
     };
   
     try {
-      const command = new PutObjectCommand(params);
-      await s3.send(command);
-  
-      return `https://${env.AWS_S3_BUCKET}.s3.amazonaws.com/${fileName}`;
-    } catch (error) {
-      console.error("Error during file upload to S3:", error);
-      throw error;
+        const command = new PutObjectCommand(params);
+        await s3.send(command);
+
+        return `https://${env.AWS_S3_BUCKET}.s3.amazonaws.com/${fileName}`;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error("Error during file upload to S3:", error.message);
+        } else {
+            console.error("Unexpected error during file upload to S3:", error);
+        }
+        throw error;
     }
-  }
+}

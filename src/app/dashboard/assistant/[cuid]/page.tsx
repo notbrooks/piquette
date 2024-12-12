@@ -7,7 +7,7 @@ import { formatDate } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { Table, TableBody, TableCell, TableRow } from "~/components/ui/table";
-import { Card, CardContent, CardHeader, CardFooter } from "~/components/ui/card"
+import { Card, CardContent, CardHeader, CardFooter } from "~/components/ui/card";
 
 import { Button } from "~/components/ui/button";
 
@@ -29,7 +29,9 @@ export default function AssistantPage() {
         <div className="space-y-5">
             <div className="pb-5 flex space-x-3 items-center border-b border-gray-200 mb-5">
                 <div>
-                    <Button variant="outline" onClick={() => window.history.back()}>Back</Button>
+                    <Button variant="outline" onClick={() => window.history.back()}>
+                        Back
+                    </Button>
                 </div>
                 <h2 className="text-xl font-medium">{data?.name}</h2>
             </div>
@@ -57,11 +59,11 @@ export default function AssistantPage() {
                             </TableRow>
                             <TableRow>
                                 <TableCell className="font-medium whitespace-nowrap">Created</TableCell>
-                                <TableCell>{formatDate(data?.createdAt as Date)}</TableCell>
+                                <TableCell>{data?.createdAt ? formatDate(data.createdAt) : "N/A"}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="font-medium whitespace-nowrap">Updated</TableCell>
-                                <TableCell>{formatDate(data!.updatedAt as Date)}</TableCell>
+                                <TableCell>{data?.updatedAt ? formatDate(data.updatedAt) : "N/A"}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -71,8 +73,8 @@ export default function AssistantPage() {
 
             <div>
                 <h3 className="text-lg font-semibold">Documents</h3>
-                <pre>{JSON.stringify(data!, null, 2)}</pre>
+                <pre>{JSON.stringify(data ?? {}, null, 2)}</pre>
             </div>
         </div>
-    )
+    );
 }

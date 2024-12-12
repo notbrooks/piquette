@@ -132,8 +132,12 @@ export const organizationRouter = createTRPCRouter({
           createdBy: userId,
           updatedBy: userId,
         })
-        .catch((error) => {
-          console.error("Error inserting organization:", error.message);
+        .catch((error: unknown) => {
+          if (error instanceof Error) {
+            console.error("Error inserting organization:", error.message);
+          } else {
+            console.error("Unexpected error inserting organization:", error);
+          }
           throw new Error("Failed to create organization");
         });
 

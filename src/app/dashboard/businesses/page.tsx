@@ -50,7 +50,7 @@ export default function BusinessIndexPage() {
 
             {visiblePanel === 'default' && (
                 <div className="ease-in">
-                    <BusinessTable profile={profile} rows={rows} setRows={setRows} />
+                    {/* <BusinessTable  rows={rows as unknown[]} setRows={setRows} /> */}
                 </div>
             )}
             

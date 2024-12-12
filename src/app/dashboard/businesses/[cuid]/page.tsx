@@ -26,7 +26,7 @@ export default function BusinessDetailPage() {
     return (
         <div className="space-y-5 container pb-5">
             <div>
-                <BusinessDetail profile={profile} business={data as Business} />
+                <BusinessDetail business={data as Business} />
             </div>
 
             {/* Tabs Component */}
@@ -45,7 +45,7 @@ export default function BusinessDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="documents">
-                    <Documents profile={profile} business={data as Business} />
+                    <Documents/>
                 </TabsContent>
 
                 <TabsContent value="jobs">
@@ -55,7 +55,7 @@ export default function BusinessDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="members">
-                    <Members profile={profile} business={data as Business} />
+                    <Members />
                 </TabsContent>
             </Tabs>
         </div>

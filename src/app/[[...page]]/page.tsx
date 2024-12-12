@@ -16,7 +16,6 @@ interface PageProps {
 }
 
 export default async function Page(props: PageProps) {
-  const { params } = await Promise.resolve(props); // Ensure `params` is handled as a possible Promise
   const model = "page";
 
   const content: BuilderContent | null = await builder.get("page", {

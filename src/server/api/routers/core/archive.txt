@@ -44,7 +44,6 @@ export const archiveRouter = createTRPCRouter({
       }
 
       await ctx.db.insert(archives).values({
-        type: input.type,
         object: input.object,
         createdBy: userId,
         updatedBy: userId,
@@ -62,7 +61,6 @@ export const archiveRouter = createTRPCRouter({
         and(
           eq(archives.id, input.id),
           eq(archives.cuid, input.key),
-          eq(archives.type, input.type),
         )
       );
       console.log( input.id, input.key, input.type)
@@ -77,7 +75,7 @@ export const archiveRouter = createTRPCRouter({
     }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(archives).values({
-        type: input.type,
+        
         object: input.object,
         createdBy: input.createdBy,
         updatedBy: input.updatedBy,

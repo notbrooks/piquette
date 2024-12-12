@@ -1,11 +1,10 @@
 import { eq, and, desc } from "drizzle-orm";
-import { nanoid } from "nanoid";
-import  jwt from "jsonwebtoken";
 import { z } from "zod";
 import { createId } from "@paralleldrive/cuid2";
+import jwt from "jsonwebtoken";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { assistants, businesses, profiles } from "~/server/db/schema";
+import { assistants } from "~/server/db/schema";
 import openai from "~/lib/openai";
 
 export const assistantRouter = createTRPCRouter({
@@ -22,34 +21,35 @@ export const assistantRouter = createTRPCRouter({
       type: z.string(),
       description: z.string(),
       prompt: z.string(),
-      
     }))
     .mutation(async ({ ctx, input }) => {
-
-      // Get the token from the headers
-      const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
+      const authToken = ctx.headers.get("x-clerk-auth-token");
 
       if (!authToken) {
         throw new Error("Unauthorized: Missing auth token");
       }
 
-      // Decode the token to get the `sub` (userId)
-      let userId: string | null = null;
+      let userId: string | null;
       try {
         const decodedToken = jwt.decode(authToken) as { sub: string } | null;
-
-        if (!decodedToken?.sub) {
-          throw new Error("Unauthorized: Invalid token");
-        }
-
-        userId = decodedToken.sub;  
-      } catch (error: unknown) {
+        if (!decodedToken?.sub) throw new Error("Unauthorized: Invalid token");
+        userId = decodedToken.sub;
+      } catch (error) {
         throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
       }
 
-      const assistantTypeEnum = input.type as "assistant" | "marketing manager" | "sales manager" | "account manager" | "finance manager" | "hr manager" | "it manager" | "coach" | "tutor";
+      const assistantTypeEnum = input.type as 
+        | "assistant"
+        | "marketing manager"
+        | "sales manager"
+        | "account manager"
+        | "finance manager"
+        | "hr manager"
+        | "it manager"
+        | "coach"
+        | "tutor";
 
-      // Step 3: Create Assistant in OpenAI
+      // Create Assistant in OpenAI
       let openaiAssistantId: string;
       try {
         const openaiResponse = await openai.beta.assistants.create({
@@ -59,9 +59,7 @@ export const assistantRouter = createTRPCRouter({
           model: "gpt-4o",
           tools: [{ type: "file_search" }],
         });
-          
 
-        // Extract the assistant ID from the OpenAI response
         openaiAssistantId = openaiResponse.id;
       } catch (error) {
         console.error("Error creating assistant in OpenAI:", error);
@@ -69,7 +67,6 @@ export const assistantRouter = createTRPCRouter({
       }
 
       const assistant = await ctx.db.insert(assistants).values({
-
         profile: input.profile,
         parentType: input.parent_type,
         parentId: input.parent_id,
@@ -86,185 +83,81 @@ export const assistantRouter = createTRPCRouter({
       return assistant;
     }),
 
-    getByOrganization: publicProcedure
-        .input(z.object({
-          parent_id: z.number().min(1),
-          parent_type: z.string().min(1)
-        }))
-
-    
-        .query(async ({ ctx, input }) => {
-
-        // Get the token from the headers
-        const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
-
-        if (!authToken) {
-            throw new Error("Unauthorized: Missing auth token");
-        }
-
-        // Decode the token to get the `sub` (userId)
-        let userId: string | null = null;
-        try {
-            const decodedToken = jwt.decode(authToken) as { sub: string } | null;
-
-            if (!decodedToken?.sub) {
-            throw new Error("Unauthorized: Invalid token");
-            }
-
-            userId = decodedToken.sub;  
-        } catch (error: unknown) {
-            throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
-        }
-
-        const assistantsList = await ctx.db.select()
-          .from(assistants)
-          .where(
-            and(
-              eq(assistants.parentId, input.parent_id),
-              eq(assistants.parentType, input.parent_type)
-            )
+  /**
+   * Get By Organization
+   */
+  getByOrganization: publicProcedure
+    .input(z.object({
+      parent_id: z.number().min(1),
+      parent_type: z.string().min(1),
+    }))
+    .query(async ({ ctx, input }) => {
+      const assistantsList = await ctx.db.select()
+        .from(assistants)
+        .where(
+          and(
+            eq(assistants.parentId, input.parent_id),
+            eq(assistants.parentType, input.parent_type)
           )
-          .orderBy(assistants.createdAt, desc(assistants.createdAt));
+        )
+        .orderBy(assistants.createdAt, desc(assistants.createdAt));
 
-          return assistantsList ?? [];  
-        }),
-    /**
-     * GetByUser
-     */
-    getByUser: publicProcedure
-        .input(z.object({
-        createdBy: z.string().min(1)
-        }))
-
-    
-    .query(async ({ ctx, input }) => {
-
-        // Get the token from the headers
-        const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
-
-        if (!authToken) {
-            throw new Error("Unauthorized: Missing auth token");
-        }
-
-        // Decode the token to get the `sub` (userId)
-        let userId: string | null = null;
-        try {
-            const decodedToken = jwt.decode(authToken) as { sub: string } | null;
-
-            if (!decodedToken?.sub) {
-            throw new Error("Unauthorized: Invalid token");
-            }
-
-            userId = decodedToken.sub;  
-        } catch (error: unknown) {
-            throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
-        }
-
-        const businessesList = await ctx.db.select()
-            .from(businesses)
-            .where(eq(businesses.createdBy, input.createdBy))  // Corrected where clause
-            .orderBy(businesses.createdAt, desc(businesses.createdAt))
-
-        return businessesList ?? [];
-        }),
-
-    /**
-     * GetByOwner
-     */
-    getByOwner: publicProcedure
-        .input(z.object({
-        owner: z.string().min(1)
-        }))
-
-
-    .query(async ({ ctx, input }) => {
-
-    // Get the token from the headers
-    const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
-
-    if (!authToken) {
-        throw new Error("Unauthorized: Missing auth token");
-    }
-
-    // Decode the token to get the `sub` (userId)
-    let userId: string | null = null;
-    try {
-        const decodedToken = jwt.decode(authToken) as { sub: string } | null;
-
-        if (!decodedToken?.sub) {
-        throw new Error("Unauthorized: Invalid token");
-        }
-
-        userId = decodedToken.sub;  
-    } catch (error: unknown) {
-        throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
-    }
-
-    const businessesList = await ctx.db.select()
-        .from(businesses)
-        .where(eq(businesses.createdBy, input.owner))  // Corrected where clause
-        .orderBy(businesses.createdAt, desc(businesses.createdAt))
-
-    return businessesList ?? [];
+      return assistantsList ?? [];
     }),
 
-    /**
-     * GetByCUID
-     */
-    getByCUID: publicProcedure
-      .input(z.object({
-        cuid: z.string().optional()
-      }))
+  /**
+   * Get By CUID
+   */
+  getByCUID: publicProcedure
+    .input(z.object({
+      cuid: z.string().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      if (!input.cuid) {
+        throw new Error("CUID is required");
+      }
 
-      .query(async ({ ctx, input }) => {
+      const assistantDetail = await ctx.db.query.assistants.findFirst({
+        where: eq(assistants.cuid, input.cuid),
+      });
 
-          // Get the token from the headers
-          const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
+      if (assistantDetail?.token) {
+        try {
+          const remoteAssistant = await openai.beta.assistants.retrieve(assistantDetail.token);
 
-          
-
-          if (!input.cuid) {
-              throw new Error("CUID is required");
+          if (remoteAssistant?.tool_resources?.file_search?.vector_store_ids) {
+            return {
+              ...assistantDetail,
+              remoteAssistant,
+            };
           }
-          
-          const assistantDetail = await ctx.db.query.assistants.findFirst({  // Changed findOne to findFirst
-              where: eq(assistants.cuid, input.cuid),  // Fixed the syntax for 'where'
-          });
+        } catch (error) {
+          console.error("Error retrieving remote assistant details:", error);
+        }
+      }
 
-          // if there is an assistant and assistent token then get the documents from the OpenAI Assistant
-          if (assistantDetail && assistantDetail.token) {
-            
-            const remoteAssistant = await openai.beta.assistants.retrieve(assistantDetail.token as string);
-            
-            //check if remoteAssistant and its nested properties exist
-            if (remoteAssistant?.tool_resources?.file_search?.vector_store_ids) {
-              (assistantDetail as any).remoteAssistant = remoteAssistant;
-              
-            }
-          }
+      return assistantDetail ?? null;
+    }),
 
-          return assistantDetail ?? null;
-      }),
-
+  /**
+   * Get All
+   */
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const businesses = await ctx.db.query.businesses.findMany({
-      orderBy: (businesses, { desc }) => [desc(businesses.createdAt)],
+    const assistantsList = await ctx.db.query.assistants.findMany({
+      orderBy: (assistants, { desc }) => [desc(assistants.createdAt)],
     });
 
-    return businesses ?? null;
-    }),
+    return assistantsList ?? [];
+  }),
 
-    /**
-     * adminGetAll
-     * Admin funcation to get all businesses
-     */
-    adminGetAll: publicProcedure.query(async ({ ctx }) => {
-      const businesses = await ctx.db.query.businesses.findMany({
-        orderBy: (businesses, { desc }) => [desc(businesses.createdAt)],
-      });
-      return businesses ?? null;
-    }),
+  /**
+   * Admin Get All
+   */
+  adminGetAll: publicProcedure.query(async ({ ctx }) => {
+    const assistantsList = await ctx.db.query.assistants.findMany({
+      orderBy: (assistants, { desc }) => [desc(assistants.createdAt)],
+    });
 
+    return assistantsList ?? [];
+  }),
 });
-
-

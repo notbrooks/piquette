@@ -15,12 +15,8 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { CirclePlus } from "lucide-react";
 
-interface MembersProps {
-    profile: Profile;
-    business: Business;
-}
     
-export default function Members({ profile, business }: MembersProps) {
+export default function Members() {
     return (
         // <TableComponent
         //     data={[]}
@@ -112,7 +108,7 @@ export default function Members({ profile, business }: MembersProps) {
                   <DialogHeader>
                       <DialogTitle>New Member</DialogTitle>
                       <DialogDescription>
-                      Make changes to your profile here. Click save when you're done.
+                      Make changes to your profile here. Click save when you&apos;re done.
                       </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">

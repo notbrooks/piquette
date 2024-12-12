@@ -1,5 +1,3 @@
-import { useParams } from 'next/navigation';
-import { api } from "~/trpc/react";
 import { businessConfig } from '../business.config'
 
 import FormComponent from "~/components/common/Form/form";
@@ -16,16 +14,14 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-    SheetFooter,
-    SheetClose
+
   } from "~/components/ui/sheet"
 
 interface BusinessDetailProps {
-    profile: Profile; // Update profile to the correct type if needed
     business: Business;
 }
 
-export default function BusinessDetail({ profile, business }: BusinessDetailProps) {
+export default function BusinessDetail({  business }: BusinessDetailProps) {
     
 
     const handleFormSubmit = (data: Record<string, unknown>) => {

@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { TableComponent } from "~/components/common/Table";
 
+interface BusinessRow {
+    id: string; // Replace with the actual field types returned by your API
+    name: string;
+    status: string;
+    createdAt: string | Date; // Adjust based on your data format
+}
+
 interface BusinessTableProps {
-    rows: any[]; // This will be dynamically updated with data from the API
+    rows: BusinessRow[]; // This will be dynamically updated with data from the API
     setRows: React.Dispatch<React.SetStateAction<unknown[]>>; // Ensure the type matches your rows
 }
 
@@ -60,7 +67,7 @@ export default function BusinessTable({ rows, setRows }: BusinessTableProps) {
                         { label: "Status", accessorKey: "status", sort: false },
                         { label: "Created At", accessorKey: "createdAt", sort: true },
                     ]}
-                    data={rows}
+                    data={rows as unknown as Record<string, unknown>[]}
                     
                 />
             </div>
