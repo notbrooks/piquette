@@ -31,7 +31,7 @@ export default function OrganizationDetailPage() {
     return (
         <div className="space-y-5 pb-5">
             <div>
-                <OrganizationDetail profile={profile} organization={data as OrganizationBase} />
+                <OrganizationDetail organization={data as OrganizationBase} />
             </div>
 
             {/* Tabs Component */}
