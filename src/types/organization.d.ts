@@ -24,7 +24,7 @@ export type OrganizationFormData = {
     description: string;
 }
 
-export interface OrganizationTableData {
+export interface OrganizationTableRow {
     id: string;
     name: string;
     location: string;

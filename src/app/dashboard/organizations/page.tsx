@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useProfile } from "~/context/profile";
 import type { Profile } from "~/types";
 import { OrganizationForm, OrganizationTable } from "./_components";
+import type { OrganizationTableRow } from "~/types/organization";
 
 import { Button } from "~/components/ui/button";
 
 export default function BusinessIndexPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
-    const [rows, setRows] = useState<unknown[]>([]); // State to hold the table data
+    const [rows, setRows] = useState < OrganizationTableRow[] > ([]); // State to hold the table data
     const [visiblePanel, setVisiblePanel] = useState('default'); // State to toggle between table and form
 
     if (!profile)  return "Loading...";
@@ -50,7 +51,7 @@ export default function BusinessIndexPage() {
 
             {visiblePanel === 'default' && (
                 <div className="ease-in">
-                    {/* <OrganizationTable profile={profile} rows={rows} setRows={setRows} /> */}
+                    <OrganizationTable rows={rows} setRows={setRows} />
                 </div>
             )}
             

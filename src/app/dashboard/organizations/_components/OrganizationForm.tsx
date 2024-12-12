@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { FormComponent } from "~/components/common/";
 import { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
-
+import type { OrganizationTableRow } from "~/types/organization";
 import { organizationConfig } from '../organization.config'
 
 interface OrganizationFormProps {
     profile: Profile
     setVisiblePanel: React.Dispatch<React.SetStateAction<string>>
-    setRows: React.Dispatch<React.SetStateAction<unknown[]>>;
+    setRows: React.Dispatch<React.SetStateAction<OrganizationTableRow[]>>; 
 }
 
 
@@ -67,18 +67,18 @@ export default function OrganizationForm({ profile, setVisiblePanel, setRows }: 
                 name: values.name as string,
                 description: values.description as string,
                 location: values.location as string,
-                url: values.url as string,
-                industry: values.industry as string,
-            });
-    
-            // Add the new business record to the rows
-            setRows((prevRows) => [newOrganization, ...prevRows]);
-    
-            // Switch back to the default view
-            setVisiblePanel("default");
+            url: values.url as string,
+            industry: values.industry as string,
+        });
+
+        // Add the new business record to the rows
+        setRows((prevRows: OrganizationTableRow[]) => [newOrganization as unknown as OrganizationTableRow, ...prevRows]);
+
+        // Switch back to the default view
+        setVisiblePanel("default");
         } catch (err) {
-            console.error("Error creating business:", err);
-            setError({ message: "An error occurred while submitting the form." });
+        console.error("Error creating business:", err);
+        setError({ message: "An error occurred while submitting the form." });
         } finally {
             setIsLoading(false);
         }

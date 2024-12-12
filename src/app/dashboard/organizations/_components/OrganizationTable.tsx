@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { TableComponent } from "~/components/common/Table";
-
-interface RowData {
-    id: string; // Replace with the actual type of the `id` field
-    name: string;
-    status: string;
-    createdAt: string | Date; // Adjust based on the actual type
-}
+import type { OrganizationTableRow} from "~/types/organization";
 
 interface BusinessTableProps {
-    rows: RowData[]; // Use the RowData type instead of `any`
-    setRows: React.Dispatch<React.SetStateAction<RowData[]>>; // Ensure the type matches your rows
+    rows: OrganizationTableRow[]; // Use the RowData type instead of `any`
+    setRows: React.Dispatch<React.SetStateAction<OrganizationTableRow[]>>; // Ensure the type matches your rows
 }
 
-export default function BusinessTable({ rows, setRows }: BusinessTableProps) {
+export default function OrganizationTable({ rows, setRows }: BusinessTableProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,11 +23,11 @@ export default function BusinessTable({ rows, setRows }: BusinessTableProps) {
         }
 
         if (isError) {
-            setError("Failed to load businesses.");
+            setError("Failed to load organizations.");
         }
 
         if (data) {
-            setRows(data as unknown as RowData[]); // Type cast the fetched data to RowData[]
+            setRows(data as unknown as OrganizationTableRow[]); // Populate rows with the fetched data
         }
     }, [data, isError, queryLoading, setRows]);
 
