@@ -1,11 +1,12 @@
 "use client" 
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react"
 import { useRouter } from "next/navigation";
 import { FormComponent } from "~/components/common/";
 import { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
+
 import type { OrganizationTableRow } from "~/types/organization";
 import { organizationConfig } from '../organization.config'
 
@@ -67,8 +68,8 @@ export default function OrganizationForm({ profile, setVisiblePanel, setRows }: 
                 name: values.name as string,
                 description: values.description as string,
                 location: values.location as string,
-            url: values.url as string,
-            industry: values.industry as string,
+                url: values.url as string,
+                industry: values.industry as string,
         });
 
         // Add the new business record to the rows

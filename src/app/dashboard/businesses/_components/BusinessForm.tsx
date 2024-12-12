@@ -7,12 +7,13 @@ import { FormComponent } from "~/components/common/";
 import type { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
 
+import type { BusinessTableRow } from "~/types/business";
 import { businessConfig } from '../business.config'
 
 interface BusinessFormProps {
     profile: Profile
     setVisiblePanel: React.Dispatch<React.SetStateAction<string>>
-    setRows: React.Dispatch<React.SetStateAction<unknown[]>>;
+    setRows: React.Dispatch<React.SetStateAction<BusinessTableRow[]>>; 
 }
 
 
@@ -72,7 +73,7 @@ export default function BusinessForm({ profile, setVisiblePanel, setRows }: Busi
             });
     
             // Add the new business record to the rows
-            setRows((prevRows) => [newBusiness, ...prevRows]);
+            setRows((prevRows: BusinessTableRow[]) => [newBusiness as unknown as BusinessTableRow, ...prevRows]);
     
             // Switch back to the default view
             setVisiblePanel("default");

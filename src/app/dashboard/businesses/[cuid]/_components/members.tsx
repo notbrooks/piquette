@@ -1,5 +1,5 @@
 import { TableComponent } from "~/components/common/Table"
-import type { Profile, Business } from "~/types";
+import type { Profile, BusinessBase } from "~/types";
 
 import { Button } from "~/components/ui/button"
 import {

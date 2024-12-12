@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useProfile } from "~/context/profile";
 import type { Profile } from "~/types";
 import { BusinessForm, BusinessTable } from "./_components";
+import type { BusinessTableRow } from "~/types/business"
 
 import { Button } from "~/components/ui/button";
 
 export default function BusinessIndexPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
-    const [rows, setRows] = useState<unknown[]>([]); // State to hold the table data
+    const [rows, setRows] = useState < BusinessTableRow[] > ([]); // State to hold the table data
     const [visiblePanel, setVisiblePanel] = useState('default'); // State to toggle between table and form
 
     if (!profile)  return "Loading...";
@@ -42,17 +43,13 @@ export default function BusinessIndexPage() {
                 </div>
             </div>
             
-            {visiblePanel === 'create' && (
-                <div className="ease-in ">
-                    <BusinessForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />
-                </div>
-            )}
+            {/* {visiblePanel === 'create' && <OrganizationForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />}
 
-            {visiblePanel === 'default' && (
-                <div className="ease-in">
-                    {/* <BusinessTable  rows={rows as unknown[]} setRows={setRows} /> */}
-                </div>
-            )}
+            {visiblePanel === 'default' && <OrganizationTable rows={rows} setRows={setRows} />}
+             */}
+            {visiblePanel === 'create' && <BusinessForm profile={profile} setVisiblePanel={setVisiblePanel} setRows={setRows} />}
+
+            {visiblePanel === 'default' && <BusinessTable  rows={rows} setRows={setRows} />}
             
         </div>
     );

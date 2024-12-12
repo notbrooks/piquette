@@ -3,7 +3,7 @@ import { businessConfig } from '../business.config'
 import FormComponent from "~/components/common/Form/form";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
-import type { Profile, Business } from "~/types";
+import type { Profile, BusinessBase } from "~/types";
 
 import { Slash } from "lucide-react";
 
@@ -18,7 +18,7 @@ import {
   } from "~/components/ui/sheet"
 
 interface BusinessDetailProps {
-    business: Business;
+    business: BusinessBase;
 }
 
 export default function BusinessDetail({  business }: BusinessDetailProps) {

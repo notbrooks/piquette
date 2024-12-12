@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useProfile } from "~/context/profile";
-import type { Profile, Business } from "~/types";
+import type { Profile, BusinessBase } from "~/types";
 import { api } from "~/trpc/react";
 import { BusinessDetail } from "../_components";
 import { Settings, Documents, Jobs, Members } from "./_components";
@@ -26,7 +26,7 @@ export default function BusinessDetailPage() {
     return (
         <div className="space-y-5 container pb-5">
             <div>
-                <BusinessDetail business={data as Business} />
+                <BusinessDetail business={data as BusinessBase} />
             </div>
 
             {/* Tabs Component */}

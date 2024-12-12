@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import type { OrganizationTableRow } from "~/types/organization";
+
 import { TableComponent } from "~/components/common/Table";
-import type { OrganizationTableRow} from "~/types/organization";
 
 interface BusinessTableProps {
     rows: OrganizationTableRow[]; // Use the RowData type instead of `any`

@@ -9,3 +9,4 @@ export type OrganizationFormData = Omit<OrganizationBase, "id" | "createdAt" | "
 
 // Extend for table rows
 export type OrganizationTableRow = Pick<OrganizationBase, "id" | "name" | "location" | "url" | "industry" | "description">;
+
