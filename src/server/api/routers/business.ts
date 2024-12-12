@@ -8,15 +8,6 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { businesses, profiles } from "~/server/db/schema";
 
 export const businessRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        message: `Hello ${input.text}`,
-      };
-    }),
-
-
   /**
    * ClaimByToken
    */
@@ -242,6 +233,88 @@ export const businessRouter = createTRPCRouter({
           });
 
           return businessesDetail ?? null;  // Changed the return value to null if not found
+      }),
+
+    /**
+     * Update
+     */
+    update: publicProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          cuid: z.string(),
+          name: z.string(),
+          description: z.string(),
+          location: z.string(),
+          url: z.string(),
+          industry: z.string(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        // Step 1: Validate the user's authentication token
+        const authToken = ctx.headers.get("x-clerk-auth-token") as string | undefined;
+    
+        if (!authToken) {
+          throw new Error("Unauthorized: Missing auth token");
+        }
+    
+        let userId: string | null = null;
+        try {
+          const decodedToken = jwt.decode(authToken) as { sub: string } | null;
+    
+          if (!decodedToken?.sub) {
+            throw new Error("Unauthorized: Invalid token");
+          }
+    
+          userId = decodedToken.sub;
+        } catch (error) {
+          throw new Error(`Unauthorized: Error decoding token - ${(error as Error).message}`);
+        }
+    
+        // Step 2: Find the user's profile
+        const profile = await ctx.db.query.profiles.findFirst({
+          where: eq(profiles.user, userId),
+        });
+    
+        if (!profile) {
+          console.error(`No profile found for user ID: ${userId}`);
+          throw new Error("User profile not found.");
+        }
+    
+        // Step 3: Update the organization
+        const updatedBusiness = await ctx.db
+          .update(businesses) // Correctly use `ctx.db.update` on `businesses`
+          .set({
+            name: input.name,
+            description: input.description,
+            location: input.location,
+            url: input.url,
+            industry: input.industry,
+            updatedBy: userId, // Ensure the `updatedBy` field is updated correctly
+          })
+          .where(
+            and(
+              eq(businesses.cuid, input.cuid), // Match the organization by CUID
+              eq(businesses.id, input.id) // Match the organization by ID
+            )
+          )
+          .returning({
+            id: businesses.id,
+            cuid: businesses.cuid,
+            name: businesses.name,
+            description: businesses.description,
+            location: businesses.location,
+            url: businesses.url,
+            industry: businesses.industry,
+            updatedAt: businesses.updatedAt,
+          });
+    
+        if (!updatedBusiness) {
+          console.error(`Failed to update organization with ID: ${input.id}`);
+          throw new Error("Failed to update organization.");
+        }
+    
+        return updatedBusiness[0]; // Return the first updated record
       }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {

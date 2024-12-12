@@ -8,15 +8,6 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { organizations, businesses, profiles } from "~/server/db/schema";
 
 export const organizationRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        message: `Hello ${input.text}`,
-      };
-    }),
-
-
   /**
    * ClaimByToken
    */

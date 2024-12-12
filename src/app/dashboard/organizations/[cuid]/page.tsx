@@ -6,7 +6,7 @@ import { useProfile } from "~/context/profile";
 import type { Profile, OrganizationBase } from "~/types";
 import { api } from "~/trpc/react";
 import { OrganizationDetail } from "../_components";
-import { Details, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
+import { OrganizationDetails, Assistants, Documents, Businesses, Jobs, Members } from "./_components";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
@@ -69,7 +69,7 @@ export default function OrganizationDetailPage() {
                                 Organization Details
                             </h3>            
                         </div>
-                        <Details profile={profile} organization={data as OrganizationBase} />
+                        <OrganizationDetails profile={profile} organization={data as OrganizationBase} />
                         
                         <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
                             <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
