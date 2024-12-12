@@ -39,7 +39,12 @@ export default function BusinessDetailPage() {
                 </TabsList>
 
                 <TabsContent value="settings">
-                    <div className="px-2">
+                    <div className="space-y-5 px-2">
+                        <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
+                            <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
+                                Organization Details
+                            </h3>            
+                        </div>
                         <BusinessDetails profile={profile} business={data as BusinessBase} />
                     </div>
                 </TabsContent>
