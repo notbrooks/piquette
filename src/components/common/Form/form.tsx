@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
+import { SparklesIcon, Loader } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -28,6 +29,7 @@ interface FormComponentProps {
 export default function FormComponent({ onSubmit, isFormLoading, formConfig, data }: FormComponentProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [stateValue, setStateValue] = useState<Record<string, string>>({});
+  const [isAutocompleteLoading, setAutocompleteLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -64,10 +66,7 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
     },
   });
 
-  const handleFieldChange = (
-    name: string,
-    value: string | File | undefined
-  ) => {
+  const handleFieldChange = (name: string, value: string | File | undefined) => {
     if (value === undefined) return;
 
     const updatedValue =
@@ -88,6 +87,34 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
     }
   };
 
+  const handleAutocomplete = async (fieldName: string, prompt: string) => {
+    setAutocompleteLoading(true);
+    const formValues: Record<string, unknown> = stateValue;
+  
+    try {
+      const response = await fetch("/api/openai/autocomplete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          prompt, 
+          fields: JSON.stringify(formValues) // Send prompt and stringified JSON object
+        }),
+      });
+  
+      const data = await response.json() as { autocompleteContent: string };
+      setAutocompleteLoading(false);
+      if (data.autocompleteContent) {
+        setStateValue((prev) => ({
+          ...prev,
+          [fieldName]: data.autocompleteContent
+        }));
+        form.setFieldValue(fieldName, data.autocompleteContent);
+      }
+    } catch (error) {
+      console.error("Failed to autocomplete:", error);
+    }
+  };
+
   return (
     <form
       encType="multipart/form-data"
@@ -104,9 +131,7 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
         </h2>
       )}
       {formConfig.description && (
-        <p className="mt-1 text-sm leading-6 text-gray-600">
-          {formConfig.description}
-        </p>
+        <p className="mt-1 text-sm leading-6 text-gray-600">{formConfig.description}</p>
       )}
 
       {formConfig.fields.map((row, rowIndex) => {
@@ -153,14 +178,33 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
                         return (
                           <form.Field name={col.name}>
                             {(field) => (
-                              <Textarea
-                                value={stateValue[col.name] ?? ""}
-                                onBlur={(e) => handleFieldChange(col.name, e.target.value)}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                className={`block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 ${
-                                  errors[col.name] ? "ring-red-500" : ""
-                                }`}
-                              />
+                              <div className="space-y-5">
+                                <Textarea
+                                  value={field.state.value as string}
+                                  onBlur={(e) => handleFieldChange(col.name, e.target.value)}
+                                  onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    handleFieldChange(col.name, newValue); // Update stateValue
+                                    field.handleChange(newValue); // Update form state
+                                  }}
+                                  className={`block w-full h-48 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 ${
+                                    errors[col.name] ? "ring-red-500" : ""
+                                  }`}
+                                />
+                                {col.autocomplete && (
+                              <div className="flex justify-end cursor-pointer">
+                                <div
+                                  className="flex items-center justify-center space-x-1 bg-white px-3 py-1 rounded-md border border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                                  onClick={() => handleAutocomplete(col.name, col.autocomplete?.prompt ?? "")}
+                                >
+                                  <SparklesIcon className={`w-4 h-4 text-blue-400 transition-transform ${isAutocompleteLoading ? 'animate-spin' : ''}`} />
+                                  <span className="text-sm font-medium">
+                                    Autocomplete with AI
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                              </div>
                             )}
                           </form.Field>
                         );

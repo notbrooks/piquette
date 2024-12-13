@@ -91,14 +91,20 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
     );
 
     const jobFormConfig = {
-        headline: "New Assistant",
-        description: "Create a new assistant for your organization",
+        headline: "New Job",
+        description: "Post a new job",
         fields: [
             [
                 { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your assistant" },
             ],
             [
-                { label: "Description", type: "text", name: "description", required: false, placeholder: "Describe your assistant.  This will help with creating the prompt." },
+                { label: "Description", type: "textarea", name: "description", required: false,
+                    autocomplete: {
+                        type: "openai",
+                        mode: "complete",
+                        prompt: "You are a content writer specializing in media-focused messaging. Craft a concise public description for this business, intended for use on its website. Keep the tone informative and neutral, focusing on describing the business without including contact details or making it sound like a sales pitch."
+                    }
+                 },
             ],
         ],
         buttons: [
