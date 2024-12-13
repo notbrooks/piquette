@@ -88,8 +88,8 @@ export const assistantRouter = createTRPCRouter({
    */
   getByOrganization: publicProcedure
     .input(z.object({
-      parent_id: z.number().min(1),
-      parent_type: z.string().min(1),
+      parent_id: z.number(),
+      parent_type: z.string(),
     }))
     .query(async ({ ctx, input }) => {
       const assistantsList = await ctx.db.select()

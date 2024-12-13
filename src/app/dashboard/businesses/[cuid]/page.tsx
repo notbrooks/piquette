@@ -5,7 +5,7 @@ import { useProfile } from "~/context/profile";
 import type { Profile, BusinessBase } from "~/types";
 import { api } from "~/trpc/react";
 import { BusinessDetail } from "../_components";
-import { BusinessDetails, Settings, Documents, Jobs, Members } from "./_components";
+import { BusinessDetails, Documents, BusinessJobs, Members } from "./_components";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function BusinessDetailPage() {
@@ -55,7 +55,7 @@ export default function BusinessDetailPage() {
 
                 <TabsContent value="jobs">
                     <div className="px-2">
-                        <Jobs />
+                        <BusinessJobs profile={profile} business={data as BusinessBase} />
                     </div>
                 </TabsContent>
 

@@ -330,3 +330,22 @@ export const assistants = createTable("assistant", {
   archivedAt: timestamp("archived_at", { withTimezone: true }),
   archivedBy: varchar("archived_by", { length: 256 }),
 });
+
+export const jobs = createTable("job", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  profile: integer("profile_id")
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  parentType: varchar("parent_type", { length: 16 }), // "profile" or "organization"
+  parentId: integer("parent_id"), // ID of the profile or organization
+  name: varchar("name", { length: 256 }).notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+})

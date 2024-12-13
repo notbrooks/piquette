@@ -121,7 +121,6 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
     
             
         } catch (err) {
-            console.error("Error creating business:", err);
             setError({ message: "An error occurred while submitting the form." });
         } finally {
             setVisibleAssistantPanel('create');
@@ -134,19 +133,6 @@ export default function Assistants( { profile, organization }: AssistantsProps) 
         return <FormComponent formConfig={assistantFormConfig as FormDefinition} onSubmit={handleFormSubmit} isFormLoading={false} />
     }
 
-    if (isVisibleAssistantPanel === 'detail') {
-        return (
-            <div className="p-5 space-y-6 border bg-white border-gray-900/10 rounded-lg shadow-sm">
-                <h2 className="text-base font-semibold leading-7 text-gray-900 flex items-center justify-between">
-                    <span>Name</span>
-                    <Button variant="outline" onClick={() => setVisibleAssistantPanel('default')}>Cancel</Button>
-                </h2>
-                <div>
-                    DETAIL
-                </div>
-            </div>
-        )
-    }
 
     return (
         <TableComponent
