@@ -16,7 +16,7 @@
 import { useUser, SignInButton, SignedIn, SignOutButton, SignedOut, UserButton } from '@clerk/nextjs'
 
 import { useState } from 'react'
-import { piquetteConfig } from '~/app/config'
+import { piquetteConfig } from '~/app/_config'
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from 'next/navigation'

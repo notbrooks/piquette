@@ -7,8 +7,13 @@ import { FormComponent } from "~/components/common/";
 import type { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
 
+import {
+    type FormDefinition,
+    type TableDefinition
+} from "~/types";
+
 import type { BusinessTableRow } from "~/types/business";
-import { businessConfig } from '../business.config'
+import { piquetteConfig } from "~/app/_config";
 
 interface BusinessFormProps {
     profile: Profile
@@ -17,7 +22,35 @@ interface BusinessFormProps {
 }
 
 
-
+const businessFormConfig: FormDefinition = {
+    headline: "Business Form",
+    description: "Create a new business",
+    fields: [
+        [
+            { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your business" },
+            { label: "Location", type: "text", name: "location", required: true, placeholder: "City & State" },
+        ],
+        [
+            { label: "Website", type: "text", name: "url", required: false },
+            {
+                label: "Industry", type: "select", name: "industry", required: true, options: piquetteConfig.app.industryOptions,
+            },
+        ],
+        [
+            {
+                label: "Description", type: "textarea", name: "description", required: true,
+                autocomplete: {
+                    type: "openai",
+                    mode: "complete",
+                    prompt: "You are a content writer specializing in media-focused messaging. Craft a concise public description for this business, intended for use on its website. Keep the tone informative and neutral, focusing on describing the business without including contact details or making it sound like a sales pitch."
+                }
+            },
+        ]
+    ],
+    buttons: [
+        { label: "Save", type: "submit", variant: "default" }
+    ],
+}
 export default function BusinessForm({ profile, setVisiblePanel, setRows }: BusinessFormProps) {
     const router = useRouter();
     const utils = api.useUtils();
@@ -27,7 +60,7 @@ export default function BusinessForm({ profile, setVisiblePanel, setRows }: Busi
 
     // Define the mutation using `useMutation`
     const createBusinessMutation = api.business.create.useMutation({
-        onSuccess: async () => {
+        onSuccess: async () => {    
         toast({
             variant: "default",
             title: "Business Created",
@@ -87,6 +120,6 @@ export default function BusinessForm({ profile, setVisiblePanel, setRows }: Busi
         
     
 
-    return <FormComponent formConfig={businessConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
+    return <FormComponent formConfig={businessFormConfig} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
 }
 

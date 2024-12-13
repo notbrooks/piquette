@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { FormComponent } from "~/components/common/";
 import { Profile } from "~/types";
 import { toast } from "~/hooks/use-toast";
+import type { FormDefinition, TableDefinition } from "~/types";
 
 import type { OrganizationTableRow } from "~/types/organization";
-import { organizationConfig } from '../organization.config'
+import { piquetteConfig } from "~/app/_config";
 
 interface OrganizationFormProps {
     profile: Profile
@@ -24,6 +25,36 @@ export default function OrganizationForm({ profile, setVisiblePanel, setRows }: 
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setError] = useState<Record<string, string>>({});
     const [stateValue, setStateValue] = useState<Record<string, unknown>>({});
+
+    const organizationFormConfig: FormDefinition = {
+        headline: "Organization Form",
+        description: "Create a new organization",
+        fields: [
+            [
+                { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your organization" },
+                { label: "Location", type: "text", name: "location", required: true, placeholder: "City & State" },
+            ],
+            [
+                { label: "Website", type: "text", name: "url", required: false },
+                {
+                    label: "Industry", type: "select", name: "industry", required: true, options: piquetteConfig.app.industryOptions,
+                },
+            ],
+            [
+                {
+                    label: "Description", type: "textarea", name: "description", required: true,
+                    autocomplete: {
+                        type: "openai",
+                        mode: "complete",
+                        prompt: "You are a content writer specializing in media-focused messaging. Craft a concise public description for this business, intended for use on its website. Keep the tone informative and neutral, focusing on describing the business without including contact details or making it sound like a sales pitch."
+                    }
+                },
+            ]
+        ],
+        buttons: [
+            { label: "Save", type: "submit", variant: "default" }
+        ],
+    }
 
     // Define the mutation using `useMutation`
     const createOrganizationMutation = api.organization.create.useMutation({
@@ -87,6 +118,6 @@ export default function OrganizationForm({ profile, setVisiblePanel, setRows }: 
         
     
 
-    return <FormComponent formConfig={organizationConfig.form} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
+    return <FormComponent formConfig={organizationFormConfig} onSubmit={handleFormSubmit} isFormLoading={isLoading} />
 }
 

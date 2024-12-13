@@ -6,7 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/router";
 
-import { piquetteConfig } from '~/app/config'
+import { piquetteConfig } from '~/app/_config'
 
 export default function NavbarComponent() {
   const user  = useUser(); 

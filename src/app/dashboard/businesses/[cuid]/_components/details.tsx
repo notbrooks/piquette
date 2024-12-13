@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "~/hooks/use-toast"
 import { api } from "~/trpc/react";
-import { piquetteConfig } from "~/app/config";
+import { piquetteConfig } from "~/app/_config";
 
 import { Profile, BusinessBase } from "~/types";
 import FormComponent from "~/components/common/Form/form";

@@ -4,7 +4,7 @@ import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import type { Profile, BusinessBase } from "~/types";
 import { BusinessTableRow } from "~/types/business";
-
+import { piquetteConfig } from "~/app/_config";
 import { TableComponent } from "~/components/common/Table";
 import type { FormDefinition } from "~/components/common/Form";
 import { Button } from "~/components/ui/button";
@@ -96,6 +96,11 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
         fields: [
             [
                 { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your assistant" },
+            ],
+            [
+                { label: "Role", type: "text", name: "role", required: true, placeholder: "Enter the role of the job" },
+                { label: "Type", type: "select", name: "type", required: true, options: piquetteConfig.app.jobTypes },
+                { label: "Payment Type", type: "select", name: "paymentType", required: true, options: piquetteConfig.app.jobPaymentTypes },
             ],
             [
                 { label: "Description", type: "textarea", name: "description", required: false,

@@ -15,7 +15,7 @@ import {
     FolderIcon as DocumentsIcon,
     Pin
 } from "lucide-react"
-import { industryOptions } from './dashboard/businesses/business.config'
+import { industries } from './industries'
 
 export const piquetteConfig = {
     meta: {
@@ -100,22 +100,21 @@ export const piquetteConfig = {
             {id: 'archive', label: 'Archived', href: '/dashboard/services/archived', icon: ArchiveBoxXMarkIcon},
             {id: 'shared', label: 'Shared', href: '/dashboard/services/shared', icon: ShareIcon},
         ],
-        industryOptions: [
-            { label: "Food Service", value: "food-service" },
-            { label: "Retail", value: "retail" },
-            { label: "Personal Care & Service", value: "personal-care" },
-            { label: "Building and Maintenance", value: "maintenance" },
-            { label: "Transportation", value: "transportation" },
-            { label: "Healthcare", value: "helthcare" },
-            { label: "Office and Administrative", value: "office" },
-            { label: "Manufacturing", value: "manufacturing" },
-            { label: "Protective Servics", value: "protective-service" },
-            { label: "Event Staff", value: "event-staff" },
-            { label: "Repair", value: "repair" },
-            { label: "Healthcare Practitioner", value: "healthcare-technician" },
-            { label: "Construction", value: "construction" },
-            { label: "Education", value: "education" },
-            { label: "Community and Social Service", value: "community" }
+        industryOptions: industries,
+        jobTypes: [
+            { label: "Full Time", value: "full-time" },
+            { label: "Part Time", value: "part-time" },
+            { label: "Contract", value: "contract" },
+            { label: "Internship", value: "internship" },
+            { label: "Freelance", value: "freelance" },
+            { label: "Consultant", value: "consultant" },
+            { label: "Other", value: "other" }
+        ],
+        jobPaymentTypes: [
+            { label: "Hourly", value: "hourly" },
+            { label: "Salary", value: "salary" },
+            { label: "Fixed", value: "fixed" },
+            { label: "Other", value: "other" }
         ]
     }
 }
