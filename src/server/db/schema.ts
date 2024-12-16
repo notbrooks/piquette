@@ -231,9 +231,13 @@ export const pins = createTable(
 
 
 // Enums
-export const businessStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
-export const organizationStatusEnum = pgEnum("status", ["active", "inactive", "pending", "archived"]);
-export const assistaantTypeEnum = pgEnum("type", ["assistant", "marketing manager", "sales manager", "account manager", "finance manager", "hr manager", "it manager", "coach", "tutor"]);
+
+export const businessStatusEnum = pgEnum("status", [...piquetteConfig.app.businessStatusTypes.map(businessStatusType => businessStatusType.value)] as [string, ...string[]]);
+
+export const organizationStatusEnum = pgEnum("status", [...piquetteConfig.app.organizationStatusTypes.map(organizationStatusType => organizationStatusType.value)] as [string, ...string[]]);
+
+export const assistantTypeEnum = pgEnum("type", [...piquetteConfig.app.assistantTypes.map(assistantType => assistantType.value)] as [string, ...string[]]);
+
 
 // Profiles Table
 export const profiles = createTable("profile", {
@@ -318,7 +322,7 @@ export const assistants = createTable("assistant", {
   parentType: varchar("parent_type", { length: 16 }), // "profile" or "organization"
   parentId: integer("parent_id"), // ID of the profile or organization
   name: varchar("name", { length: 256 }).notNull(),
-  type: assistaantTypeEnum("status").default("assistant"),
+  type: assistantTypeEnum("status").default("assistant"),
   description: text("description"),
   prompt: text("prompt"),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -340,6 +344,11 @@ export const jobs = createTable("job", {
   parentId: integer("parent_id"), // ID of the profile or organization
   name: varchar("name", { length: 256 }).notNull(),
   description: text("description"),
+  role: varchar("role", { length: 256 }).notNull(),
+  type: varchar("type", { length: 256 }).notNull(),
+  payment: varchar("payment", { length: 256 }).notNull(),
+  status: varchar("status", { length: 256 }).notNull().default("draft"),
+
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

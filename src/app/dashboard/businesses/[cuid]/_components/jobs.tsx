@@ -42,6 +42,7 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
                 console.error("Failed to invalidate cache:", invalidateError);
             }
 
+            // Redirect to the businesses dashboard
             
         },
         onError: (err) => {
@@ -65,14 +66,18 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
         try {
             // Mutate the business and get the returned record
             const newJob = await createJobMutation.mutateAsync({
-                profile: profile.id as unknown as number,
+                profile: Number(profile.id),
                 parentId: business.id,
                 parentType: 'business',
                 name: values.name as string,
+                role: values.role as string,
+                type: values.type as string,
+                payment: values.paymentType as string,
                 description: values.description as string,
                 
             });
-    
+            
+            // router.push(`/dashboard/job/${newJob.}`);
             // Add the new business record to the rows
             // setRows((prevRows) => [newBusiness, ...prevRows]);
     
@@ -98,7 +103,7 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
                 { label: "Name", type: "text", name: "name", required: true, placeholder: "Enter the name of your assistant" },
             ],
             [
-                { label: "Role", type: "text", name: "role", required: true, placeholder: "Enter the role of the job" },
+                { label: "Role", type: "select", name: "role", required: true, options: piquetteConfig.app.industryOptions.find(option => option.value === business.industry)?.roles },
                 { label: "Type", type: "select", name: "type", required: true, options: piquetteConfig.app.jobTypes },
                 { label: "Payment Type", type: "select", name: "paymentType", required: true, options: piquetteConfig.app.jobPaymentTypes },
             ],
@@ -107,7 +112,7 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
                     autocomplete: {
                         type: "openai",
                         mode: "complete",
-                        prompt: "You are a content writer specializing in media-focused messaging. Craft a concise public description for this business, intended for use on its website. Keep the tone informative and neutral, focusing on describing the business without including contact details or making it sound like a sales pitch."
+                        prompt: `You are working as the writer for a job posting. Craft a concise public description for this job, intended for use on a job board. Keep the tone informative and neutral, focusing on describing the job without including contact details or making it sound like a sales pitch.  Please do not include the Job Title in the result.  Write a maximum of two paragraphs and then include a bulletted list of requirements and qualifications for the role based upon the information provided.  Also use the information about the business to help add context to the job description.  Here is the business info. ${JSON.stringify(business)}`
                     }
                  },
             ],
@@ -148,12 +153,20 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
     return (
         <div>
             {data && data.length === 0 && (
-                <div>
-                    <p>No jobs found.</p>
-                    <Button variant="default" onClick={() => setVisibleJobsPanel("create")}>
-                        <CirclePlus className="h-4 w-4" />
-                        New Job
-                    </Button>
+                <div className="rounded-md bg-blue-50 p-4">
+                    <div className="flex">
+                        <div className="ml-3">
+                            <div className="mt-2 text-sm text-blue-700 space-y-3">
+                                <p>There are no jobs associated with this business. Please create a new job to get started.</p>
+                                <p>
+                                    <Button variant="outline" onClick={() => setVisibleJobsPanel("create")}>
+                                        <CirclePlus className="h-4 w-4" />
+                                        New Job
+                                    </Button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 

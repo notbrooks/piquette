@@ -79,6 +79,11 @@ export default function BusinessDetails({ profile, business }: DetailsProps) {
                     [
                         {
                             label: "Description", type: "textarea", name: "description", required: true,
+                            autocomplete: {
+                                type: "openai",
+                                mode: "complete",
+                                prompt: `You are working as the writer for a business posting. Craft a concise public description for this business, intended for use on a business board. Keep the tone informative and neutral, focusing on describing the business without including contact details or making it sound like a sales pitch.  Please do not include the Business Title in the result.  Write a maximum of two paragraphs and then include a bulletted list of requirements and qualifications for the role based upon the information provided.  Also use the information about the business to help add context to the business description.  Here is the business info. ${JSON.stringify(business)}`
+                            }
                         },
                     ]
                 ],

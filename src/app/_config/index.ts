@@ -18,6 +18,12 @@ import {
 import { industries } from './industries'
 
 export const piquetteConfig = {
+    /*****************************************************************************************************
+     * ************************************************************************************************* *
+     *              WARNING: Changes here could affect SEO and bookmarked links.                         *
+     * ************************************************************************************************* *
+     ****************************************************************************************************/
+
     meta: {
         id: 'piquette',
         title: 'Piquette',
@@ -84,6 +90,12 @@ export const piquetteConfig = {
         ]
 
     },
+    /*****************************************************************************************************
+     * ************************************************************************************************* *
+     *   WARNING: Changing the values or the shape will require a db migration due to embedded enums.    *
+     * ************************************************************************************************* *
+     ****************************************************************************************************/
+    
     app: {
         features: [
             {id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: HomeIcon},
@@ -115,6 +127,37 @@ export const piquetteConfig = {
             { label: "Salary", value: "salary" },
             { label: "Fixed", value: "fixed" },
             { label: "Other", value: "other" }
+        ],
+        jobStatusTypes: [
+            { label: "Draft", value: "draft" },
+            { label: "Pending", value: "pending" },
+            { label: "Active", value: "active" },
+            { label: "Completed", value: "completed" },
+            { label: "Cancelled", value: "cancelled" }
+        ],
+        businessStatusTypes: [
+            { label: "Active", value: "active" },
+            { label: "Inactive", value: "inactive" },
+            { label: "Pending", value: "pending" },
+            { label: "Archived", value: "archived" }
+        ],
+        organizationStatusTypes: [
+            { label: "Active", value: "active" },
+            { label: "Inactive", value: "inactive" },
+            { label: "Pending", value: "pending" },
+            { label: "Archived", value: "archived" }
+        ],
+        assistantTypes: [
+            { label: "Assistant", value: "assistant" },
+            { label: "Marketing Manager", value: "marketing-manager" },
+            { label: "Sales Manager", value: "sales-manager" },
+            { label: "Account Manager", value: "account-manager" },
+            { label: "Finance Manager", value: "finance-manager" },
+            { label: "HR Manager", value: "hr-manager" },
+            { label: "IT Manager", value: "it-manager" },
+            { label: "Coach", value: "coach" },
+            { label: "Tutor", value: "tutor" }
         ]
+
     }
 }

@@ -18,6 +18,10 @@ export const jobRouter = createTRPCRouter({
       parentType: z.string().optional(),
       parentId: z.number().optional(),
       name: z.string(),
+      role: z.string(),
+      type: z.string(),
+      payment: z.string(),
+      status: z.string().optional(),
       description: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
@@ -51,6 +55,10 @@ export const jobRouter = createTRPCRouter({
           parentId: input.parentId ?? null,
           cuid: createId(),
           name: input.name,
+          role: input.role,
+          type: input.type,
+          payment: input.payment,
+          status: input.status ?? "draft",
           description: input.description,
           createdBy: userId,
           updatedBy: userId,
@@ -172,6 +180,37 @@ export const jobRouter = createTRPCRouter({
         .orderBy(jobs.createdAt, desc(jobs.createdAt));
       return jobsList ?? [];
       
+    }),
+
+    getByCUID: publicProcedure
+    .input(z.object({
+      cuid: z.string().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      if (!input.cuid) {
+        throw new Error("CUID is required");
+      }
+
+      const jobDetail = await ctx.db.query.jobs.findFirst({
+        where: eq(jobs.cuid, input.cuid),
+      });
+
+      // if (jobDetail?.token) {
+      //   try {
+      //     const remotejob = await openai.beta.jobs.retrieve(jobDetail.token);
+
+      //     if (remotejob?.tool_resources?.file_search?.vector_store_ids) {
+      //       return {
+      //         ...jobDetail,
+      //         remotejob,
+      //       };
+      //     }
+      //   } catch (error) {
+      //     console.error("Error retrieving remote job details:", error);
+      //   }
+      // }
+
+      return jobDetail ?? null;
     }),
 
   /**
