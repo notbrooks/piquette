@@ -14,7 +14,7 @@ import { Button } from "~/components/ui/button";
 export default function JobPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
     const params = useParams();
-    const cuid = params?.cuid;
+    const cuid = params?.jobCUID;
 
     if (!cuid || Array.isArray(cuid)) {
         return <p>No valid CUID provided.</p>;

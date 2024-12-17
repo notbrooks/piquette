@@ -184,7 +184,7 @@ export default function BusinessJobs({ profile, business }: BusinessJobsProps) {
                             sort: true,
                             helper: {
                                 type: "link",
-                                path: "/dashboard/job/:cuid",
+                                path: `/dashboard/businesses/${business.cuid}/jobs/:cuid`,
                             },
                         },
                         { label: "Created At", accessorKey: "createdAt", sort: true },

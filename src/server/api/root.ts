@@ -10,6 +10,7 @@ import { businessRouter } from "./routers/business";
 import { profileRouter } from "./routers/profile";
 import { assistantRouter } from "./routers/assistant";
 import { jobRouter } from "./routers/job";
+import { orderRouter } from "./routers/order";
 
 // Services
 import { openAIRouter } from "./routers/services/openai";
@@ -36,6 +37,7 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   assistant: assistantRouter,
   job: jobRouter,
+  order: orderRouter,
   
   // Services
   openai: openAIRouter,

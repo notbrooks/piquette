@@ -13,6 +13,7 @@ import {
   text,
   varchar,
   unique,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -358,3 +359,29 @@ export const jobs = createTable("job", {
   archivedAt: timestamp("archived_at", { withTimezone: true }),
   archivedBy: varchar("archived_by", { length: 256 }),
 })
+
+export const orders = createTable("order", {
+  id: serial("id").primaryKey(),
+  cuid: varchar("cuid", { length: 256 }).notNull(),
+  uuid: varchar("uuid").default(sql`gen_random_uuid()`),
+  token: varchar("token", { length: 32 }),
+  profile: integer("profile_id")
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  business: integer("business_id")
+    .references(() => businesses.id, { onDelete: "cascade" }),
+  organization: integer("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  
+  status: varchar("status", { length: 256 }).notNull().default("draft"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  createdBy: varchar("created_by", { length: 256 }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  updatedBy: varchar("updated_by", { length: 256 }).notNull(),
+  archivedAt: timestamp("archived_at", { withTimezone: true }),
+  archivedBy: varchar("archived_by", { length: 256 }),
+})
+

@@ -5,13 +5,13 @@ import { useProfile } from "~/context/profile";
 import type { Profile, BusinessBase } from "~/types";
 import { api } from "~/trpc/react";
 import { BusinessDetail } from "../_components";
-import { BusinessDetails, Documents, BusinessJobs, Members } from "./_components";
+import { BusinessDetails, Documents, BusinessJobs, BusinessOrders, Members } from "./_components";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function BusinessDetailPage() {
     const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
     const params = useParams();
-    const cuid = params?.cuid;
+    const cuid = params?.businessCUID;
 
     if (!cuid || Array.isArray(cuid)) {
         return <p>No valid CUID provided.</p>;
@@ -35,6 +35,7 @@ export default function BusinessDetailPage() {
                     <TabsTrigger value="settings">Settings</TabsTrigger>
                     <TabsTrigger value="documents">Documents</TabsTrigger>
                     <TabsTrigger value="jobs">Jobs</TabsTrigger>
+                    <TabsTrigger value="orders">Orders</TabsTrigger>
                     <TabsTrigger value="members">Members</TabsTrigger>
                 </TabsList>
 
@@ -56,6 +57,12 @@ export default function BusinessDetailPage() {
                 <TabsContent value="jobs">
                     <div className="px-2">
                         <BusinessJobs profile={profile} business={data as BusinessBase} />
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="orders">
+                    <div className="px-2">
+                        <BusinessOrders profile={profile} business={data as BusinessBase} />
                     </div>
                 </TabsContent>
 
