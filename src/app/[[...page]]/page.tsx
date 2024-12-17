@@ -1,5 +1,6 @@
 import { builder, type BuilderContent } from "@builder.io/sdk";
 import { RenderBuilderContent } from "./builder";
+import HomePageComponent from "./default";
 
 import { notFound } from "next/navigation";
 import { env } from "~/env";
@@ -17,10 +18,15 @@ interface PageProps {
 
 export default async function Page(props: PageProps) {
   const model = "page";
+  const urlPath = "/" + ((await props?.params)?.page?.join("/") ?? "");
+
+  if (urlPath === "/") {
+    return <HomePageComponent />;
+  }
 
   const content: BuilderContent | null = await builder.get("page", {
     userAttributes: {
-      urlPath: "/" + ((await props?.params)?.page?.join("/") ?? ""),
+      urlPath,
     },
     prerender: false,
   }) as BuilderContent | null;
