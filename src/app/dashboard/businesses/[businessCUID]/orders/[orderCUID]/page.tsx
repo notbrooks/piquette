@@ -2,70 +2,149 @@
 
 import { useParams } from "next/navigation";
 import { useProfile } from "~/context/profile";
-import type { Profile, JobBase } from "~/types";
+import type { Profile, OrderBase } from "~/types";
 import { formatDate } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-import { Table, TableBody, TableCell, TableRow } from "~/components/ui/table";
-import { Card, CardContent, CardHeader, CardFooter } from "~/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+} from "~/components/ui/table";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardFooter,
+} from "~/components/ui/card";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
+import { Slash } from "lucide-react";
 
-import { Button } from "~/components/ui/button";
-
-export default function JobPage() {
-    const { profile } = useProfile() as { profile: Profile | null }; // Cast to the expected type
+export default function OrderPage() {
+    const { profile } = useProfile() as { profile: Profile | null };
     const params = useParams();
-    const cuid = params?.jobCUID;
+    const cuid = params?.orderCUID;
 
+    // Validate cuid
     if (!cuid || Array.isArray(cuid)) {
         return <p>No valid CUID provided.</p>;
     }
 
-    const { data, isLoading, isError } = api.job.getByCUID.useQuery({ cuid });
-    const jobData = data as JobBase;
+    // Fetch order data
+    const {
+        data: orderData,
+        isLoading: isLoadingOrder,
+        isError: isErrorOrder,
+    } = api.order.getByCUID.useQuery({ cuid });
 
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Error loading business details.</p>;
-    if (!profile) return "Loading...";
+    // Default business ID validation
+    const businessId = orderData?.business;
+
+    // Avoid calling query if businessId is invalid
+    const validBusinessId = businessId ?? -1; // Use a default invalid value if businessId is null/undefined
+    const {
+        data: businessData,
+        isLoading: isLoadingBusiness,
+        isError: isErrorBusiness,
+    } = api.business.getById.useQuery(
+        { id: validBusinessId },
+        { enabled: validBusinessId > 0 } // Query only runs if valid
+    );
+
+    // Combined Loading/Error states
+    if (isLoadingOrder || (isLoadingBusiness && businessId)) return <p>Loading...</p>;
+    if (isErrorOrder) return <p>Error loading order data.</p>;
+    if (isErrorBusiness && businessId) return <p>Error loading business data.</p>;
+    if (!profile || !orderData) return <p>Data unavailable.</p>;
+
     return (
         <div className="space-y-5">
-            <div className="pb-5 flex space-x-3 items-center border-b border-gray-200 mb-5">
-                <div>
-                    <Button variant="outline" onClick={() => window.history.back()}>
-                        Back
-                    </Button>
-                </div>
-                <h2 className="text-xl font-medium">{jobData.name}</h2>
-            </div>
-            <div>{jobData.description}</div>
+            {/* Breadcrumb */}
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator>
+                        <Slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink onClick={() => window.history.back()}>
+                            Businesses
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator>
+                        <Slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink
+                            href={`/dashboard/businesses/${businessData?.cuid || ""}`}
+                        >
+                            {businessData?.name || "Unknown Business"}
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator>
+                        <Slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Orders</BreadcrumbPage>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator>
+                        <Slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>{orderData?.token || "N/A"}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
 
+            {/* Order Details Card */}
             <Card>
-                <CardHeader></CardHeader>
+                <CardHeader>
+                    <h3 className="text-lg font-semibold">Order Details</h3>
+                </CardHeader>
                 <CardContent>
                     <Table>
                         <TableBody>
                             <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">ID</TableCell>
-                                <TableCell>{jobData.cuid}</TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">
+                                    ID
+                                </TableCell>
+                                <TableCell>{orderData.id}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">Role</TableCell>
-                                <TableCell>{jobData.role}</TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">
+                                    Amount
+                                </TableCell>
+                                <TableCell>{orderData.amount}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">Type</TableCell>
-                                <TableCell>{jobData.type}</TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">
+                                    Created
+                                </TableCell>
+                                <TableCell>
+                                    {orderData.createdAt
+                                        ? formatDate(orderData.createdAt)
+                                        : "N/A"}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">Payment</TableCell>
-                                <TableCell>{jobData.payment}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">Created</TableCell>
-                                <TableCell>{jobData.createdAt ? formatDate(jobData.createdAt) : "N/A"}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className="font-medium whitespace-nowrap">Updated</TableCell>
-                                <TableCell>{jobData.updatedAt ? formatDate(jobData.updatedAt) : "N/A"}</TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">
+                                    Updated
+                                </TableCell>
+                                <TableCell>
+                                    {orderData.updatedAt
+                                        ? formatDate(orderData.updatedAt)
+                                        : "N/A"}
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -73,9 +152,10 @@ export default function JobPage() {
                 <CardFooter></CardFooter>
             </Card>
 
+            {/* Debugging Section */}
             <div>
                 <h3 className="text-lg font-semibold">Documents</h3>
-                <pre>{JSON.stringify(data ?? {}, null, 2)}</pre>
+                <pre>{JSON.stringify(orderData, null, 2)}</pre>
             </div>
         </div>
     );

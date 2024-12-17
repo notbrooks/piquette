@@ -99,7 +99,7 @@ export default function Members() {
             button={
               <Dialog>
                   <DialogTrigger asChild>
-                  <Button variant="default" size="sm">
+                  <Button variant="default">
                       <CirclePlus className="h-4 w-4" />
                       New Member
                   </Button>

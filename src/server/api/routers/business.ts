@@ -236,6 +236,32 @@ export const businessRouter = createTRPCRouter({
       }),
 
     /**
+     * GetByID
+     */
+    getById: publicProcedure
+      .input(z.object({
+        id: z.number()
+      }))
+
+      .query(async ({ ctx, input }) => {
+
+          // Get the token from the headers
+          const authToken = ctx.headers.get('x-clerk-auth-token') as string | undefined;
+
+          
+
+          if (!input.id) {
+              throw new Error("ID is required");
+          }
+          
+          const businessesDetail = await ctx.db.query.businesses.findFirst({  // Changed findOne to findFirst
+              where: eq(businesses.id, input.id),  // Fixed the syntax for 'where'
+          });
+
+          return businessesDetail ?? null;  // Changed the return value to null if not found
+      }),
+
+    /**
      * Update
      */
     update: publicProcedure

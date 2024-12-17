@@ -158,6 +158,14 @@ export default function BusinessOrders({ profile, business }: BusinessOrdersProp
                     }}
                     columns={[
                         {
+                            label: "ID",
+                            accessorKey: 'token',
+                            helper: {
+                                type: "link",
+                                path: `/dashboard/businesses/${business.cuid}/orders/:cuid`,
+                            },
+                        },
+                        {
                             label: "Amount",
                             accessorKey: "amount",
                             sort: true,
