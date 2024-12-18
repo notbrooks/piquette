@@ -7,6 +7,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { businesses, profiles } from "~/server/db/schema";
 
+
 export const businessRouter = createTRPCRouter({
   /**
    * ClaimByToken
@@ -269,11 +270,12 @@ export const businessRouter = createTRPCRouter({
         z.object({
           id: z.number(),
           cuid: z.string(),
-          name: z.string(),
-          description: z.string(),
-          location: z.string(),
-          url: z.string(),
-          industry: z.string(),
+          name: z.string().optional(),
+          description: z.string().optional(),
+          location: z.string().optional(),
+          url: z.string().optional(),
+          industry: z.string().optional(),
+          settings: z.record(z.string(), z.any()).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -316,6 +318,7 @@ export const businessRouter = createTRPCRouter({
             location: input.location,
             url: input.url,
             industry: input.industry,
+            settings: input.settings,
             updatedBy: userId, // Ensure the `updatedBy` field is updated correctly
           })
           .where(
