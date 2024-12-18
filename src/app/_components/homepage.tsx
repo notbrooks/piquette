@@ -83,7 +83,7 @@ export default function HomePageComponent() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="p-6 bg-white shadow rounded-lg">
                 <p className="text-gray-600 mb-4">
-                  "This framework has completely changed the way we build applications."
+                    &quot;This framework has completely changed the way we build applications.&quot;
                 </p>
                 <span className="block text-gray-800 font-semibold">
                   — Alex Smith, Developer
@@ -91,7 +91,7 @@ export default function HomePageComponent() {
               </div>
               <div className="p-6 bg-white shadow rounded-lg">
                 <p className="text-gray-600 mb-4">
-                  "Clean, reusable, and highly configurable components out of the box."
+                    &quot;Clean, reusable, and highly configurable components out of the box.&quot;
                 </p>
                 <span className="block text-gray-800 font-semibold">
                   — Brooke Johnson, Architect

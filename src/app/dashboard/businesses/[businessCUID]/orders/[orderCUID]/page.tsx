@@ -86,9 +86,9 @@ export default function OrderPage() {
                     </BreadcrumbSeparator>
                     <BreadcrumbItem>
                         <BreadcrumbLink
-                            href={`/dashboard/businesses/${businessData?.cuid || ""}`}
+                            href={`/dashboard/businesses/${businessData?.cuid ?? ""}`}
                         >
-                            {businessData?.name || "Unknown Business"}
+                            {businessData?.name ?? "Unknown Business"}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator>
@@ -101,7 +101,7 @@ export default function OrderPage() {
                         <Slash />
                     </BreadcrumbSeparator>
                     <BreadcrumbItem>
-                        <BreadcrumbPage>{orderData?.token || "N/A"}</BreadcrumbPage>
+                        <BreadcrumbPage>{orderData?.token ?? "N/A"}</BreadcrumbPage>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>

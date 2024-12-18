@@ -1,6 +1,6 @@
 import { builder, type BuilderContent } from "@builder.io/sdk";
 import { RenderBuilderContent } from "./builder";
-import HomePageComponent from "./default";
+import HomePageComponent from "~/app/_components/homepage";
 
 import { notFound } from "next/navigation";
 import { env } from "~/env";
