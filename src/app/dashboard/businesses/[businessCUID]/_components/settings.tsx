@@ -70,6 +70,20 @@ export default function BusinessSettings({ profile, business }: SettingsProps) {
                     [
                         { label: "Test2", type: "text", name: "name2", required: true, placeholder: "Test" },
                     ],
+                    [
+                        { label: "Favorite Color", type: "select" , name: "color", required: true, options: [
+                            { label: "Red", value: "red" },
+                            { label: "Blue", value: "blue" },
+                            { label: "Green", value: "green" },
+                        ]},
+                    ],
+                    [
+                        { label: "Favorite Animal", type: "radiogroup" , name: "animal", required: true, options: [
+                            { label: "Dog", value: "dog" },
+                            { label: "Cat", value: "cat" },
+                            { label: "Bird", value: "bird" },
+                        ]},
+                    ]
                     
                 ],
                 buttons: [

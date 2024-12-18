@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { SparklesIcon, Loader } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import type { FormDefinition } from "~/types";
 
 interface FormComponentProps {
@@ -231,6 +232,27 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
                               </Select>
                             )}
                           </form.Field>
+                        );
+                      case "radiogroup":
+                        return (
+<form.Field name={col.name}>
+  {(field) => (
+    <RadioGroup
+      value={field.state.value as string} // Bind to the current value of the field
+      onValueChange={(value) => {
+        field.handleChange(value); // Update the form state
+        handleFieldChange(col.name, value); // Update local state if needed
+      }}
+    >
+      {col.options?.map((option) => (
+        <div key={option.value} className="flex items-center space-x-2">
+          <RadioGroupItem value={option.value} id={option.value} />
+          <Label htmlFor={option.value}>{option.label}</Label>
+        </div>
+      ))}
+    </RadioGroup>
+  )}
+</form.Field>
                         );
                       default:
                         return null;
