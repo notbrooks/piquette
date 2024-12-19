@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Checkbox } from "~/components/ui/checkbox";
 import type { FormDefinition } from "~/types";
 
 interface FormComponentProps {
@@ -43,7 +44,8 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
     },
     validators: formConfig.fields.flat().reduce((acc: Record<string, (value: string) => boolean>, field) => {
       if (field.required) {
-        acc[field.name] = (value: string) => value.trim() !== "";
+        acc[field.name] = (value: string) =>
+          Array.isArray(value) ? value.length > 0 : value.trim() !== "";
       }
       return acc;
     }, {}),
@@ -52,7 +54,7 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
 
       formConfig.fields.flat().forEach((field) => {
         const fieldValue = value[field.name];
-        if (field.required && (typeof fieldValue === "string" ? fieldValue.trim() === "" : true)) {
+        if (field.required && (!fieldValue || (Array.isArray(fieldValue) && fieldValue.length === 0))) {
           validationErrors[field.name] = `${field.label} is required`;
         }
       });
@@ -67,15 +69,15 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
     },
   });
 
-  const handleFieldChange = (name: string, value: string | File | undefined) => {
+  const handleFieldChange = (name: string, value: string | string[] | File | undefined) => {
     if (value === undefined) return;
 
     const updatedValue =
-      typeof value === "string" ? value : value instanceof File ? value.name : "";
+      typeof value === "string" || Array.isArray(value) ? value : value instanceof File ? value.name : "";
 
     setStateValue((prev) => ({
       ...prev,
-      [name]: updatedValue,
+      [name]: Array.isArray(updatedValue) ? updatedValue.join(',') : updatedValue,
     }));
 
     form.setFieldValue(name, updatedValue);
@@ -91,23 +93,23 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
   const handleAutocomplete = async (fieldName: string, prompt: string) => {
     setAutocompleteLoading(true);
     const formValues: Record<string, unknown> = stateValue;
-  
+
     try {
       const response = await fetch("/api/openai/autocomplete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          prompt, 
-          fields: JSON.stringify(formValues) // Send prompt and stringified JSON object
+        body: JSON.stringify({
+          prompt,
+          fields: JSON.stringify(formValues), // Send prompt and stringified JSON object
         }),
       });
-  
-      const data = await response.json() as { autocompleteContent: string };
+
+      const data = (await response.json()) as { autocompleteContent: string };
       setAutocompleteLoading(false);
       if (data.autocompleteContent) {
         setStateValue((prev) => ({
           ...prev,
-          [fieldName]: data.autocompleteContent
+          [fieldName]: data.autocompleteContent,
         }));
         form.setFieldValue(fieldName, data.autocompleteContent);
       }
@@ -147,10 +149,7 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
           <div key={rowIndex} className={`grid ${columns} gap-4`}>
             {row.map((col, colIndex) => (
               <div key={colIndex} className="w-full">
-                <Label
-                  htmlFor={col.name}
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <Label htmlFor={col.name} className="block text-sm font-medium leading-6 text-gray-900">
                   {col.label}
                   {col.required && <span>*</span>}
                 </Label>
@@ -179,33 +178,18 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
                         return (
                           <form.Field name={col.name}>
                             {(field) => (
-                              <div className="space-y-5">
-                                <Textarea
-                                  value={field.state.value as string}
-                                  onBlur={(e) => handleFieldChange(col.name, e.target.value)}
-                                  onChange={(e) => {
-                                    const newValue = e.target.value;
-                                    handleFieldChange(col.name, newValue); // Update stateValue
-                                    field.handleChange(newValue); // Update form state
-                                  }}
-                                  className={`block w-full h-48 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 ${
-                                    errors[col.name] ? "ring-red-500" : ""
-                                  }`}
-                                />
-                                {col.autocomplete && (
-                              <div className="flex justify-end cursor-pointer">
-                                <div
-                                  className="flex items-center justify-center space-x-1 bg-white px-3 py-1 rounded-md border border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                                  onClick={() => handleAutocomplete(col.name, col.autocomplete?.prompt ?? "")}
-                                >
-                                  <SparklesIcon className={`w-4 h-4 text-blue-400 transition-transform ${isAutocompleteLoading ? 'animate-spin' : ''}`} />
-                                  <span className="text-sm font-medium">
-                                    Autocomplete with AI
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                              </div>
+                              <Textarea
+                                value={field.state.value as string}
+                                onBlur={(e) => handleFieldChange(col.name, e.target.value)}
+                                onChange={(e) => {
+                                  const newValue = e.target.value;
+                                  handleFieldChange(col.name, newValue); // Update stateValue
+                                  field.handleChange(newValue); // Update form state
+                                }}
+                                className={`block w-full h-48 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 ${
+                                  errors[col.name] ? "ring-red-500" : ""
+                                }`}
+                              />
                             )}
                           </form.Field>
                         );
@@ -235,24 +219,53 @@ export default function FormComponent({ onSubmit, isFormLoading, formConfig, dat
                         );
                       case "radiogroup":
                         return (
-<form.Field name={col.name}>
-  {(field) => (
-    <RadioGroup
-      value={field.state.value as string} // Bind to the current value of the field
-      onValueChange={(value) => {
-        field.handleChange(value); // Update the form state
-        handleFieldChange(col.name, value); // Update local state if needed
-      }}
-    >
-      {col.options?.map((option) => (
-        <div key={option.value} className="flex items-center space-x-2">
-          <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value}>{option.label}</Label>
-        </div>
-      ))}
-    </RadioGroup>
-  )}
-</form.Field>
+                          <form.Field name={col.name}>
+                            {(field) => (
+                              <RadioGroup
+                                value={field.state.value as string}
+                                onValueChange={(value) => {
+                                  field.handleChange(value);
+                                  handleFieldChange(col.name, value);
+                                }}
+                              >
+                                {col.options?.map((option) => (
+                                  <div key={option.value} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={option.value} id={option.value} />
+                                    <Label htmlFor={option.value}>{option.label}</Label>
+                                  </div>
+                                ))}
+                              </RadioGroup>
+                            )}
+                          </form.Field>
+                        );
+                      case "checkbox":
+                        return (
+                          <form.Field name={col.name}>
+                            {(field) => (
+                              <ul className="space-y-2">
+                                {col.options?.map((option) => (
+                                  <li key={option.value} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`${col.name}-${option.value}`}
+                                      checked={(field.state.value as string[]).includes(option.value)}
+                                      onCheckedChange={(isChecked) => {
+                                        const currentValue = Array.isArray(field.state.value)
+                                          ? (field.state.value as string[])
+                                          : [];
+                                        const updatedValue = isChecked
+                                          ? [...currentValue, option.value]
+                                          : currentValue.filter((val) => val !== option.value);
+
+                                        handleFieldChange(col.name, updatedValue); // Update state
+                                        field.handleChange(updatedValue); // Update form state
+                                      }}
+                                    />
+                                    <Label htmlFor={`${col.name}-${option.value}`}>{option.label}</Label>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </form.Field>
                         );
                       default:
                         return null;

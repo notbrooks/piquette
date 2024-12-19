@@ -3,7 +3,7 @@ import { toast } from "~/hooks/use-toast"
 import { api } from "~/trpc/react";
 import type { Profile, BusinessBase } from "~/types";
 import { FormComponent } from "~/components/common/";
-import { Form } from "react-hook-form";
+import { piquetteConfig } from "~/app/_config";
 
 
 interface SettingsProps {
@@ -83,6 +83,9 @@ export default function BusinessSettings({ profile, business }: SettingsProps) {
                             { label: "Cat", value: "cat" },
                             { label: "Bird", value: "bird" },
                         ]},
+                    ],
+                    [
+                        { label: "Roles", type: "checkbox" , name: "roles", required: false, options: piquetteConfig.app.industryOptions.find(option => option.value === business.industry)?.roles},
                     ]
                     
                 ],

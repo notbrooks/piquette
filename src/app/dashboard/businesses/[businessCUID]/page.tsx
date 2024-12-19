@@ -43,17 +43,16 @@ export default function BusinessDetailPage() {
                     <div className="space-y-5 px-2">
                         <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
                             <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
-                                Settings
-                            </h3>            
-                        </div>
-                        <BusinessSettings profile={profile} business={data as BusinessBase} />
-                    
-                        <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
-                            <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
                                 Details
                             </h3>            
                         </div>
                         <BusinessDetails profile={profile} business={data as BusinessBase} />
+                        <div className="border-b border-gray-200sm:flex sm:items-center sm:justify-between">
+                            <h3 className="text-lg font-light leading-7 text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
+                                Settings
+                            </h3>            
+                        </div>
+                        <BusinessSettings profile={profile} business={data as BusinessBase} />
                     </div>
                 </TabsContent>
 
